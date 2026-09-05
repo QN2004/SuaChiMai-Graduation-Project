@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5fbff"/>
+      <stop offset="1" stop-color="#e8f7e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="700" fill="url(#bg)"/>
+  <circle cx="160" cy="165" r="95" fill="#c9e9ff" opacity=".75"/>
+  <circle cx="740" cy="150" r="120" fill="#dcf3d5" opacity=".78"/>
+  <ellipse cx="450" cy="616" rx="245" ry="34" fill="#b6c7d4" opacity=".35"/>
+  <g transform="translate(295 62)">
+    <rect x="0" y="56" width="310" height="500" rx="38" fill="#ffffff" stroke="#1f6ed4" stroke-width="8"/>
+    <ellipse cx="155" cy="56" rx="150" ry="44" fill="#f8d36a" stroke="#d6a52d" stroke-width="8"/>
+    <ellipse cx="155" cy="556" rx="150" ry="42" fill="#e0f3ff" stroke="#1f6ed4" stroke-width="8"/>
+    <path d="M0 380 C84 330 178 415 310 342 L310 556 L0 556Z" fill="#6fc36f"/>
+    <path d="M36 220 C98 182 170 258 274 206 L274 350 C190 402 98 324 36 370Z" fill="#eef9ff"/>
+    <text x="155" y="156" text-anchor="middle" font-family="Arial, sans-serif" font-size="31" font-weight="900" fill="#145ebf">Cô Gái Hà Lan</text>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="#145ebf">SỐ 1</text>
+    <text x="155" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#347a31">0-6 tháng</text>
+    <text x="155" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#4a6873">Nhập khẩu Hà Lan</text>
+    <text x="155" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#ffffff">800g</text>
+  </g>
+</svg>

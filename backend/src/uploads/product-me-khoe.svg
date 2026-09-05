@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8fb"/>
+      <stop offset="1" stop-color="#eef8ff"/>
+    </linearGradient>
+    <linearGradient id="can" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffe7f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="700" fill="url(#bg)"/>
+  <circle cx="165" cy="150" r="95" fill="#ffd9e8" opacity=".72"/>
+  <circle cx="740" cy="170" r="112" fill="#cfeeff" opacity=".68"/>
+  <ellipse cx="450" cy="616" rx="245" ry="34" fill="#b6c7d4" opacity=".35"/>
+  <g transform="translate(295 72)">
+    <rect x="0" y="48" width="310" height="500" rx="38" fill="url(#can)" stroke="#d6336c" stroke-width="8"/>
+    <ellipse cx="155" cy="50" rx="150" ry="44" fill="#f8d36a" stroke="#d6a52d" stroke-width="8"/>
+    <ellipse cx="155" cy="548" rx="150" ry="42" fill="#ffd7e6" stroke="#d6336c" stroke-width="8"/>
+    <path d="M0 365 C84 320 178 412 310 332 L310 548 L0 548Z" fill="#f06292"/>
+    <path d="M92 258 C112 212 198 212 218 258 C239 305 168 338 155 370 C142 338 72 304 92 258Z" fill="#ffffff" opacity=".92"/>
+    <text x="155" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#1559c7">Sữa Chi Mai</text>
+    <text x="155" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" font-weight="900" fill="#d6336c">MẸ KHỎE</text>
+    <text x="155" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#9b2350">Cho mẹ bầu</text>
+    <text x="155" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#6b5260">Folate - DHA - Canxi</text>
+    <text x="155" y="484" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#ffffff">400g</text>
+  </g>
+</svg>

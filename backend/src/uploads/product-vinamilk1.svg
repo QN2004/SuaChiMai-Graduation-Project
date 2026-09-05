@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef8ff"/>
+      <stop offset="1" stop-color="#e8f2ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="700" fill="url(#bg)"/>
+  <circle cx="170" cy="150" r="92" fill="#b7e2ff" opacity=".75"/>
+  <circle cx="745" cy="165" r="112" fill="#d4e3ff" opacity=".72"/>
+  <ellipse cx="450" cy="616" rx="235" ry="32" fill="#b6c7d4" opacity=".35"/>
+  <g transform="translate(305 75)">
+    <rect x="0" y="40" width="290" height="510" rx="36" fill="#ffffff" stroke="#136bcf" stroke-width="8"/>
+    <ellipse cx="145" cy="42" rx="140" ry="40" fill="#2c87df" stroke="#0a5db6" stroke-width="8"/>
+    <ellipse cx="145" cy="550" rx="140" ry="40" fill="#bedfff" stroke="#136bcf" stroke-width="8"/>
+    <path d="M0 340 C78 290 160 402 290 322 L290 550 L0 550Z" fill="#2f8feb"/>
+    <path d="M30 180 C95 140 164 220 260 172 L260 310 C174 360 100 286 30 326Z" fill="#eaf6ff"/>
+    <text x="145" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="900" fill="#1268dc">VINAMILK</text>
+    <text x="145" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="#1268dc">STEP 1</text>
+    <text x="145" y="287" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#2f5a85">0-6 tháng</text>
+    <text x="145" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#516b7b">Dinh dưỡng cân đối</text>
+    <text x="145" y="488" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#ffffff">400g</text>
+  </g>
+</svg>
