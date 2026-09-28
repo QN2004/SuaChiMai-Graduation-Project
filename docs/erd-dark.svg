@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980">
+  <defs>
+    <marker id="dot" markerWidth="8" markerHeight="8" refX="4" refY="4">
+      <circle cx="4" cy="4" r="3" fill="#2d84c8"/>
+    </marker>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M1,1 L9,5 L1,9 Z" fill="#2d84c8"/>
+    </marker>
+    <style>
+      .bg { fill: #2b2b2b; }
+      .table { fill: #303030; stroke: #0d6ea8; stroke-width: 2; }
+      .head { fill: #0d6ea8; }
+      .title { font: 700 14px Arial, sans-serif; fill: #ffffff; }
+      .field { font: 12px Consolas, monospace; fill: #d8d8d8; }
+      .pk { fill: #f2c94c; font: 700 10px Arial, sans-serif; }
+      .fk { fill: #56ccf2; font: 700 10px Arial, sans-serif; }
+      .uk { fill: #6fcf97; font: 700 10px Arial, sans-serif; }
+      .line { fill: none; stroke: #2d84c8; stroke-width: 2; marker-start: url(#dot); marker-end: url(#arrow); }
+      .softLine { fill: none; stroke: #2d84c8; stroke-width: 1.4; stroke-dasharray: 6 6; opacity: 0.65; }
+      .group { font: 700 13px Arial, sans-serif; fill: #9ec7e8; letter-spacing: 0; }
+      .note { font: 12px Arial, sans-serif; fill: #cfcfcf; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="980"/>
+  <text x="34" y="34" class="group">SO DO HE THONG DU LIEU - MILK STORE</text>
+  <text x="34" y="56" class="note">PK: khoa chinh, FK: khoa phu, UK: khoa duy nhat. Cac bang duoi cung khong co khoa ngoai trong schema hien tai.</text>
+
+  <!-- Relationship lines -->
+  <path class="line" d="M270 165 H430"/>
+  <path class="line" d="M270 365 C350 365 350 245 430 245"/>
+  <path class="line" d="M740 185 H905"/>
+  <path class="line" d="M740 520 C820 520 820 700 905 700"/>
+  <path class="line" d="M270 685 H430"/>
+  <path class="line" d="M740 685 H905"/>
+
+  <!-- categories -->
+  <g transform="translate(35 95)">
+    <rect class="table" width="235" height="160"/>
+    <rect class="head" width="235" height="28"/>
+    <text x="12" y="19" class="title">categories</text>
+    <text x="12" y="50" class="pk">PK</text><text x="42" y="50" class="field">id</text>
+    <text x="12" y="72" class="uk">UK</text><text x="42" y="72" class="field">name</text>
+    <text x="42" y="94" class="field">description</text>
+    <text x="42" y="116" class="field">image</text>
+    <text x="42" y="138" class="field">status</text>
+  </g>
+
+  <!-- brands -->
+  <g transform="translate(35 295)">
+    <rect class="table" width="235" height="160"/>
+    <rect class="head" width="235" height="28"/>
+    <text x="12" y="19" class="title">brands</text>
+    <text x="12" y="50" class="pk">PK</text><text x="42" y="50" class="field">id</text>
+    <text x="12" y="72" class="uk">UK</text><text x="42" y="72" class="field">name</text>
+    <text x="42" y="94" class="field">description</text>
+    <text x="42" y="116" class="field">logo</text>
+    <text x="42" y="138" class="field">status</text>
+  </g>
+
+  <!-- products -->
+  <g transform="translate(430 90)">
+    <rect class="table" width="310" height="525"/>
+    <rect class="head" width="310" height="28"/>
+    <text x="12" y="19" class="title">products</text>
+    <text x="12" y="50" class="pk">PK</text><text x="48" y="50" class="field">id</text>
+    <text x="48" y="72" class="field">name</text>
+    <text x="12" y="94" class="uk">UK</text><text x="48" y="94" class="field">slug</text>
+    <text x="48" y="116" class="field">description</text>
+    <text x="48" y="138" class="field">short_description</text>
+    <text x="48" y="160" class="field">price</text>
+    <text x="48" y="182" class="field">sale_price</text>
+    <text x="48" y="204" class="field">image</text>
+    <text x="48" y="226" class="field">images</text>
+    <text x="48" y="248" class="field">stock</text>
+    <text x="12" y="270" class="fk">FK</text><text x="48" y="270" class="field">category_id</text>
+    <text x="12" y="292" class="fk">FK</text><text x="48" y="292" class="field">brand_id</text>
+    <text x="48" y="314" class="field">age_range</text>
+    <text x="48" y="336" class="field">weight</text>
+    <text x="48" y="358" class="field">origin</text>
+    <text x="48" y="380" class="field">ingredients</text>
+    <text x="48" y="402" class="field">benefits</text>
+    <text x="48" y="424" class="field">usage_instructions</text>
+    <text x="48" y="446" class="field">average_rating</text>
+    <text x="48" y="468" class="field">review_count</text>
+    <text x="48" y="490" class="field">is_featured</text>
+    <text x="48" y="512" class="field">status</text>
+  </g>
+
+  <!-- reviews -->
+  <g transform="translate(905 95)">
+    <rect class="table" width="265" height="205"/>
+    <rect class="head" width="265" height="28"/>
+    <text x="12" y="19" class="title">reviews</text>
+    <text x="12" y="50" class="pk">PK</text><text x="48" y="50" class="field">id</text>
+    <text x="12" y="72" class="fk">FK</text><text x="48" y="72" class="field">product_id</text>
+    <text x="48" y="94" class="field">user_id</text>
+    <text x="48" y="116" class="field">full_name</text>
+    <text x="48" y="138" class="field">rating</text>
+    <text x="48" y="160" class="field">comment</text>
+    <text x="48" y="182" class="field">status</text>
+  </g>
+
+  <!-- users -->
+  <g transform="translate(35 610)">
+    <rect class="table" width="235" height="210"/>
+    <rect class="head" width="235" height="28"/>
+    <text x="12" y="19" class="title">users</text>
+    <text x="12" y="50" class="pk">PK</text><text x="42" y="50" class="field">id</text>
+    <text x="12" y="72" class="uk">UK</text><text x="42" y="72" class="field">email</text>
+    <text x="42" y="94" class="field">password</text>
+    <text x="42" y="116" class="field">full_name</text>
+    <text x="42" y="138" class="field">phone</text>
+    <text x="42" y="160" class="field">role</text>
+    <text x="42" y="182" class="field">status</text>
+  </g>
+
+  <!-- orders -->
+  <g transform="translate(430 610)">
+    <rect class="table" width="310" height="255"/>
+    <rect class="head" width="310" height="28"/>
+    <text x="12" y="19" class="title">orders</text>
+    <text x="12" y="50" class="pk">PK</text><text x="48" y="50" class="field">id</text>
+    <text x="12" y="72" class="uk">UK</text><text x="48" y="72" class="field">order_number</text>
+    <text x="12" y="94" class="fk">FK</text><text x="48" y="94" class="field">user_id</text>
+    <text x="48" y="116" class="field">total_amount</text>
+    <text x="48" y="138" class="field">order_status</text>
+    <text x="48" y="160" class="field">payment_status</text>
+    <text x="48" y="182" class="field">payment_method</text>
+    <text x="48" y="204" class="field">customer_name</text>
+    <text x="48" y="226" class="field">shipping_address</text>
+  </g>
+
+  <!-- order_details -->
+  <g transform="translate(905 610)">
+    <rect class="table" width="290" height="205"/>
+    <rect class="head" width="290" height="28"/>
+    <text x="12" y="19" class="title">order_details</text>
+    <text x="12" y="50" class="pk">PK</text><text x="48" y="50" class="field">id</text>
+    <text x="12" y="72" class="fk">FK</text><text x="48" y="72" class="field">order_id</text>
+    <text x="12" y="94" class="fk">FK</text><text x="48" y="94" class="field">product_id</text>
+    <text x="48" y="116" class="field">product_name</text>
+    <text x="48" y="138" class="field">price</text>
+    <text x="48" y="160" class="field">quantity</text>
+    <text x="48" y="182" class="field">total_price</text>
+  </g>
+
+  <!-- standalone tables -->
+  <text x="35" y="895" class="group">BANG DOC LAP / KHONG CO FK</text>
+  <path class="softLine" d="M35 905 H1195"/>
+
+  <g transform="translate(35 915)">
+    <rect class="table" width="250" height="42"/>
+    <rect class="head" width="250" height="22"/>
+    <text x="10" y="16" class="title">banners</text>
+    <text x="10" y="36" class="pk">PK</text><text x="42" y="36" class="field">id, title, image, link</text>
+  </g>
+
+  <g transform="translate(315 915)">
+    <rect class="table" width="250" height="42"/>
+    <rect class="head" width="250" height="22"/>
+    <text x="10" y="16" class="title">news</text>
+    <text x="10" y="36" class="pk">PK</text><text x="42" y="36" class="field">id</text><text x="85" y="36" class="uk">UK</text><text x="116" y="36" class="field">slug</text>
+  </g>
+
+  <g transform="translate(595 915)">
+    <rect class="table" width="250" height="42"/>
+    <rect class="head" width="250" height="22"/>
+    <text x="10" y="16" class="title">contacts</text>
+    <text x="10" y="36" class="pk">PK</text><text x="42" y="36" class="field">id, email, message</text>
+  </g>
+
+  <g transform="translate(875 915)">
+    <rect class="table" width="320" height="42"/>
+    <rect class="head" width="320" height="22"/>
+    <text x="10" y="16" class="title">statistics</text>
+    <text x="10" y="36" class="pk">PK</text><text x="42" y="36" class="field">id</text><text x="85" y="36" class="uk">UK</text><text x="116" y="36" class="field">date, total_orders, total_revenue</text>
+  </g>
+</svg>

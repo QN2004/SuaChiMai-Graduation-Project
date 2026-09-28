@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="52%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#ecfeff"/>
+    </linearGradient>
+    <linearGradient id="mainHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="warmHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="coolHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="neutralHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 800 34px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 15px Arial, sans-serif; fill: #475569; }
+      .table { filter: url(#shadow); }
+      .card { fill: #ffffff; stroke: #dbe3ef; stroke-width: 1.2; }
+      .headText { font: 800 17px Arial, sans-serif; fill: #ffffff; letter-spacing: 0; }
+      .field { font: 400 13px Arial, sans-serif; fill: #1f2937; }
+      .muted { fill: #64748b; }
+      .pk { fill: #fff7ed; stroke: #fdba74; }
+      .fk { fill: #eff6ff; stroke: #93c5fd; }
+      .uk { fill: #f0fdf4; stroke: #86efac; }
+      .badgeText { font: 800 10px Arial, sans-serif; fill: #334155; }
+      .rel { fill: none; stroke: #64748b; stroke-width: 2.2; marker-end: url(#arrow); }
+      .relStrong { fill: none; stroke: #0f766e; stroke-width: 2.6; marker-end: url(#arrow); }
+      .relLabel { font: 700 12px Arial, sans-serif; fill: #334155; }
+      .noteBox { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.2; }
+      .noteText { font: 400 13px Arial, sans-serif; fill: #334155; }
+      .section { font: 800 13px Arial, sans-serif; fill: #64748b; letter-spacing: 0.8px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1120" fill="url(#pageBg)"/>
+
+  <text x="80" y="68" class="title">ERD - Milk Store Database</text>
+  <text x="80" y="96" class="subtitle">Source: database/suachimai_schema.sql - relationship view for the Sua Chi Mai system</text>
+
+  <text x="80" y="148" class="section">CATALOG</text>
+  <text x="80" y="642" class="section">SALES</text>
+  <text x="80" y="940" class="section">CONTENT &amp; OPERATIONS</text>
+
+  <!-- Relationship lines -->
+  <path class="relStrong" d="M360 268 C450 268 450 316 550 316"/>
+  <text x="406" y="252" class="relLabel">1 to many</text>
+  <path class="relStrong" d="M360 468 C450 468 450 402 550 402"/>
+  <text x="406" y="490" class="relLabel">1 to many</text>
+  <path class="rel" d="M930 316 C1018 316 1018 242 1120 242"/>
+  <text x="978" y="300" class="relLabel">product reviews</text>
+  <path class="relStrong" d="M360 748 C456 748 456 748 550 748"/>
+  <text x="416" y="732" class="relLabel">places</text>
+  <path class="relStrong" d="M930 748 C1008 748 1008 748 1120 748"/>
+  <text x="977" y="732" class="relLabel">has items</text>
+  <path class="rel" d="M770 570 C770 640 1194 610 1260 662"/>
+  <text x="826" y="620" class="relLabel">ordered product</text>
+
+  <!-- CATEGORIES -->
+  <g class="table" transform="translate(80 165)">
+    <rect class="card" width="280" height="205" rx="12"/>
+    <rect width="280" height="48" rx="12" fill="url(#coolHead)"/>
+    <path d="M0 36 H280 V48 H0 Z" fill="url(#coolHead)"/>
+    <text x="20" y="31" class="headText">CATEGORIES</text>
+    <g transform="translate(20 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="uk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">UK</text><text x="42" y="42" class="field">name</text>
+      <text x="42" y="70" class="field muted">description, image</text>
+      <text x="42" y="98" class="field muted">status</text>
+      <text x="42" y="126" class="field muted">created_at</text>
+    </g>
+  </g>
+
+  <!-- BRANDS -->
+  <g class="table" transform="translate(80 390)">
+    <rect class="card" width="280" height="205" rx="12"/>
+    <rect width="280" height="48" rx="12" fill="url(#coolHead)"/>
+    <path d="M0 36 H280 V48 H0 Z" fill="url(#coolHead)"/>
+    <text x="20" y="31" class="headText">BRANDS</text>
+    <g transform="translate(20 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="uk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">UK</text><text x="42" y="42" class="field">name</text>
+      <text x="42" y="70" class="field muted">description, logo</text>
+      <text x="42" y="98" class="field muted">status</text>
+      <text x="42" y="126" class="field muted">created_at</text>
+    </g>
+  </g>
+
+  <!-- PRODUCTS -->
+  <g class="table" transform="translate(550 165)">
+    <rect class="card" width="380" height="405" rx="12"/>
+    <rect width="380" height="52" rx="12" fill="url(#mainHead)"/>
+    <path d="M0 40 H380 V52 H0 Z" fill="url(#mainHead)"/>
+    <text x="22" y="34" class="headText">PRODUCTS</text>
+    <g transform="translate(22 72)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="uk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">UK</text><text x="42" y="42" class="field">slug</text>
+      <rect class="fk" y="56" width="28" height="18" rx="9"/><text x="8" y="69" class="badgeText">FK</text><text x="42" y="70" class="field">category_id -> categories.id</text>
+      <rect class="fk" y="84" width="28" height="18" rx="9"/><text x="8" y="97" class="badgeText">FK</text><text x="42" y="98" class="field">brand_id -> brands.id</text>
+      <text x="42" y="126" class="field">name, price, sale_price, stock</text>
+      <text x="42" y="154" class="field muted">image, images</text>
+      <text x="42" y="182" class="field muted">age_range, weight, origin</text>
+      <text x="42" y="210" class="field muted">ingredients, benefits</text>
+      <text x="42" y="238" class="field muted">usage_instructions</text>
+      <text x="42" y="266" class="field muted">average_rating, review_count</text>
+      <text x="42" y="294" class="field muted">is_featured, status</text>
+      <text x="42" y="322" class="field muted">created_at, updated_at</text>
+    </g>
+  </g>
+
+  <!-- REVIEWS -->
+  <g class="table" transform="translate(1120 165)">
+    <rect class="card" width="340" height="245" rx="12"/>
+    <rect width="340" height="48" rx="12" fill="url(#warmHead)"/>
+    <path d="M0 36 H340 V48 H0 Z" fill="url(#warmHead)"/>
+    <text x="20" y="31" class="headText">REVIEWS</text>
+    <g transform="translate(20 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="fk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">FK</text><text x="42" y="42" class="field">product_id -> products.id</text>
+      <text x="42" y="70" class="field">user_id</text>
+      <text x="42" y="98" class="field muted">full_name, rating</text>
+      <text x="42" y="126" class="field muted">comment, status</text>
+      <text x="42" y="154" class="field muted">created_at</text>
+    </g>
+  </g>
+
+  <!-- USERS -->
+  <g class="table" transform="translate(80 665)">
+    <rect class="card" width="280" height="235" rx="12"/>
+    <rect width="280" height="48" rx="12" fill="url(#neutralHead)"/>
+    <path d="M0 36 H280 V48 H0 Z" fill="url(#neutralHead)"/>
+    <text x="20" y="31" class="headText">USERS</text>
+    <g transform="translate(20 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="uk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">UK</text><text x="42" y="42" class="field">email</text>
+      <text x="42" y="70" class="field">password, full_name</text>
+      <text x="42" y="98" class="field muted">phone, role, status</text>
+      <text x="42" y="126" class="field muted">avatar, address</text>
+      <text x="42" y="154" class="field muted">created_at, updated_at</text>
+    </g>
+  </g>
+
+  <!-- ORDERS -->
+  <g class="table" transform="translate(550 665)">
+    <rect class="card" width="380" height="235" rx="12"/>
+    <rect width="380" height="48" rx="12" fill="url(#mainHead)"/>
+    <path d="M0 36 H380 V48 H0 Z" fill="url(#mainHead)"/>
+    <text x="22" y="31" class="headText">ORDERS</text>
+    <g transform="translate(22 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="uk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">UK</text><text x="42" y="42" class="field">order_number</text>
+      <rect class="fk" y="56" width="28" height="18" rx="9"/><text x="8" y="69" class="badgeText">FK</text><text x="42" y="70" class="field">user_id -> users.id</text>
+      <text x="42" y="98" class="field">total_amount, statuses</text>
+      <text x="42" y="126" class="field muted">customer info, shipping info</text>
+      <text x="42" y="154" class="field muted">created_at, updated_at</text>
+    </g>
+  </g>
+
+  <!-- ORDER_DETAILS -->
+  <g class="table" transform="translate(1120 665)">
+    <rect class="card" width="340" height="235" rx="12"/>
+    <rect width="340" height="48" rx="12" fill="url(#mainHead)"/>
+    <path d="M0 36 H340 V48 H0 Z" fill="url(#mainHead)"/>
+    <text x="20" y="31" class="headText">ORDER_DETAILS</text>
+    <g transform="translate(20 68)">
+      <rect class="pk" width="28" height="18" rx="9"/><text x="8" y="13" class="badgeText">PK</text><text x="42" y="14" class="field">id</text>
+      <rect class="fk" y="28" width="28" height="18" rx="9"/><text x="8" y="41" class="badgeText">FK</text><text x="42" y="42" class="field">order_id -> orders.id</text>
+      <rect class="fk" y="56" width="28" height="18" rx="9"/><text x="8" y="69" class="badgeText">FK</text><text x="42" y="70" class="field">product_id -> products.id</text>
+      <text x="42" y="98" class="field">product_name, price</text>
+      <text x="42" y="126" class="field muted">quantity, total_price</text>
+      <text x="42" y="154" class="field muted">created_at</text>
+    </g>
+  </g>
+
+  <!-- Standalone tables -->
+  <g class="table" transform="translate(80 960)">
+    <rect class="card" width="300" height="110" rx="12"/>
+    <rect width="300" height="42" rx="12" fill="url(#neutralHead)"/>
+    <path d="M0 30 H300 V42 H0 Z" fill="url(#neutralHead)"/>
+    <text x="18" y="27" class="headText">BANNERS</text>
+    <text x="18" y="66" class="field">id, title, image, link</text>
+    <text x="18" y="90" class="field muted">sort_order, active, status</text>
+  </g>
+
+  <g class="table" transform="translate(430 960)">
+    <rect class="card" width="300" height="110" rx="12"/>
+    <rect width="300" height="42" rx="12" fill="url(#neutralHead)"/>
+    <path d="M0 30 H300 V42 H0 Z" fill="url(#neutralHead)"/>
+    <text x="18" y="27" class="headText">NEWS</text>
+    <text x="18" y="66" class="field">id, title, slug, content</text>
+    <text x="18" y="90" class="field muted">image, status, published_at</text>
+  </g>
+
+  <g class="table" transform="translate(780 960)">
+    <rect class="card" width="300" height="110" rx="12"/>
+    <rect width="300" height="42" rx="12" fill="url(#neutralHead)"/>
+    <path d="M0 30 H300 V42 H0 Z" fill="url(#neutralHead)"/>
+    <text x="18" y="27" class="headText">CONTACTS</text>
+    <text x="18" y="66" class="field">id, full_name, email, phone</text>
+    <text x="18" y="90" class="field muted">message, reply, status</text>
+  </g>
+
+  <g class="table" transform="translate(1130 960)">
+    <rect class="card" width="330" height="110" rx="12"/>
+    <rect width="330" height="42" rx="12" fill="url(#neutralHead)"/>
+    <path d="M0 30 H330 V42 H0 Z" fill="url(#neutralHead)"/>
+    <text x="18" y="27" class="headText">STATISTICS</text>
+    <text x="18" y="66" class="field">id, date, total_orders</text>
+    <text x="18" y="90" class="field muted">total_revenue, total_customers</text>
+  </g>
+
+  <!-- Note -->
+  <g transform="translate(1120 450)">
+    <rect class="noteBox" width="340" height="88" rx="12"/>
+    <text x="18" y="30" class="noteText">Note: reviews.user_id exists in the table,</text>
+    <text x="18" y="54" class="noteText">but the current schema does not declare</text>
+    <text x="18" y="78" class="noteText">a foreign key to users.id.</text>
+  </g>
+</svg>
