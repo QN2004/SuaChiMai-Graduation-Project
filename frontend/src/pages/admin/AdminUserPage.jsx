@@ -27,7 +27,7 @@ export default function AdminUserPage() {
 
   return (
     <div className="admin-page">
-      <div className="admin-hero modern-hero">
+      <div className="admin-hero">
         <div>
           <span className="admin-kicker">Tài khoản hệ thống</span>
 

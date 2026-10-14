@@ -3,6 +3,8 @@ import {
   FaBox,
   FaChartLine,
   FaComments,
+  FaEnvelopeOpenText,
+  FaExternalLinkAlt,
   FaLayerGroup,
   FaShoppingCart,
   FaSignOutAlt,
@@ -12,15 +14,30 @@ import {
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
-const links = [
-  ['Tổng quan', '/admin', <FaChartLine />],
-  ['Danh mục', '/admin/categories', <FaLayerGroup />],
-  ['Thương hiệu', '/admin/brands', <FaTags />],
-  ['Sản phẩm', '/admin/products', <FaBox />],
-  ['Đơn hàng', '/admin/orders', <FaShoppingCart />],
-  ['Khách hàng', '/admin/users', <FaUsers />],
-  ['Đánh giá', '/admin/reviews', <FaComments />],
-  ['Liên hệ', '/admin/contacts', <FaComments />]
+const navGroups = [
+  {
+    label: 'Vận hành',
+    items: [
+      ['Tổng quan', '/admin', <FaChartLine />],
+      ['Đơn hàng', '/admin/orders', <FaShoppingCart />],
+      ['Sản phẩm', '/admin/products', <FaBox />]
+    ]
+  },
+  {
+    label: 'Danh mục hàng',
+    items: [
+      ['Danh mục', '/admin/categories', <FaLayerGroup />],
+      ['Thương hiệu', '/admin/brands', <FaTags />]
+    ]
+  },
+  {
+    label: 'Khách hàng',
+    items: [
+      ['Khách hàng', '/admin/users', <FaUsers />],
+      ['Đánh giá', '/admin/reviews', <FaComments />],
+      ['Liên hệ', '/admin/contacts', <FaEnvelopeOpenText />]
+    ]
+  }
 ];
 
 const pageTitles = {
@@ -40,47 +57,65 @@ export default function AdminLayout() {
   const location = useLocation();
   const title = pageTitles[location.pathname] || 'Quản trị hệ thống';
 
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
+
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <div className="admin-brand">
-          <span><FaStore /></span>
+          <span className="admin-brand-mark"><FaStore /></span>
           <div>
             <strong>Sữa Chi Mai</strong>
-            <small>Admin Console</small>
+            <small>Bảng quản trị</small>
           </div>
         </div>
 
         <nav className="admin-nav" aria-label="Quản trị">
-          {links.map(([label, to, icon]) => (
-            <NavLink key={to} to={to} end={to === '/admin'}>
-              {icon}
-              <span>{label}</span>
-            </NavLink>
+          {navGroups.map((group) => (
+            <div className="admin-nav-group" key={group.label}>
+              <p className="admin-nav-label">{group.label}</p>
+              {group.items.map(([label, to, icon]) => (
+                <NavLink key={to} to={to} end={to === '/admin'}>
+                  <span className="admin-nav-icon">{icon}</span>
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
+
+        <div className="admin-sidebar-footer">
+          <div className="admin-user-card">
+            <div className="admin-user-avatar">{(user?.full_name || 'A').charAt(0).toUpperCase()}</div>
+            <div className="admin-user-meta">
+              <strong>{user?.full_name || 'Admin'}</strong>
+              <small>{user?.email || 'Quản trị viên'}</small>
+            </div>
+          </div>
+          <button className="admin-logout-btn" type="button" onClick={handleLogout}>
+            <FaSignOutAlt />
+            <span>Đăng xuất</span>
+          </button>
+        </div>
       </aside>
 
       <section className="admin-main">
         <header className="admin-topbar">
-          <div>
-            <span>Đang quản trị</span>
+          <div className="admin-topbar-title">
+            <span>Khu quản trị</span>
             <strong>{title}</strong>
           </div>
-          <div className="admin-account">
-            <span>{user?.full_name || 'Admin'}</span>
-            <button
-              className="btn ghost"
-              onClick={() => {
-                logout();
-                navigate('/admin/login');
-              }}
-            >
-              <FaSignOutAlt /> Đăng xuất
-            </button>
-          </div>
+          <NavLink className="admin-store-link" to="/" target="_blank" rel="noreferrer">
+            <FaExternalLinkAlt />
+            <span>Xem cửa hàng</span>
+          </NavLink>
         </header>
-        <Outlet />
+        <div className="admin-content">
+          <Outlet />
+        </div>
       </section>
     </div>
   );
