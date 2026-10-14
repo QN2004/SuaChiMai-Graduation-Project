@@ -5,8 +5,6 @@ import { makeSlug } from '../utils/slug.js';
 const editable = {
   categories: ['name', 'slug', 'description', 'image', 'status'],
   brands: ['name', 'slug', 'description', 'logo', 'status'],
-  banners: ['title', 'image', 'link', 'status'],
-  news: ['title', 'slug', 'image', 'content', 'status']
 };
 
 export const list = (table) => async (req, res, next) => {

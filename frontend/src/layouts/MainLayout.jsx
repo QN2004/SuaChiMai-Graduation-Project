@@ -15,10 +15,9 @@ import {
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import ChatBot from '../components/ChatBot';
-
 export default function MainLayout() {
   const [open, setOpen] = useState(false);
+  const [headerSearch, setHeaderSearch] = useState('');
   const { user, logout } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
@@ -26,6 +25,13 @@ export default function MainLayout() {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const submitHeaderSearch = (event) => {
+    event.preventDefault();
+    const q = headerSearch.trim();
+    navigate(q ? `/products?q=${encodeURIComponent(q)}` : '/products');
+    setOpen(false);
   };
 
   return (
@@ -44,7 +50,15 @@ export default function MainLayout() {
           <NavLink to="/gioithieu" onClick={() => setOpen(false)}>Giới thiệu</NavLink>
           <NavLink to="/contact" onClick={() => setOpen(false)}>Liên hệ</NavLink>
         </nav>
-        <input type="text" className="header-search" placeholder="Tìm kiếm sản phẩm..." />
+        <form className="header-search-form" onSubmit={submitHeaderSearch}>
+          <input
+            type="search"
+            className="header-search"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={headerSearch}
+            onChange={(event) => setHeaderSearch(event.target.value)}
+          />
+        </form>
         <div className="header-actions">
           <div className="header-hotline">
             <strong>0987 654 321</strong>
@@ -102,7 +116,6 @@ export default function MainLayout() {
           </div>
         </div>
       </footer>
-      <ChatBot />
     </>
   );
 }

@@ -22,8 +22,11 @@ export const getProducts = async (req, res, next) => {
     const where = ['p.status=1'];
     const params = [];
     if (q) {
-      where.push('p.name LIKE ?');
-      params.push(`%${q}%`);
+      // Only name + brand. Searching description causes false hits
+      // e.g. "oc cho" matching inside "hoc cho".
+      where.push('(p.name LIKE ? OR COALESCE(b.name, "") LIKE ?)');
+      const keyword = `%${q}%`;
+      params.push(keyword, keyword);
     }
     if (category) {
       where.push('p.category_id=?');
@@ -46,7 +49,13 @@ export const getProducts = async (req, res, next) => {
     const safePage = Math.max(1, Number(page) || 1);
     const offset = (safePage - 1) * safeLimit;
     const rows = await query(`${productSelect} WHERE ${where.join(' AND ')} GROUP BY p.id ORDER BY ${order} LIMIT ${safeLimit} OFFSET ${offset}`, params);
-    const totalRows = await query(`SELECT COUNT(*) total FROM products p WHERE ${where.join(' AND ')}`, params);
+    const totalRows = await query(
+      `SELECT COUNT(DISTINCT p.id) total
+       FROM products p
+       LEFT JOIN brands b ON b.id=p.brand_id
+       WHERE ${where.join(' AND ')}`,
+      params
+    );
     ok(res, 'Thanh cong', { items: rows, total: totalRows[0].total, page: safePage, limit: safeLimit });
   } catch (err) {
     next(err);

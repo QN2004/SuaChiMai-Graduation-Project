@@ -26,7 +26,8 @@ th { color: var(--muted); font-size: 13px; background: #f2f8fa; }
 .header-left { display: flex; flex-direction: column; gap: 2px; }
 .logo, .admin-logo { font-weight: 900; font-size: 24px; color: var(--primary-dark); letter-spacing: 0; }
 .logo-subtitle { font-size: 11px; color: var(--muted); font-weight: 600; }
-.header-search { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: #f8f9fa; font-size: 14px; min-width: 240px; }
+.header-search-form { min-width: 240px; }
+.header-search { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: #f8f9fa; font-size: 14px; }
 .header-hotline { display: flex; flex-direction: column; gap: 2px; text-align: right; line-height: 1.2; }
 .header-hotline strong { color: var(--primary); font-size: 16px; }
 .header-hotline span { font-size: 12px; color: var(--muted); }
@@ -119,7 +120,7 @@ th { color: var(--muted); font-size: 13px; background: #f2f8fa; }
 }
 @media (max-width: 1200px) {
   .site-header { grid-template-columns: 140px 1fr auto auto; }
-  .header-search { min-width: 180px; }
+  .header-search-form { min-width: 180px; }
   .hero-features { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 900px) {
@@ -130,7 +131,7 @@ th { color: var(--muted); font-size: 13px; background: #f2f8fa; }
   .nav { display: none; }
   .nav.open { display: flex; position: absolute; top: 72px; left: 16px; right: 16px; flex-direction: column; gap: 10px; background: var(--white); padding: 12px; border-radius: 12px; box-shadow: 0 18px 50px rgba(14,35,44,.08); }
   .site-header { grid-template-columns: auto 1fr auto; }
-  .header-search { display: none; }
+  .header-search-form { display: none; }
   .header-hotline { display: none; }
   .hero-features { grid-template-columns: 1fr; }
   .footer { grid-template-columns: repeat(2, 1fr); }
@@ -454,7 +455,75 @@ del { color: var(--muted); }
 .news-card strong { margin-top: 16px; font-size: 19px; }
 
 .shop-layout { display: grid; grid-template-columns: 290px 1fr; gap: 24px; align-items: start; }
-.filters { position: sticky; top: 90px; display: grid; gap: 12px; padding: 16px; background: white; border: 1px solid var(--line); border-radius: 8px; }
+.filters { position: sticky; top: 90px; display: grid; gap: 14px; padding: 16px; background: white; border: 1px solid var(--line); border-radius: 8px; }
+.filter-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.filter-heading strong { font-size: 16px; }
+.filter-clear {
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 13px;
+  padding: 0;
+  cursor: pointer;
+}
+.filter-field { display: grid; gap: 6px; }
+.filter-field > span { font-size: 13px; color: var(--muted); font-weight: 600; }
+.filter-field input,
+.filter-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+.filter-search {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+}
+.filter-search input {
+  border: 0;
+  padding: 10px 0;
+  outline: none;
+  background: transparent;
+}
+.filter-price-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.shop-results { min-width: 0; display: grid; gap: 16px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: #f7fbfc;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.filter-chip-btn svg { font-size: 11px; color: var(--muted); }
+.shop-empty {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 36px 24px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+.shop-empty h3 { margin: 0; }
+.shop-empty p { margin: 0; color: var(--muted); }
 .shop-products-only {
   max-width: 1280px;
   margin: 0 auto;

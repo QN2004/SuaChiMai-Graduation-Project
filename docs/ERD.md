@@ -1,6 +1,6 @@
 # ERD - Milk Store Database
 
-Source: `database/suachimai_schema.sql` as imported by `backend/setup-db.js`.
+Source: `database/milk_store.sql` (runtime schema).
 
 ![Beautiful ERD](./erd-beautiful.svg)
 
@@ -164,5 +164,5 @@ erDiagram
 - `users.id` -> `orders.user_id`: one user has many orders.
 - `orders.id` -> `order_details.order_id`: one order has many order detail rows.
 - `products.id` -> `order_details.product_id`: one product can appear in many order detail rows.
-- `reviews.user_id` exists, but `suachimai_schema.sql` does not declare a foreign key from `reviews.user_id` to `users.id`.
-- `banners`, `news`, `contacts`, and `statistics` are standalone tables in the current schema.
+- `reviews.user_id` references `users.id` (ON DELETE CASCADE) in `milk_store.sql`.
+- `contacts` is a standalone table for customer messages.

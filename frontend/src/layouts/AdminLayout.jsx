@@ -3,9 +3,7 @@ import {
   FaBox,
   FaChartLine,
   FaComments,
-  FaImage,
   FaLayerGroup,
-  FaNewspaper,
   FaShoppingCart,
   FaSignOutAlt,
   FaStore,
@@ -22,8 +20,6 @@ const links = [
   ['Đơn hàng', '/admin/orders', <FaShoppingCart />],
   ['Khách hàng', '/admin/users', <FaUsers />],
   ['Đánh giá', '/admin/reviews', <FaComments />],
-  ['Banner', '/admin/banners', <FaImage />],
-  ['Tin tức', '/admin/news', <FaNewspaper />],
   ['Liên hệ', '/admin/contacts', <FaComments />]
 ];
 
@@ -35,8 +31,6 @@ const pageTitles = {
   '/admin/orders': 'Quản lý đơn hàng',
   '/admin/users': 'Quản lý khách hàng',
   '/admin/reviews': 'Quản lý đánh giá',
-  '/admin/banners': 'Quản lý banner',
-  '/admin/news': 'Quản lý tin tức',
   '/admin/contacts': 'Tư vấn khách hàng'
 };
 

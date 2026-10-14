@@ -5,9 +5,7 @@ import Loading from '../../components/Loading';
 
 const configs = {
   categories: { title: 'Danh mục', endpoint: '/categories', fields: ['name', 'description', 'image', 'status'] },
-  brands: { title: 'Thương hiệu', endpoint: '/brands', fields: ['name', 'description', 'logo', 'status'] },
-  banners: { title: 'Banner', endpoint: '/banners', fields: ['title', 'image', 'link', 'status'] },
-  news: { title: 'Tin tức', endpoint: '/news', fields: ['title', 'image', 'content', 'status'] }
+  brands: { title: 'Thương hiệu', endpoint: '/brands', fields: ['name', 'description', 'logo', 'status'] }
 };
 
 const fieldLabels = {

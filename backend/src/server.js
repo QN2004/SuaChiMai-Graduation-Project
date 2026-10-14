@@ -9,13 +9,10 @@ import brandRoutes from './routes/brand.routes.js';
 import productRoutes from './routes/product.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import reviewRoutes from './routes/review.routes.js';
-import bannerRoutes from './routes/banner.routes.js';
-import newsRoutes from './routes/news.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 import statisticRoutes from './routes/statistic.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import userRoutes from './routes/user.routes.js';
-import chatRoutes from './routes/chat.routes.js';
 import { errorHandler, notFound } from './middlewares/error.js';
 
 dotenv.config();
@@ -25,7 +22,8 @@ const __dirname = path.dirname(__filename);
 
 const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3000')
   .split(',')
-  .map((origin) => origin.trim());
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(cors({
   origin(origin, callback) {
@@ -44,13 +42,10 @@ app.use('/api/brands', brandRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/banners', bannerRoutes);
-app.use('/api/news', newsRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/statistics', statisticRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/chat', chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

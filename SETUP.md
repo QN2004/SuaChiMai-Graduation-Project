@@ -55,7 +55,7 @@ DB_NAME=milk_store
 DB_PORT=3306
 JWT_SECRET=milk_store_secret_key
 CLIENT_URL=http://localhost:3000
-CLIENT_URLS=http://localhost:3000,http://localhost:3001
+CLIENT_URLS=http://localhost:3000
 ```
 
 Nếu mật khẩu MySQL khác, cập nhật `DB_PASSWORD`.

@@ -13,8 +13,6 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
-import NewsPage from './pages/NewsPage';
-import NewsDetailPage from './pages/NewsDetailPage';
 import ContactPage from './pages/ContactPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminResourcePage from './pages/admin/AdminResourcePage';
@@ -33,8 +31,6 @@ export default function App() {
         <Route path="/products" element={<ProductListPage />} />
         <Route path="/products/:slug" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/news/:slug" element={<NewsDetailPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -55,8 +51,6 @@ export default function App() {
           <Route path="orders" element={<AdminOrderPage />} />
           <Route path="users" element={<AdminUserPage />} />
           <Route path="reviews" element={<AdminReviewPage />} />
-          <Route path="banners" element={<AdminResourcePage type="banners" />} />
-          <Route path="news" element={<AdminResourcePage type="news" />} />
           <Route path="contacts" element={<AdminContactPage />} />
         </Route>
       </Route>

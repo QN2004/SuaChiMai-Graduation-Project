@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaArrowRight, FaAward, FaHeadset, FaShieldAlt, FaShippingFast } from 'react-icons/fa';
-import api, { imageUrl } from '../api/client';
+import api from '../api/client';
 import ProductCard from '../components/ProductCard';
 import Loading from '../components/Loading';
 import { useFetch } from '../hooks/useFetch';
@@ -8,24 +8,22 @@ import heroMilkFamily from '../assets/hero-milk-family.png';
 
 export default function HomePage() {
   const { data, loading } = useFetch(async () => {
-    const [featured, latest, best, news] = await Promise.all([
+    const [featured, latest, best] = await Promise.all([
       api.get('/products/featured'),
       api.get('/products/latest'),
-      api.get('/products/best-selling'),
-      api.get('/news')
+      api.get('/products/best-selling')
     ]);
 
     return {
       data: {
         featured: (featured.data || []).slice(0, 4),
         latest: (latest.data || []).slice(0, 4),
-        best: (best.data || []).slice(0, 4),
-        news: news.data
+        best: (best.data || []).slice(0, 4)
       }
     };
   }, []);
 
-  const pageData = data || { featured: [], latest: [], best: [], news: [] };
+  const pageData = data || { featured: [], latest: [], best: [] };
 
   const features = [
     { icon: <FaShieldAlt />, label: 'Sản phẩm chính hãng', note: 'Nguồn gốc rõ ràng' },
@@ -98,27 +96,6 @@ export default function HomePage() {
         subtitle="Các sản phẩm quen thuộc trong giỏ hàng gia đình"
         products={pageData.best}
       />
-
-      <section className="section home-news-section">
-        <div className="section-title">
-          <div>
-            <span className="section-kicker">Cẩm nang mua sữa</span>
-            <h2>Tin tức và khuyến mãi</h2>
-          </div>
-          <Link to="/news">Xem thêm</Link>
-        </div>
-        <div className="news-grid">
-          {pageData.news.slice(0, 3).length ? pageData.news.slice(0, 3).map((item) => (
-            <Link className="news-card" key={item.id} to={`/news/${item.slug}`}>
-              <img src={imageUrl(item.image)} alt={item.title} />
-              <strong>{item.title}</strong>
-              <p>{item.content?.slice(0, 110)}...</p>
-            </Link>
-          )) : (
-            <div className="empty-state">Chưa có bài viết mới.</div>
-          )}
-        </div>
-      </section>
     </div>
   );
 }

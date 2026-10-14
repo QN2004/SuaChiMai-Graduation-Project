@@ -2,8 +2,6 @@ USE milk_store;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE contacts;
-TRUNCATE TABLE news;
-TRUNCATE TABLE banners;
 TRUNCATE TABLE reviews;
 TRUNCATE TABLE order_details;
 TRUNCATE TABLE orders;
@@ -76,12 +74,3 @@ INSERT INTO reviews(user_id,product_id,rating,comment,status) VALUES
 (2,1,5,'Gia tot, san pham moi.',1),
 (4,10,4,'Sua hat it ngot, de uong.',1);
 
-INSERT INTO banners(title,image,link,status) VALUES
-('Dinh duong moi ngay cho ca gia dinh','https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1600&q=80','/products',1),
-('Uu dai sua bot cho be','https://images.unsplash.com/photo-1546015720-b8b30df5aa27?auto=format&fit=crop&w=1600&q=80','/products?category=1',1),
-('Sua hat thanh nhe','https://images.unsplash.com/photo-1600788907416-456578634209?auto=format&fit=crop&w=1600&q=80','/products?category=3',1);
-
-INSERT INTO news(title,slug,image,content,status) VALUES
-('Bi quyet chon sua bot phu hop cho be','bi-quyet-chon-sua-bot-phu-hop-cho-be','https://images.unsplash.com/photo-1546015720-b8b30df5aa27?auto=format&fit=crop&w=1200&q=80','Hay chon sua theo do tuoi, tinh trang dinh duong va kha nang tieu hoa cua be. Khi doi sua nen theo doi phan ung trong vai ngay dau.',1),
-('Khuyen mai mua 2 tang 1 cho dong sua tuoi','khuyen-mai-mua-2-tang-1-sua-tuoi','https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80','Chuong trinh ap dung cho nhieu san pham sua tuoi trong tuan nay. So luong qua tang co han.',1),
-('Sua hat co phu hop de uong moi ngay?','sua-hat-co-phu-hop-de-uong-moi-ngay','https://images.unsplash.com/photo-1600788907416-456578634209?auto=format&fit=crop&w=1200&q=80','Sua hat la lua chon tien loi de bo sung dinh duong thuc vat. Nen doc thanh phan duong va dam de phu hop nhu cau.',1);

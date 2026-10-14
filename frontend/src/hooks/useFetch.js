@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export const useFetch = (loader, deps = []) => {
-  const [data, setData] = useState({ banners: [], categories: [], featured: [], latest: [], best: [], news: [] });
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 

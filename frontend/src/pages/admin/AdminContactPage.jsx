@@ -96,8 +96,7 @@ export default function AdminContactPage() {
           </div>
           {contacts.length ? contacts.map((contact) => {
             const isActive = activeContact?.id === contact.id;
-            const chatbotMessage = contact.message?.startsWith('[Chatbot]');
-            const preview = chatbotMessage ? contact.message.slice(10) : contact.message;
+            const preview = contact.message;
 
             return (
               <button
@@ -145,7 +144,7 @@ export default function AdminContactPage() {
               <div className="message-stream">
                 <div className="message-row customer">
                   <div className="message-bubble">
-                    {(activeContact.message?.startsWith('[Chatbot]') ? activeContact.message.slice(10) : activeContact.message) || 'Khách chưa nhập nội dung.'}
+                    {activeContact.message || 'Khách chưa nhập nội dung.'}
                   </div>
                 </div>
 
