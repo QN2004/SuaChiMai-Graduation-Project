@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { FaEdit, FaImage, FaPlus, FaSave, FaTimes, FaTrash } from 'react-icons/fa';
+import { Button, Space, Tag, Tooltip, Upload } from 'antd';
+import {
+  CloseOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PictureOutlined,
+  PlusOutlined,
+  SaveOutlined
+} from '@ant-design/icons';
 import api, { imageUrl } from '../../api/client';
 import Loading from '../../components/Loading';
+import { useUiFeedback } from '../../context/UiFeedbackContext';
 import { money } from '../../utils/format';
 
 const empty = {
@@ -31,13 +40,16 @@ const normalizeForm = (data) => ({
 });
 
 export default function AdminProductPage() {
+  const { toast, confirm } = useUiFeedback();
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState({ categories: [], brands: [] });
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [localPreview, setLocalPreview] = useState('');
 
   const load = () => Promise.all([
     api.get('/products/admin/all'),
@@ -48,55 +60,90 @@ export default function AdminProductPage() {
     setMeta({ categories: categories.data, brands: brands.data });
   }).finally(() => setLoading(false));
 
+  const clearPendingImage = () => {
+    if (localPreview) URL.revokeObjectURL(localPreview);
+    setPendingFile(null);
+    setLocalPreview('');
+  };
+
+  const resetFormState = () => {
+    clearPendingImage();
+    setForm(empty);
+    setEditing(null);
+    setPreviewOpen(false);
+  };
+
   useEffect(() => {
     load();
+    return () => {
+      if (localPreview) URL.revokeObjectURL(localPreview);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const save = async (event) => {
     event.preventDefault();
     try {
-      const payload = normalizeForm(form);
+      setSaving(true);
+      const payload = normalizeForm({ ...form, status: 1 });
+
+      if (pendingFile) {
+        const data = new FormData();
+        data.append('image', pendingFile);
+        const res = await api.post('/upload', data);
+        payload.image = res.data.url;
+      }
+
       if (editing) await api.put(`/products/${editing}`, payload);
       else await api.post('/products', payload);
-      setForm(empty);
-      setEditing(null);
+      toast(editing ? 'Đã cập nhật sản phẩm' : 'Đã thêm sản phẩm');
+      resetFormState();
       load();
     } catch (err) {
-      alert(err.message || 'Lỗi khi lưu sản phẩm');
+      toast(err.message || 'Lỗi khi lưu sản phẩm', 'error');
+    } finally {
+      setSaving(false);
     }
   };
 
-  const upload = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const data = new FormData();
-    data.append('image', file);
-    try {
-      setUploading(true);
-      const res = await api.post('/upload', data);
-      setForm((current) => ({ ...current, image: res.data.url }));
-      setPreviewOpen(false);
-    } catch {
-      alert('Lỗi khi tải ảnh lên');
-    } finally {
-      setUploading(false);
-      event.target.value = '';
-    }
+  const pickImage = (file) => {
+    if (!file) return false;
+    if (localPreview) URL.revokeObjectURL(localPreview);
+    setPendingFile(file);
+    setLocalPreview(URL.createObjectURL(file));
+    setPreviewOpen(false);
+    return false;
+  };
+
+  const clearImage = () => {
+    clearPendingImage();
+    setForm((current) => ({ ...current, image: '' }));
+    setPreviewOpen(false);
   };
 
   const edit = (product) => {
+    clearPendingImage();
     setEditing(product.id);
     setForm({ ...empty, ...product });
+    setPreviewOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const remove = async (id) => {
-    if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+    const ok = await confirm({
+      title: 'Xóa sản phẩm?',
+      message: 'Thao tác này không thể hoàn tác. Bạn có chắc muốn xóa sản phẩm này?',
+      confirmText: 'Xóa',
+      cancelText: 'Giữ lại',
+      tone: 'danger'
+    });
+    if (!ok) return;
     try {
       await api.delete(`/products/${id}`);
+      toast('Đã xóa sản phẩm');
       load();
     } catch (err) {
-      alert(err.message || 'Lỗi khi xóa');
+      toast(err.message || 'Lỗi khi xóa', 'error');
     }
   };
 
@@ -162,36 +209,32 @@ export default function AdminProductPage() {
 
         <div className="span-2">
           <label>Hình ảnh</label>
-          <div className="image-picker">
-            <label className="upload-button image-picker-btn">
-              <FaImage />
-              {uploading ? 'Đang tải...' : form.image ? 'Đổi ảnh' : 'Chọn ảnh'}
-              <input className="admin-file-input" type="file" accept="image/*" disabled={uploading} onChange={upload} />
-            </label>
-            {form.image && (
-              <button type="button" className="btn ghost image-clear-btn" onClick={() => { setForm({ ...form, image: '' }); setPreviewOpen(false); }}>
-                Xóa ảnh
-              </button>
+          <Space wrap size={10}>
+            <Upload accept="image/*" showUploadList={false} beforeUpload={pickImage} disabled={saving}>
+              <Button icon={<PictureOutlined />} disabled={saving}>
+                {(localPreview || form.image) ? 'Đổi ảnh' : 'Chọn ảnh'}
+              </Button>
+            </Upload>
+            {(localPreview || form.image) && (
+              <Button danger disabled={saving} onClick={clearImage}>Xóa ảnh</Button>
             )}
-          </div>
-          {form.image ? (
+          </Space>
+          {(localPreview || form.image) ? (
             <button type="button" className="image-thumb-btn" onClick={() => setPreviewOpen(true)} title="Xem ảnh lớn">
-              <img className="admin-preview" src={imageUrl(form.image)} alt="Preview" />
-              <span>Nhấn để xem lớn</span>
+              <img className="admin-preview" src={localPreview || imageUrl(form.image)} alt="Preview" />
+              <span>{pendingFile ? 'Chưa lưu — nhấn để xem lớn' : 'Nhấn để xem lớn'}</span>
             </button>
           ) : (
             <div className="image-empty-hint">Chưa chọn ảnh</div>
           )}
-          {previewOpen && form.image && createPortal(
+          {previewOpen && (localPreview || form.image) && createPortal(
             <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh" onClick={() => setPreviewOpen(false)}>
               <div className="image-lightbox-card" onClick={(event) => event.stopPropagation()}>
                 <div className="image-lightbox-head">
                   <strong>Xem ảnh</strong>
-                  <button type="button" className="btn ghost" onClick={() => setPreviewOpen(false)}>
-                    <FaTimes /> Đóng
-                  </button>
+                  <Button icon={<CloseOutlined />} onClick={() => setPreviewOpen(false)}>Đóng</Button>
                 </div>
-                <img src={imageUrl(form.image)} alt="Ảnh xem lớn" />
+                <img src={localPreview || imageUrl(form.image)} alt="Ảnh xem lớn" />
               </div>
             </div>,
             document.body
@@ -240,13 +283,31 @@ export default function AdminProductPage() {
         </div>
 
         <div className="span-3 admin-check-row">
-          <label className="admin-check"><input type="checkbox" checked={Number(form.is_featured) === 1} onChange={(event) => setForm({ ...form, is_featured: event.target.checked ? 1 : 0 })} /> Sản phẩm nổi bật</label>
-          <label className="admin-check"><input type="checkbox" checked={Number(form.status) === 1} onChange={(event) => setForm({ ...form, status: event.target.checked ? 1 : 0 })} /> Hiển thị bán</label>
+          <label className="admin-check">
+            <input
+              type="checkbox"
+              checked={Number(form.is_featured) === 1}
+              onChange={(event) => setForm({ ...form, is_featured: event.target.checked ? 1 : 0 })}
+            />
+            Sản phẩm nổi bật
+          </label>
         </div>
 
         <div className="span-3 form-actions">
-          <button className="btn primary">{editing ? <><FaSave /> Cập nhật sản phẩm</> : <><FaPlus /> Thêm sản phẩm mới</>}</button>
-          {editing && <button type="button" className="btn ghost" onClick={() => { setEditing(null); setForm(empty); }}><FaTimes /> Hủy bỏ</button>}
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            loading={saving}
+            icon={editing ? <SaveOutlined /> : <PlusOutlined />}
+          >
+            {editing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
+          </Button>
+          {editing && (
+            <Button size="large" icon={<CloseOutlined />} onClick={resetFormState} disabled={saving}>
+              Hủy bỏ
+            </Button>
+          )}
         </div>
       </form>
 
@@ -290,14 +351,22 @@ export default function AdminProductPage() {
                 </td>
                 <td>{product.stock}</td>
                 <td>
-                  <span className={`status-chip ${product.status ? 'success' : 'muted'}`}>{product.status ? 'Đang bán' : 'Tạm ẩn'}</span>
-                  {product.is_featured === 1 && <span className="status-chip warn compact">Hot</span>}
+                  <Space size={6} wrap>
+                    <Tag color={product.status ? 'success' : 'default'}>
+                      {product.status ? 'Đang bán' : 'Tạm ẩn'}
+                    </Tag>
+                    {product.is_featured === 1 && <Tag color="gold">Hot</Tag>}
+                  </Space>
                 </td>
                 <td>
-                  <div className="table-actions">
-                    <button type="button" onClick={() => edit(product)}><FaEdit /> Sửa</button>
-                    <button type="button" className="danger-link" onClick={() => remove(product.id)}><FaTrash /> Xóa</button>
-                  </div>
+                  <Space size={8}>
+                    <Tooltip title="Sửa">
+                      <Button type="primary" ghost shape="circle" icon={<EditOutlined />} onClick={() => edit(product)} />
+                    </Tooltip>
+                    <Tooltip title="Xóa">
+                      <Button danger shape="circle" icon={<DeleteOutlined />} onClick={() => remove(product.id)} />
+                    </Tooltip>
+                  </Space>
                 </td>
               </tr>
             )) : (
