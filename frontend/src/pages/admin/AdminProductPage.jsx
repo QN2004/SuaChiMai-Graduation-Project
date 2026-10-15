@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaPlus, FaSave, FaTimes, FaTrash } from 'react-icons/fa';
+import { createPortal } from 'react-dom';
+import { FaEdit, FaImage, FaPlus, FaSave, FaTimes, FaTrash } from 'react-icons/fa';
 import api, { imageUrl } from '../../api/client';
 import Loading from '../../components/Loading';
 import { money } from '../../utils/format';
@@ -35,6 +36,8 @@ export default function AdminProductPage() {
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const load = () => Promise.all([
     api.get('/products/admin/all'),
@@ -64,15 +67,20 @@ export default function AdminProductPage() {
   };
 
   const upload = async (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (!file) return;
     const data = new FormData();
     data.append('image', file);
     try {
+      setUploading(true);
       const res = await api.post('/upload', data);
-      setForm({ ...form, image: res.data.url });
-    } catch (err) {
+      setForm((current) => ({ ...current, image: res.data.url }));
+      setPreviewOpen(false);
+    } catch {
       alert('Lỗi khi tải ảnh lên');
+    } finally {
+      setUploading(false);
+      event.target.value = '';
     }
   };
 
@@ -154,11 +162,40 @@ export default function AdminProductPage() {
 
         <div className="span-2">
           <label>Hình ảnh</label>
-          <div className="admin-upload-row">
-            <input placeholder="Link ảnh hoặc tải lên" value={form.image || ''} onChange={(event) => setForm({ ...form, image: event.target.value })} />
-            <input className="admin-file-input" type="file" onChange={upload} />
+          <div className="image-picker">
+            <label className="upload-button image-picker-btn">
+              <FaImage />
+              {uploading ? 'Đang tải...' : form.image ? 'Đổi ảnh' : 'Chọn ảnh'}
+              <input className="admin-file-input" type="file" accept="image/*" disabled={uploading} onChange={upload} />
+            </label>
+            {form.image && (
+              <button type="button" className="btn ghost image-clear-btn" onClick={() => { setForm({ ...form, image: '' }); setPreviewOpen(false); }}>
+                Xóa ảnh
+              </button>
+            )}
           </div>
-          {form.image && <img className="admin-preview" src={imageUrl(form.image)} alt="Preview" />}
+          {form.image ? (
+            <button type="button" className="image-thumb-btn" onClick={() => setPreviewOpen(true)} title="Xem ảnh lớn">
+              <img className="admin-preview" src={imageUrl(form.image)} alt="Preview" />
+              <span>Nhấn để xem lớn</span>
+            </button>
+          ) : (
+            <div className="image-empty-hint">Chưa chọn ảnh</div>
+          )}
+          {previewOpen && form.image && createPortal(
+            <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh" onClick={() => setPreviewOpen(false)}>
+              <div className="image-lightbox-card" onClick={(event) => event.stopPropagation()}>
+                <div className="image-lightbox-head">
+                  <strong>Xem ảnh</strong>
+                  <button type="button" className="btn ghost" onClick={() => setPreviewOpen(false)}>
+                    <FaTimes /> Đóng
+                  </button>
+                </div>
+                <img src={imageUrl(form.image)} alt="Ảnh xem lớn" />
+              </div>
+            </div>,
+            document.body
+          )}
         </div>
 
         <div>

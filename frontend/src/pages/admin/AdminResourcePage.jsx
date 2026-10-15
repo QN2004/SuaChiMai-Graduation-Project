@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaSave, FaTrash, FaPlus, FaTimes } from 'react-icons/fa';
+import { createPortal } from 'react-dom';
+import { FaEdit, FaSave, FaTrash, FaPlus, FaTimes, FaImage } from 'react-icons/fa';
 import api, { imageUrl } from '../../api/client';
 import Loading from '../../components/Loading';
 
@@ -28,6 +29,8 @@ export default function AdminResourcePage({ type }) {
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const load = () =>
     api.get(cfg.endpoint)
@@ -37,23 +40,34 @@ export default function AdminResourcePage({ type }) {
   useEffect(() => {
     setForm(empty);
     setEditing(null);
+    setPreviewOpen(false);
     setLoading(true);
     load();
   }, [type]);
 
   const upload = async (event, field) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const data = new FormData();
     data.append('image', file);
 
     try {
+      setUploading(true);
       const res = await api.post('/upload', data);
-      setForm({ ...form, [field]: res.data.url });
+      setForm((current) => ({ ...current, [field]: res.data.url }));
+      setPreviewOpen(false);
     } catch {
       alert('Lỗi khi tải ảnh lên');
+    } finally {
+      setUploading(false);
+      event.target.value = '';
     }
+  };
+
+  const clearImage = (field) => {
+    setForm((current) => ({ ...current, [field]: '' }));
+    setPreviewOpen(false);
   };
 
   const save = async (event) => {
@@ -91,30 +105,32 @@ export default function AdminResourcePage({ type }) {
   const cancelEdit = () => {
     setEditing(null);
     setForm(empty);
+    setPreviewOpen(false);
   };
 
   if (loading) return <Loading />;
 
+  const visibleCount = items.filter((item) => Number(item.status) === 1).length;
+
   return (
     <div className="admin-page">
-      <div className="admin-hero modern-hero">
+      <div className="admin-hero">
         <div>
           <span className="admin-kicker">Nội dung cửa hàng</span>
-          <h1>Quản lý {cfg.title}</h1>
+          <h1>Quản lý {cfg.title.toLowerCase()}</h1>
           <p>
-            Thêm mới, chỉnh sửa và kiểm soát trạng thái hiển thị của{' '}
-            {cfg.title.toLowerCase()} trên hệ thống.
+            Thêm mới, chỉnh sửa và bật/tắt hiển thị {cfg.title.toLowerCase()} trên trang bán hàng.
           </p>
         </div>
 
         <div className="admin-hero-metrics">
           <span>
             <strong>{items.length}</strong>
-            Tổng mục
+            Tổng {cfg.title.toLowerCase()}
           </span>
           <span>
-            <strong>{editing ? 'Sửa' : 'Thêm'}</strong>
-            Chế độ
+            <strong>{visibleCount}</strong>
+            Đang hiện
           </span>
         </div>
       </div>
@@ -123,8 +139,8 @@ export default function AdminResourcePage({ type }) {
         <form className="panel modern-form" onSubmit={save}>
           <div className="panel-head modern-panel-head">
             <div>
-              <h3>{editing ? 'Cập nhật' : 'Thêm mới'} {cfg.title}</h3>
-              <p>Điền thông tin bên dưới để lưu dữ liệu.</p>
+              <h3>{editing ? 'Cập nhật' : 'Thêm'} {cfg.title.toLowerCase()}</h3>
+              <p>{editing ? 'Chỉnh thông tin rồi lưu thay đổi.' : 'Điền thông tin để tạo mục mới.'}</p>
             </div>
 
             <div className={`mode-badge ${editing ? 'edit' : 'create'}`}>
@@ -150,37 +166,79 @@ export default function AdminResourcePage({ type }) {
               }
 
               if (field === 'image' || field === 'logo') {
+                const imageSrc = form[field] ? imageUrl(form[field]) : '';
                 return (
                   <div className="form-group" key={field}>
                     <label>{fieldLabels[field]}</label>
 
-                    <div className="admin-upload-row modern-upload">
-                      <input
-                        placeholder="Dán link ảnh hoặc tải ảnh lên"
-                        value={form[field]}
-                        onChange={(event) =>
-                          setForm({ ...form, [field]: event.target.value })
-                        }
-                      />
-
-                      <label className="upload-button">
-                        Chọn ảnh
+                    <div className="image-picker">
+                      <label className="upload-button image-picker-btn">
+                        <FaImage />
+                        {uploading ? 'Đang tải...' : form[field] ? 'Đổi ảnh' : 'Chọn ảnh'}
                         <input
                           className="admin-file-input"
                           type="file"
+                          accept="image/*"
+                          disabled={uploading}
                           onChange={(event) => upload(event, field)}
                         />
                       </label>
+
+                      {form[field] && (
+                        <button
+                          type="button"
+                          className="btn ghost image-clear-btn"
+                          onClick={() => clearImage(field)}
+                        >
+                          Xóa ảnh
+                        </button>
+                      )}
                     </div>
 
-                    {form[field] && (
-                      <div className="preview-box">
+                    {form[field] ? (
+                      <button
+                        type="button"
+                        className="image-thumb-btn"
+                        onClick={() => setPreviewOpen(true)}
+                        title="Xem ảnh lớn"
+                      >
                         <img
                           className="admin-preview"
-                          src={imageUrl(form[field])}
+                          src={imageSrc}
                           alt="Preview"
                         />
-                      </div>
+                        <span>Nhấn để xem lớn</span>
+                      </button>
+                    ) : (
+                      <div className="image-empty-hint">Chưa chọn ảnh</div>
+                    )}
+
+                    {previewOpen && form[field] && createPortal(
+                      <div
+                        className="image-lightbox"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Xem ảnh"
+                        onClick={() => setPreviewOpen(false)}
+                      >
+                        <div
+                          className="image-lightbox-card"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <div className="image-lightbox-head">
+                            <strong>Xem ảnh</strong>
+                            <button
+                              type="button"
+                              className="btn ghost"
+                              onClick={() => setPreviewOpen(false)}
+                            >
+                              <FaTimes /> Đóng
+                            </button>
+                          </div>
+                          <img src={imageSrc} alt="Ảnh xem lớn" />
+                        </div>
+                      </div>,
+                      document.body
                     )}
                   </div>
                 );
@@ -208,6 +266,7 @@ export default function AdminResourcePage({ type }) {
                 <div className="form-group" key={field}>
                   <label>{fieldLabels[field] || field}</label>
                   <input
+                    required={field === 'name'}
                     placeholder={`Nhập ${fieldLabels[field]?.toLowerCase() || field}...`}
                     value={form[field]}
                     onChange={(event) =>
@@ -220,15 +279,15 @@ export default function AdminResourcePage({ type }) {
           </div>
 
           <div className="form-actions modern-actions">
-            <button className="btn primary">
+            <button className="btn primary" type="submit">
               {editing ? <FaSave /> : <FaPlus />}
-              {editing ? 'Lưu thay đổi' : 'Thêm mới'}
+              {editing ? 'Lưu thay đổi' : `Thêm ${cfg.title.toLowerCase()}`}
             </button>
 
             {editing && (
               <button type="button" className="btn ghost" onClick={cancelEdit}>
                 <FaTimes />
-                Hủy bỏ
+                Hủy
               </button>
             )}
           </div>
@@ -237,8 +296,8 @@ export default function AdminResourcePage({ type }) {
         <div className="panel table-wrap modern-table-panel">
           <div className="panel-head modern-panel-head">
             <div>
-              <h3>Danh sách {cfg.title}</h3>
-              <p>Quản lý các mục đang có trong hệ thống.</p>
+              <h3>Danh sách {cfg.title.toLowerCase()}</h3>
+              <p>{items.length} mục trong hệ thống.</p>
             </div>
           </div>
 
@@ -268,7 +327,7 @@ export default function AdminResourcePage({ type }) {
                             alt={item.name || item.title}
                           />
                         ) : (
-                          <div className="image-placeholder">No image</div>
+                          <div className="image-placeholder">No img</div>
                         )}
 
                         <div>
@@ -311,7 +370,7 @@ export default function AdminResourcePage({ type }) {
                 <tr>
                   <td colSpan="4">
                     <div className="empty-state">
-                      Chưa có dữ liệu nào được thêm vào.
+                      Chưa có dữ liệu. Hãy thêm {cfg.title.toLowerCase()} đầu tiên.
                     </div>
                   </td>
                 </tr>
