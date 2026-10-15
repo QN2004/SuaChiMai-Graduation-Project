@@ -9,7 +9,7 @@ DB="${MYSQL_DATABASE:-milk_store}"
 SQL_DIR="${SQL_DIR:-/sql}"
 
 mysql_cmd() {
-  mysql --protocol=TCP -h"$HOST" -P"${MYSQL_PORT:-3306}" -u"$USER" -p"$PASS" "$@"
+  mysql --protocol=TCP -h"$HOST" -P"${MYSQL_PORT:-3306}" -u"$USER" -p"$PASS" --default-character-set=utf8mb4 "$@"
 }
 
 echo "[db-init] Waiting for MySQL at ${HOST}..."
