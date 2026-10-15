@@ -51,4 +51,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Milk Store API: http://localhost:${port}`));
+app.listen(port, '0.0.0.0', () => console.log(`Milk Store API: http://localhost:${port}`));
