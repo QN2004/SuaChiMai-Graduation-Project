@@ -1,3 +1,5 @@
+name: suachimai
+
 services:
   mysql:
     image: mysql:8.0
@@ -73,6 +75,23 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
+  updater:
+    build:
+      context: ./updater
+    image: suachimai-updater:local
+    container_name: suachimai-updater
+    working_dir: /workspace
+    environment:
+      HOST_PROJECT_DIR: D:/DO-AN/SuaChiMai-Graduation-Project
+      COMPOSE_PROJECT_NAME: suachimai
+    volumes:
+      - D:/DO-AN/SuaChiMai-Graduation-Project:/workspace
+      - //var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      frontend:
+        condition: service_started
+    restart: "no"
 
 volumes:
   mysql_data:
