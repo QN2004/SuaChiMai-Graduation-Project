@@ -7,23 +7,35 @@ import {
   FaFacebookMessenger,
   FaMapMarkerAlt,
   FaPhoneAlt,
+  FaSearch,
   FaShoppingBag,
+  FaSignOutAlt,
   FaTiktok,
   FaUserCircle,
   FaYoutube
 } from 'react-icons/fa';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import useDocumentMeta from '../hooks/useDocumentMeta';
+
 export default function MainLayout() {
   const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [headerSearch, setHeaderSearch] = useState('');
   const { user, logout } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
+  const accountRef = useRef(null);
+
+  useDocumentMeta({
+    title: 'Sữa Chi Mai | Cửa hàng sữa chính hãng',
+    favicon: '/favicon.ico'
+  });
 
   const handleLogout = () => {
     logout();
+    setAccountOpen(false);
     navigate('/');
   };
 
@@ -34,6 +46,16 @@ export default function MainLayout() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    const onPointerDown = (event) => {
+      if (!accountRef.current?.contains(event.target)) setAccountOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, []);
+
+  const accountHref = user?.role === 'admin' ? '/admin' : '/profile';
+
   return (
     <>
       <header className="site-header">
@@ -41,16 +63,20 @@ export default function MainLayout() {
           <Link className="logo" to="/">Sữa Chi Mai</Link>
           <span className="logo-subtitle">Đại Nghĩa, Đại Lộc, Quảng Nam</span>
         </div>
+
         <button className="icon-btn mobile-only" onClick={() => setOpen(!open)} aria-label="Mở menu">
           <FaBars />
         </button>
-        <nav className={open ? 'nav open' : 'nav'}>
-          <NavLink to="/" onClick={() => setOpen(false)}>Trang chủ</NavLink>
+
+        <nav className={open ? 'nav open' : 'nav'} aria-label="Điều hướng chính">
+          <NavLink to="/" end onClick={() => setOpen(false)}>Trang chủ</NavLink>
           <NavLink to="/products" onClick={() => setOpen(false)}>Sản phẩm</NavLink>
           <NavLink to="/gioithieu" onClick={() => setOpen(false)}>Giới thiệu</NavLink>
           <NavLink to="/contact" onClick={() => setOpen(false)}>Liên hệ</NavLink>
         </nav>
+
         <form className="header-search-form" onSubmit={submitHeaderSearch}>
+          <FaSearch className="header-search-icon" aria-hidden="true" />
           <input
             type="search"
             className="header-search"
@@ -58,22 +84,59 @@ export default function MainLayout() {
             value={headerSearch}
             onChange={(event) => setHeaderSearch(event.target.value)}
           />
+          <button type="submit" className="header-search-btn">Tìm</button>
         </form>
+
         <div className="header-actions">
-          <div className="header-hotline">
-            <strong>0987 654 321</strong>
-            <span>7:00 - 22:00, tất cả các ngày</span>
-          </div>
-          <Link className="cart-link" to="/cart" aria-label="Giỏ hàng">
-            <FaShoppingBag /><span>{count}</span>
+          <a className="header-hotline" href="tel:0987654321">
+            <span className="header-hotline-icon"><FaPhoneAlt /></span>
+            <span className="header-hotline-text">
+              <strong>0987 654 321</strong>
+              <small>7:00 - 22:00 mỗi ngày</small>
+            </span>
+          </a>
+
+          <Link className="cart-link" to="/cart" aria-label={`Giỏ hàng (${count})`}>
+            <FaShoppingBag />
+            <span>{count}</span>
           </Link>
+
           {user ? (
-            <div className="user-menu">
-              <Link to={user.role === 'admin' ? '/admin' : '/profile'}><FaUserCircle /> {user.full_name}</Link>
-              <button onClick={handleLogout}>Đăng xuất</button>
+            <div className={`account-menu${accountOpen ? ' open' : ''}`} ref={accountRef}>
+              <button
+                type="button"
+                className="account-trigger"
+                aria-expanded={accountOpen}
+                aria-haspopup="menu"
+                onClick={() => setAccountOpen((value) => !value)}
+              >
+                <span className="account-avatar">{(user.full_name || 'U').charAt(0).toUpperCase()}</span>
+                <span className="account-meta">
+                  <strong>{user.full_name}</strong>
+                  <small>{user.role === 'admin' ? 'Quản trị viên' : 'Tài khoản của bạn'}</small>
+                </span>
+              </button>
+
+              <div className="account-dropdown" role="menu">
+                <Link
+                  role="menuitem"
+                  to={accountHref}
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <FaUserCircle />
+                  {user.role === 'admin' ? 'Vào trang quản trị' : 'Hồ sơ của tôi'}
+                </Link>
+                <button type="button" role="menuitem" className="account-logout" onClick={handleLogout}>
+                  <FaSignOutAlt />
+                  Đăng xuất
+                </button>
+              </div>
             </div>
           ) : (
-            <Link className="btn ghost" to="/login">Đăng nhập</Link>
+            <Link className="btn header-login-btn" to="/login">
+              <FaUserCircle />
+              Đăng nhập
+            </Link>
           )}
         </div>
       </header>

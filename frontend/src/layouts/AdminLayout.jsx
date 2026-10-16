@@ -13,6 +13,7 @@ import {
   FaUsers
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const navGroups = [
   {
@@ -56,6 +57,11 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const title = pageTitles[location.pathname] || 'Quản trị hệ thống';
+
+  useDocumentMeta({
+    title: `${title} | Quản trị Sữa Chi Mai`,
+    favicon: '/favicon-admin.ico'
+  });
 
   const handleLogout = () => {
     logout();

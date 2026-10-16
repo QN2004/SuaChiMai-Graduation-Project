@@ -8,7 +8,12 @@ const fallbackImage = 'https://images.unsplash.com/photo-1550583724-b2692b85b150
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
-  const description = product.short_description || product.description || '';
+  const price = Number(product.sale_price || product.price || 0);
+  const original = Number(product.price || 0);
+  const hasSale = Boolean(product.sale_price) && original > price;
+  const discount = hasSale ? Math.round(((original - price) / original) * 100) : 0;
+  const rating = Number(product.average_rating || 0);
+  const reviews = Number(product.review_count || 0);
 
   return (
     <article className="product-card">
@@ -20,29 +25,42 @@ export default function ProductCard({ product }) {
             event.currentTarget.src = fallbackImage;
           }}
         />
-        {product.sale_price && <span className="badge">Khuyến mãi</span>}
-      </Link>
-      <div className="product-body">
-        <div className="muted small">{product.brand_name || 'Sữa Chi Mai'}</div>
-        <Link to={`/products/${product.slug}`} className="product-name">{product.name}</Link>
-        {description && (
-          <p className="small muted" style={{ margin: 0 }}>
-            {description.slice(0, 100)}{description.length > 100 ? '...' : ''}
-          </p>
+        {hasSale && (
+          <span className="badge">
+            {discount > 0 ? `-${discount}%` : 'Khuyến mãi'}
+          </span>
         )}
-        <div className="rating">
-          <FaStar /> {Number(product.average_rating || 5).toFixed(1)} <span>({product.review_count || 0})</span>
+      </Link>
+
+      <div className="product-body">
+        <div className="product-brand">{product.brand_name || 'Sữa Chi Mai'}</div>
+        <Link to={`/products/${product.slug}`} className="product-name">{product.name}</Link>
+
+        <div className="product-meta-row">
+          {reviews > 0 ? (
+            <div className="rating">
+              <FaStar />
+              <span>{rating.toFixed(1)}</span>
+              <em>({reviews})</em>
+            </div>
+          ) : (
+            <div className="rating rating-empty">Chưa có đánh giá</div>
+          )}
         </div>
+
         <div className="price-row">
-          <strong>{money(product.sale_price || product.price)}</strong>
-          {product.sale_price && <del>{money(product.price)}</del>}
+          <strong>{money(price)}</strong>
+          {hasSale && <del>{money(original)}</del>}
         </div>
+
         <button
+          type="button"
           aria-label={`Thêm ${product.name} vào giỏ`}
-          className="btn primary full"
+          className="btn primary full product-cart-btn"
           onClick={() => addToCart(product, 1)}
         >
-          <FaCartPlus /> Thêm vào giỏ
+          <FaCartPlus />
+          Thêm vào giỏ
         </button>
       </div>
     </article>

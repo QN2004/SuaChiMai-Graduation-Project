@@ -1,12 +1,22 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminLogin = location.pathname.startsWith('/admin');
   const [form, setForm] = useState({ email: 'admin@suachimai.vn', password: 'Admin@123' });
   const [message, setMessage] = useState('');
+
+  useDocumentMeta({
+    title: isAdminLogin
+      ? 'Đăng nhập quản trị | Sữa Chi Mai'
+      : 'Đăng nhập | Sữa Chi Mai',
+    favicon: isAdminLogin ? '/favicon-admin.ico' : '/favicon.ico'
+  });
 
   const submit = async (event) => {
     event.preventDefault();
@@ -20,7 +30,7 @@ export default function LoginPage() {
 
   return (
     <AuthForm
-      title="Đăng nhập"
+      title={isAdminLogin ? 'Đăng nhập quản trị' : 'Đăng nhập'}
       message={message}
       form={form}
       setForm={setForm}
