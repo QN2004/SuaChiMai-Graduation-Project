@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../../api/client';
-import Loading from '../../components/Loading';
 import { useFetch } from '../../hooks/useFetch';
 import { money, paymentText, statusText } from '../../utils/format';
 
@@ -15,12 +14,11 @@ export default function AdminOrderPage() {
     setData(data.map((order) => (order.id === id ? { ...order, ...patch } : order)));
   };
 
-  if (loading) return <Loading />;
-
-  const totalRevenue = data.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
+  const orders = data ?? [];
+  const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
 
   return (
-    <div className="admin-page">
+    <div className={`admin-page${loading ? ' is-refreshing' : ''}`}>
       <div className="admin-hero">
         <div>
           <span className="admin-kicker">Vận hành</span>
@@ -28,7 +26,7 @@ export default function AdminOrderPage() {
           <p>Theo dõi trạng thái giao dịch, thanh toán và tiến độ xử lý đơn trong một màn hình.</p>
         </div>
         <div className="admin-hero-metrics">
-          <span><strong>{data.length}</strong> đơn</span>
+          <span><strong>{orders.length}</strong> đơn</span>
           <span><strong>{money(totalRevenue)}</strong> doanh thu lọc</span>
         </div>
       </div>
@@ -48,7 +46,7 @@ export default function AdminOrderPage() {
             <tr><th>Mã</th><th>Khách hàng</th><th>Tổng tiền</th><th>Phương thức</th><th>Thanh toán</th><th>Trạng thái</th></tr>
           </thead>
           <tbody>
-            {data.length ? data.map((order) => (
+            {orders.length ? orders.map((order) => (
               <tr key={order.id}>
                 <td>#{order.id}</td>
                 <td><strong>{order.customer_name}</strong><span className="muted block">{order.phone}</span></td>

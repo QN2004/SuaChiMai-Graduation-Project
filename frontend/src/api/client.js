@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res.data,
-  (error) => Promise.reject(error.response?.data || { message: 'Khong the ket noi may chu' })
+  (error) => Promise.reject(error.response?.data || { message: 'Không thể kết nối máy chủ' })
 );
 
 export const imageUrl = (url) => {

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Avatar, Card, Space, Switch, Table, Tag, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import api from '../../api/client';
-import Loading from '../../components/Loading';
 import { useFetch } from '../../hooks/useFetch';
 import { useUiFeedback } from '../../context/UiFeedbackContext';
 
@@ -78,8 +77,7 @@ export default function AdminUserPage() {
     }
   ], [users]);
 
-  if (loading) return <Loading />;
-  if (error) {
+  if (error && !users.length) {
     return (
       <div className="admin-page">
         <Card><Text type="danger">{error}</Text></Card>
@@ -106,6 +104,7 @@ export default function AdminUserPage() {
           rowKey="id"
           columns={columns}
           dataSource={users}
+          loading={loading}
           className="admin-antd-table"
           pagination={users.length > 10 ? { pageSize: 10 } : false}
           locale={{ emptyText: 'Chưa có khách hàng nào.' }}

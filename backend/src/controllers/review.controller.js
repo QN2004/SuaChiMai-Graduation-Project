@@ -7,7 +7,7 @@ export const productReviews = async (req, res, next) => {
       'SELECT r.*, u.full_name FROM reviews r JOIN users u ON u.id=r.user_id WHERE r.product_id=? AND r.status=1 ORDER BY r.id DESC',
       [req.params.productId]
     );
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -22,14 +22,14 @@ export const createReview = async (req, res, next) => {
        WHERE o.user_id=? AND od.product_id=? AND o.order_status='COMPLETED' LIMIT 1`,
       [req.user.id, product_id]
     );
-    if (!bought.length) return fail(res, 403, 'Ban chi duoc danh gia san pham da mua va hoan thanh');
+    if (!bought.length) return fail(res, 403, 'Bạn chỉ được đánh giá sản phẩm đã mua và hoàn thành');
     const result = await query('INSERT INTO reviews(user_id,product_id,rating,comment) VALUES(?,?,?,?)', [
       req.user.id,
       product_id,
       rating,
       comment
     ]);
-    ok(res, 'Gui danh gia thanh cong', { id: result.insertId });
+    ok(res, 'Gửi đánh giá thành công', { id: result.insertId });
   } catch (err) {
     next(err);
   }
@@ -38,7 +38,7 @@ export const createReview = async (req, res, next) => {
 export const allReviews = async (req, res, next) => {
   try {
     const rows = await query('SELECT r.*, u.full_name, p.name AS product_name FROM reviews r JOIN users u ON u.id=r.user_id JOIN products p ON p.id=r.product_id ORDER BY r.id DESC');
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -47,7 +47,7 @@ export const allReviews = async (req, res, next) => {
 export const updateReviewStatus = async (req, res, next) => {
   try {
     await query('UPDATE reviews SET status=? WHERE id=?', [req.body.status, req.params.id]);
-    ok(res, 'Cap nhat danh gia thanh cong');
+    ok(res, 'Cập nhật đánh giá thành công');
   } catch (err) {
     next(err);
   }
@@ -56,7 +56,7 @@ export const updateReviewStatus = async (req, res, next) => {
 export const deleteReview = async (req, res, next) => {
   try {
     await query('DELETE FROM reviews WHERE id=?', [req.params.id]);
-    ok(res, 'Xoa danh gia thanh cong');
+    ok(res, 'Xóa đánh giá thành công');
   } catch (err) {
     next(err);
   }

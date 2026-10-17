@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Sữa Chi Mai — kiến trúc và luồng input → output",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/QN2004/SuaChiMai-Graduation-Project",
+      "revision": "784895f1e93555226dfe08315efe0123da5cfa25"
+    },
+    "viewBox": [1360, 720],
+    "views": [
+      {
+        "id": "storefront",
+        "label": "Cửa hàng",
+        "focus": ["shopper", "spa", "api", "mysql"],
+        "note": "Trình duyệt tải SPA :3000, gọi REST :5000, đọc milk_store, trả HTML/JSON ra UI."
+      },
+      {
+        "id": "checkout",
+        "label": "Đặt hàng",
+        "focus": ["shopper", "spa", "api", "mysql", "vietqr"],
+        "note": "Checkout POST /api/orders; COD ghi DB, BANK_TRANSFER thêm QR VietQR."
+      },
+      {
+        "id": "admin-ops",
+        "label": "Admin",
+        "focus": ["admin", "spa", "api", "mysql", "uploads"],
+        "note": "/admin CRUD + JWT; upload ghi volume; Swagger /api/docs trên API."
+      },
+      {
+        "id": "db-bootstrap",
+        "label": "Khởi tạo DB",
+        "focus": ["sqlfiles", "dbinit", "mysql", "api"],
+        "note": "db-init import schema/seed lần đầu; backend chờ service_completed_successfully."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "shopper",
+      "type": "external",
+      "label": "Khách hàng",
+      "sublabel": "Trình duyệt",
+      "tag": "input",
+      "pos": [48, 210],
+      "size": [158, 72]
+    },
+    {
+      "id": "admin",
+      "type": "external",
+      "label": "Quản trị",
+      "sublabel": "Trình duyệt /admin",
+      "tag": "input",
+      "pos": [48, 400],
+      "size": [158, 72]
+    },
+    {
+      "id": "spa",
+      "type": "frontend",
+      "label": "suachimai-frontend",
+      "sublabel": "nginx SPA :3000",
+      "sources": [{ "path": "docker-compose.yml", "line": 66, "end_line": 77, "label": "frontend" }],
+      "pos": [300, 290],
+      "size": [188, 76]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "suachimai-backend",
+      "sublabel": "Express :5000 · /api/docs",
+      "brand": "node-js",
+      "sources": [{ "path": "backend/src/server.js", "line": 39, "end_line": 48, "label": "routes" }],
+      "pos": [580, 290],
+      "size": [188, 76]
+    },
+    {
+      "id": "mysql",
+      "type": "database",
+      "label": "suachimai-mysql",
+      "sublabel": "MySQL 8 milk_store",
+      "brand": "mysql",
+      "sources": [{ "path": "docker-compose.yml", "line": 4, "end_line": 21, "label": "mysql" }],
+      "pos": [880, 290],
+      "size": [188, 76]
+    },
+    {
+      "id": "sqlfiles",
+      "type": "external",
+      "label": "./database",
+      "sublabel": "schema + seed SQL",
+      "sources": [{ "path": "database/docker-init.sh", "line": 41, "end_line": 44, "label": "import" }],
+      "pos": [580, 72],
+      "size": [188, 72]
+    },
+    {
+      "id": "dbinit",
+      "type": "backend",
+      "label": "suachimai-db-init",
+      "sublabel": "one-shot import",
+      "brand": "docker",
+      "sources": [{ "path": "docker-compose.yml", "line": 23, "end_line": 39, "label": "db-init" }],
+      "pos": [880, 72],
+      "size": [188, 72]
+    },
+    {
+      "id": "uploads",
+      "type": "database",
+      "label": "uploads volume",
+      "sublabel": "/app/src/uploads",
+      "sources": [{ "path": "docker-compose.yml", "line": 60, "end_line": 61, "label": "volume" }],
+      "pos": [880, 470],
+      "size": [188, 72]
+    },
+    {
+      "id": "vietqr",
+      "type": "external",
+      "label": "img.vietqr.io",
+      "sublabel": "QR chuyển khoản",
+      "sources": [{ "path": "frontend/src/utils/payment.js", "line": 14, "end_line": 21, "label": "VietQR" }],
+      "pos": [300, 470],
+      "size": [188, 72]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Docker Compose suachimai",
+      "wraps": ["spa", "api", "mysql", "dbinit", "uploads"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "shopper-spa",
+      "from": "shopper",
+      "to": "spa",
+      "label": "HTTPS :3000 cửa hàng",
+      "variant": "emphasis",
+      "labelDy": -68
+    },
+    {
+      "id": "admin-spa",
+      "from": "admin",
+      "to": "spa",
+      "label": "HTTPS :3000/admin"
+    },
+    {
+      "id": "spa-api",
+      "from": "spa",
+      "to": "api",
+      "label": "REST VITE_API_URL :5000",
+      "variant": "emphasis",
+      "labelDy": -32
+    },
+    {
+      "id": "api-mysql",
+      "from": "api",
+      "to": "mysql",
+      "label": "mysql2 SQL milk_store",
+      "variant": "emphasis"
+    },
+    {
+      "id": "sql-dbinit",
+      "from": "sqlfiles",
+      "to": "dbinit",
+      "label": "milk_store.sql + seed"
+    },
+    {
+      "id": "dbinit-mysql",
+      "from": "dbinit",
+      "to": "mysql",
+      "label": "import lần đầu",
+      "labelDy": -66
+    },
+    {
+      "id": "api-uploads",
+      "from": "api",
+      "to": "uploads",
+      "label": "POST /api/upload"
+    },
+    {
+      "id": "spa-vietqr",
+      "from": "spa",
+      "to": "vietqr",
+      "label": "BANK_TRANSFER QR",
+      "variant": "dashed",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Input → xử lý",
+      "items": [
+        "Khách/admin vào SPA :3000; REST :5000 + JWT; SQL milk_store"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Output",
+      "items": [
+        "UI + JSON; đơn/kho trong MySQL; ảnh /uploads; QR VietQR"
+      ]
+    }
+  ]
+}

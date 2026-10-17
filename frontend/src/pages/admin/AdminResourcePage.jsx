@@ -28,7 +28,6 @@ import {
   InboxOutlined
 } from '@ant-design/icons';
 import api, { imageUrl } from '../../api/client';
-import Loading from '../../components/Loading';
 import { useUiFeedback } from '../../context/UiFeedbackContext';
 
 const { Title, Text, Paragraph } = Typography;
@@ -239,8 +238,6 @@ export default function AdminResourcePage({ type }) {
     }
   ], [items, type]);
 
-  if (loading) return <Loading />;
-
   return (
     <div className="admin-page admin-antd-page">
       <Flex justify="space-between" align="flex-start" gap={16} wrap="wrap" className="admin-antd-head">
@@ -352,6 +349,7 @@ export default function AdminResourcePage({ type }) {
               rowKey="id"
               columns={columns}
               dataSource={items}
+              loading={loading}
               pagination={items.length > 8 ? { pageSize: 8, showSizeChanger: false } : false}
               locale={{ emptyText: <Empty description={`Chưa có ${cfg.title.toLowerCase()}`} /> }}
               className="admin-antd-table"

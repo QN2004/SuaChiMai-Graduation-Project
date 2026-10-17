@@ -1,18 +1,17 @@
 import { Link } from 'react-router-dom';
 import api from '../api/client';
-import Loading from '../components/Loading';
 import { useFetch } from '../hooks/useFetch';
 import { money, paymentText, statusText } from '../utils/format';
 
 export default function MyOrdersPage() {
   const { data, loading } = useFetch(() => api.get('/orders/my-orders'), []);
-  if (loading) return <Loading />;
-  const totalSpent = data.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
-  const pendingCount = data.filter((order) => order.order_status === 'PENDING').length;
-  const deliveredCount = data.filter((order) => order.order_status === 'DELIVERED').length;
+  const orders = data ?? [];
+  const totalSpent = orders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
+  const pendingCount = orders.filter((order) => order.order_status === 'PENDING').length;
+  const deliveredCount = orders.filter((order) => order.order_status === 'DELIVERED').length;
 
   return (
-    <section className="section">
+    <section className={`section page-shell${loading ? ' is-refreshing' : ''}`}>
       <div className="section-title">
         <div>
           <h2>Đơn hàng của tôi</h2>
@@ -23,7 +22,7 @@ export default function MyOrdersPage() {
       <div className="order-layout">
         <aside className="order-summary">
           <h3>Tổng quan</h3>
-          <div className="stat-line"><span>Số đơn</span><strong>{data.length}</strong></div>
+          <div className="stat-line"><span>Số đơn</span><strong>{orders.length}</strong></div>
           <div className="stat-line"><span>Chờ xử lý</span><strong>{pendingCount}</strong></div>
           <div className="stat-line"><span>Đã giao</span><strong>{deliveredCount}</strong></div>
           <div className="stat-line total"><span>Tổng chi tiêu</span><strong>{money(totalSpent)}</strong></div>
@@ -40,7 +39,7 @@ export default function MyOrdersPage() {
               <tr><th>Mã</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th></th></tr>
             </thead>
             <tbody>
-              {data.length ? data.map((o) => (
+              {orders.length ? orders.map((o) => (
                 <tr key={o.id}>
                   <td>#{o.id}</td>
                   <td>{new Date(o.created_at).toLocaleDateString('vi-VN')}</td>

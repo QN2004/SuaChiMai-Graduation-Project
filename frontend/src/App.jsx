@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
@@ -24,6 +25,8 @@ import AdminContactPage from './pages/admin/AdminContactPage';
 
 export default function App() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
@@ -55,5 +58,6 @@ export default function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   );
 }

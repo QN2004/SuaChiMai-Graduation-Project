@@ -6,19 +6,19 @@ export const auth = async (req, res, next) => {
   try {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-    if (!token) return fail(res, 401, 'Vui long dang nhap');
+    if (!token) return fail(res, 401, 'Vui lòng đăng nhập');
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const users = await query('SELECT id, full_name, email, phone, role, status, address FROM users WHERE id = ?', [decoded.id]);
-    if (!users.length || users[0].status !== 1) return fail(res, 401, 'Tai khoan khong hop le');
+    if (!users.length || users[0].status !== 1) return fail(res, 401, 'Tài khoản không hợp lệ');
     req.user = users[0];
     next();
   } catch {
-    fail(res, 401, 'Token khong hop le hoac da het han');
+    fail(res, 401, 'Token không hợp lệ hoặc đã hết hạn');
   }
 };
 
 export const adminOnly = (req, res, next) => {
-  if (req.user?.role !== 'admin') return fail(res, 403, 'Ban khong co quyen admin');
+  if (req.user?.role !== 'admin') return fail(res, 403, 'Bạn không có quyền admin');
   next();
 };

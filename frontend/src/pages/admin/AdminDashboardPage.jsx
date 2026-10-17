@@ -1,7 +1,6 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { FaBox, FaLayerGroup, FaShoppingCart, FaTags, FaUserFriends, FaWallet } from 'react-icons/fa';
 import api from '../../api/client';
-import Loading from '../../components/Loading';
 import { useFetch } from '../../hooks/useFetch';
 import { money, statusText } from '../../utils/format';
 
@@ -28,8 +27,6 @@ export default function AdminDashboardPage() {
     return { data: { ...dash.data, revenueChart: revenue.data } };
   }, []);
 
-  if (loading) return <Loading />;
-
   const dashboard = { ...emptyDashboard, ...data };
   const cards = [
     ['Sản phẩm', dashboard.products.total, <FaBox />],
@@ -41,7 +38,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="admin-page">
+    <div className={`admin-page${loading ? ' is-refreshing' : ''}`}>
       <div className="admin-hero">
         <div>
           <span className="admin-kicker">Tổng quan hôm nay</span>

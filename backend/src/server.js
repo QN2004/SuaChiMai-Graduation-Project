@@ -14,20 +14,26 @@ import statisticRoutes from './routes/statistic.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import userRoutes from './routes/user.routes.js';
 import { errorHandler, notFound } from './middlewares/error.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './docs/swagger.js';
 
 dotenv.config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const port = process.env.PORT || 5000;
 const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3000')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+const swaggerOrigins = [`http://localhost:${port}`, `http://127.0.0.1:${port}`];
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    if (!origin || allowedOrigins.includes(origin) || swaggerOrigins.includes(origin)) {
+      return callback(null, true);
+    }
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
@@ -36,6 +42,8 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => res.json({ success: true, message: 'Milk Store API is running' }));
+app.get('/api/docs.json', (req, res) => res.json(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
@@ -50,5 +58,7 @@ app.use('/api/users', userRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const port = process.env.PORT || 5000;
-app.listen(port, '0.0.0.0', () => console.log(`Milk Store API: http://localhost:${port}`));
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Milk Store API: http://localhost:${port}`);
+  console.log(`Swagger UI: http://localhost:${port}/api/docs`);
+});

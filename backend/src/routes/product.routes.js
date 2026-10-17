@@ -12,7 +12,7 @@ router.get('/admin/all', auth, adminOnly, getAllProductsAdmin);
 router.get('/slug/:slug', getProductBySlug);
 router.get('/', getProducts);
 router.get('/:id', getProduct);
-router.post('/', auth, adminOnly, [body('name').notEmpty().withMessage('Vui long nhap ten san pham'), body('price').isFloat({ min: 0 }).withMessage('Gia khong hop le')], validate, createProduct);
+router.post('/', auth, adminOnly, [body('name').notEmpty().withMessage('Vui lòng nhập tên sản phẩm'), body('price').isFloat({ min: 0 }).withMessage('Giá không hợp lệ')], validate, createProduct);
 router.put('/:id', auth, adminOnly, updateProduct);
 router.delete('/:id', auth, adminOnly, deleteProduct);
 export default router;

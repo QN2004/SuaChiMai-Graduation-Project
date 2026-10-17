@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { FaEnvelope, FaInbox, FaPhoneAlt, FaReply, FaRegClock } from 'react-icons/fa';
 import api from '../../api/client';
-import Loading from '../../components/Loading';
 import { useFetch } from '../../hooks/useFetch';
 
 const contactStatusText = {
@@ -66,12 +65,10 @@ export default function AdminContactPage() {
     }
   };
 
-  if (loading) return <Loading />;
-
   const draft = activeContact ? (replyDrafts[activeContact.id] ?? activeContact.reply_message ?? '') : '';
 
   return (
-    <div className="admin-page">
+    <div className={`admin-page${loading ? ' is-refreshing' : ''}`}>
       <div className="admin-hero">
         <div>
           <span className="admin-kicker">Hộp thư tư vấn</span>

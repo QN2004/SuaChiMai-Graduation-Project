@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api, { imageUrl } from '../api/client';
 import Loading from '../components/Loading';
@@ -17,7 +17,27 @@ export default function ProductDetailPage() {
   const { data, loading } = useFetch(() => api.get(`/products/slug/${slug}`), [slug]);
   const reviews = useFetch(() => data?.product ? api.get(`/reviews/product/${data.product.id}`) : Promise.resolve({ data: [] }), [data?.product?.id]);
 
-  if (loading || !data) return <Loading />;
+  useEffect(() => {
+    setQty(1);
+    setActiveImg(null);
+    setTab('description');
+  }, [slug]);
+
+  if (loading && !data) {
+    return (
+      <section className="section page-shell">
+        <Loading />
+      </section>
+    );
+  }
+
+  if (!data?.product) {
+    return (
+      <section className="section page-shell empty">
+        <h2>Không tìm thấy sản phẩm</h2>
+      </section>
+    );
+  }
 
   const product = data.product;
   const gallery = product.images?.length ? product.images : (product.gallery?.length ? product.gallery : [product.image]);
@@ -37,7 +57,7 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <section className="section product-detail-page">
+    <section className={`section product-detail-page page-shell${loading ? ' is-refreshing' : ''}`}>
       <div className="detail-hero">
         <div>
           <span className="badge-soft">Chi tiết sản phẩm</span>

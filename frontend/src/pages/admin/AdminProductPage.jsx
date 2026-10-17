@@ -10,7 +10,6 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 import api, { imageUrl } from '../../api/client';
-import Loading from '../../components/Loading';
 import { useUiFeedback } from '../../context/UiFeedbackContext';
 import { money } from '../../utils/format';
 
@@ -147,10 +146,8 @@ export default function AdminProductPage() {
     }
   };
 
-  if (loading) return <Loading />;
-
   return (
-    <div className="admin-page">
+    <div className={`admin-page${loading ? ' is-refreshing' : ''}`}>
       <div className="admin-hero">
         <div>
           <span className="admin-kicker">Kho hàng</span>

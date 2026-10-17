@@ -13,14 +13,28 @@ export default function OrderDetailPage() {
     setData({ ...data, order_status: 'CANCELLED' });
   };
 
-  if (loading) return <Loading />;
+  if (loading && !data) {
+    return (
+      <section className="section page-shell">
+        <Loading />
+      </section>
+    );
+  }
+
+  if (!data) {
+    return (
+      <section className="section page-shell empty">
+        <h2>Không tìm thấy đơn hàng</h2>
+      </section>
+    );
+  }
 
   const items = (typeof data.items === 'string' ? JSON.parse(data.items || '[]') : data.items || [])
     .filter((item) => item && item.product_id);
   const orderNumber = data.order_number || `CM${String(data.id).padStart(6, '0')}`;
 
   return (
-    <section className="section">
+    <section className={`section page-shell${loading ? ' is-refreshing' : ''}`}>
       <div className="section-title">
         <div>
           <span className="section-kicker">Đơn hàng</span>

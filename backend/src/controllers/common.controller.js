@@ -10,7 +10,7 @@ const editable = {
 export const list = (table) => async (req, res, next) => {
   try {
     const rows = await query(`SELECT * FROM ${table} ORDER BY id DESC`);
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -19,8 +19,8 @@ export const list = (table) => async (req, res, next) => {
 export const detail = (table) => async (req, res, next) => {
   try {
     const rows = await query(`SELECT * FROM ${table} WHERE id = ?`, [req.params.id]);
-    if (!rows.length) return fail(res, 404, 'Khong tim thay du lieu');
-    ok(res, 'Thanh cong', rows[0]);
+    if (!rows.length) return fail(res, 404, 'Không tìm thấy dữ liệu');
+    ok(res, 'Thành công', rows[0]);
   } catch (err) {
     next(err);
   }
@@ -29,8 +29,8 @@ export const detail = (table) => async (req, res, next) => {
 export const detailBySlug = (table) => async (req, res, next) => {
   try {
     const rows = await query(`SELECT * FROM ${table} WHERE slug = ? AND status = 1`, [req.params.slug]);
-    if (!rows.length) return fail(res, 404, 'Khong tim thay du lieu');
-    ok(res, 'Thanh cong', rows[0]);
+    if (!rows.length) return fail(res, 404, 'Không tìm thấy dữ liệu');
+    ok(res, 'Thành công', rows[0]);
   } catch (err) {
     next(err);
   }
@@ -45,7 +45,7 @@ export const create = (table) => async (req, res, next) => {
     const values = finalFields.map((f) => req.body[f]);
     const marks = finalFields.map(() => '?').join(',');
     const result = await query(`INSERT INTO ${table}(${finalFields.join(',')}) VALUES(${marks})`, values);
-    ok(res, 'Them moi thanh cong', { id: result.insertId });
+    ok(res, 'Thêm mới thành công', { id: result.insertId });
   } catch (err) {
     next(err);
   }
@@ -55,10 +55,10 @@ export const update = (table) => async (req, res, next) => {
   try {
     if ((req.body.name || req.body.title) && !req.body.slug) req.body.slug = makeSlug(req.body.name || req.body.title);
     const fields = editable[table].filter((f) => req.body[f] !== undefined);
-    if (!fields.length) return fail(res, 422, 'Khong co du lieu cap nhat');
+    if (!fields.length) return fail(res, 422, 'Không có dữ liệu cập nhật');
     const sets = fields.map((f) => `${f}=?`).join(',');
     await query(`UPDATE ${table} SET ${sets} WHERE id=?`, [...fields.map((f) => req.body[f]), req.params.id]);
-    ok(res, 'Cap nhat thanh cong');
+    ok(res, 'Cập nhật thành công');
   } catch (err) {
     next(err);
   }
@@ -67,7 +67,7 @@ export const update = (table) => async (req, res, next) => {
 export const remove = (table) => async (req, res, next) => {
   try {
     await query(`DELETE FROM ${table} WHERE id=?`, [req.params.id]);
-    ok(res, 'Xoa thanh cong');
+    ok(res, 'Xóa thành công');
   } catch (err) {
     next(err);
   }

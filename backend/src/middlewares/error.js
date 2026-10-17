@@ -7,9 +7,9 @@ export const validate = (req, res, next) => {
   next();
 };
 
-export const notFound = (req, res) => fail(res, 404, 'Khong tim thay API');
+export const notFound = (req, res) => fail(res, 404, 'Không tìm thấy API');
 
 export const errorHandler = (err, req, res, next) => {
   console.error(err);
-  fail(res, err.status || 500, err.message || 'Loi may chu');
+  fail(res, err.status || 500, err.message || 'Lỗi máy chủ');
 };

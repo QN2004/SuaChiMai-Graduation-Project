@@ -8,7 +8,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isAdminLogin = location.pathname.startsWith('/admin');
-  const [form, setForm] = useState({ email: 'admin@suachimai.vn', password: 'Admin@123' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
 
   useDocumentMeta({
@@ -66,14 +66,16 @@ export function AuthForm({ title, message, form, setForm, submit, button, regist
         <input
           required
           type="email"
-          placeholder="Email"
+          placeholder="Nhập email"
+          autoComplete="username"
           value={form.email}
           onChange={(event) => setForm({ ...form, email: event.target.value })}
         />
         <input
           required
           type="password"
-          placeholder="Mật khẩu"
+          placeholder="Nhập mật khẩu"
+          autoComplete="current-password"
           value={form.password}
           onChange={(event) => setForm({ ...form, password: event.target.value })}
         />

@@ -24,7 +24,7 @@ export const listOrders = async (req, res, next) => {
       params.push(`%${q}%`, `%${q}%`, `%${q}%`, `%${q}%`);
     }
     const rows = await query(`SELECT o.*, u.email FROM orders o LEFT JOIN users u ON u.id=o.user_id ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY o.id DESC`, params);
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -32,7 +32,7 @@ export const listOrders = async (req, res, next) => {
 export const myOrders = async (req, res, next) => {
   try {
     const rows = await query('SELECT * FROM orders WHERE user_id=? ORDER BY id DESC', [req.user.id]);
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -43,8 +43,8 @@ export const getOrder = async (req, res, next) => {
     const ownerClause = req.user.role === 'admin' ? '' : ' AND o.user_id=?';
     if (req.user.role !== 'admin') params.push(req.user.id);
     const rows = await query(`${orderDetailSql} WHERE o.id=?${ownerClause} GROUP BY o.id`, params);
-    if (!rows.length) return fail(res, 404, 'Khong tim thay don hang');
-    ok(res, 'Thanh cong', rows[0]);
+    if (!rows.length) return fail(res, 404, 'Không tìm thấy đơn hàng');
+    ok(res, 'Thành công', rows[0]);
   } catch (err) {
     next(err);
   }
@@ -53,17 +53,17 @@ export const createOrder = async (req, res, next) => {
   const conn = await pool.getConnection();
   try {
     const { customer_name, phone, address, note, payment_method = 'COD', items = [] } = req.body;
-    if (!items.length) return fail(res, 422, 'Gio hang dang trong');
+    if (!items.length) return fail(res, 422, 'Giỏ hàng đang trống');
     await conn.beginTransaction();
     const orderNumber = `CM${Date.now()}${Math.floor(Math.random() * 1000)}`;
     let total = 0;
     const detailRows = [];
     for (const item of items) {
       const [products] = await conn.execute('SELECT id, name, price, sale_price, stock FROM products WHERE id=? AND status=1 FOR UPDATE', [item.product_id]);
-      if (!products.length) throw new Error('San pham khong ton tai');
+      if (!products.length) throw new Error('Sản phẩm không tồn tại');
       const product = products[0];
       const qty = Number(item.quantity || 1);
-      if (product.stock < qty) throw new Error(`San pham ${product.name} khong du ton kho`);
+      if (product.stock < qty) throw new Error(`Sản phẩm ${product.name} không đủ tồn kho`);
       const price = Number(product.sale_price || product.price);
       total += price * qty;
       detailRows.push({ product, qty, price, total_price: price * qty });
@@ -80,7 +80,7 @@ export const createOrder = async (req, res, next) => {
       );
     }
     await conn.commit();
-    ok(res, 'Dat hang thanh cong', { id: order.insertId, order_number: orderNumber, total_amount: total });
+    ok(res, 'Đặt hàng thành công', { id: order.insertId, order_number: orderNumber, total_amount: total });
   } catch (err) {
     await conn.rollback();
     fail(res, 400, err.message);
@@ -91,7 +91,7 @@ export const createOrder = async (req, res, next) => {
 export const updateStatus = async (req, res, next) => {
   try {
     const { order_status, payment_status } = req.body;
-    if (!order_status && !payment_status) return fail(res, 422, 'Vui long chon trang thai');
+    if (!order_status && !payment_status) return fail(res, 422, 'Vui lòng chọn trạng thái');
     const fields = [];
     const params = [];
     if (order_status) {
@@ -103,7 +103,7 @@ export const updateStatus = async (req, res, next) => {
       params.push(payment_status);
     }
     await query(`UPDATE orders SET ${fields.join(',')} WHERE id=?`, [...params, req.params.id]);
-    ok(res, 'Cap nhat trang thai thanh cong');
+    ok(res, 'Cập nhật trạng thái thành công');
   } catch (err) {
     next(err);
   }
@@ -113,17 +113,17 @@ export const cancelOrder = async (req, res, next) => {
   try {
     await conn.beginTransaction();
     const [orders] = await conn.execute('SELECT * FROM orders WHERE id=? FOR UPDATE', [req.params.id]);
-    if (!orders.length) throw new Error('Khong tim thay don hang');
+    if (!orders.length) throw new Error('Không tìm thấy đơn hàng');
     const order = orders[0];
-    if (req.user.role !== 'admin' && order.user_id !== req.user.id) throw new Error('Khong co quyen huy don');
-    if (order.order_status !== 'PENDING') throw new Error('Chi co the huy don cho xac nhan');
+    if (req.user.role !== 'admin' && order.user_id !== req.user.id) throw new Error('Không có quyền hủy đơn');
+    if (order.order_status !== 'PENDING') throw new Error('Chỉ có thể hủy đơn chờ xác nhận');
     const [details] = await conn.execute('SELECT product_id, quantity FROM order_details WHERE order_id=?', [order.id]);
     for (const item of details) {
       await conn.execute('UPDATE products SET stock=stock+? WHERE id=?', [item.quantity, item.product_id]);
     }
     await conn.execute("UPDATE orders SET order_status='CANCELLED' WHERE id=?", [order.id]);
     await conn.commit();
-    ok(res, 'Huy don hang thanh cong');
+    ok(res, 'Hủy đơn hàng thành công');
   } catch (err) {
     await conn.rollback();
     fail(res, 400, err.message);

@@ -24,6 +24,7 @@ export default function HomePage() {
   }, []);
 
   const pageData = data || { featured: [], latest: [], best: [] };
+  const productsReady = !loading && data;
 
   const features = [
     { icon: <FaShieldAlt />, label: 'Sản phẩm chính hãng', note: 'Nguồn gốc rõ ràng' },
@@ -31,8 +32,6 @@ export default function HomePage() {
     { icon: <FaHeadset />, label: 'Hỗ trợ mỗi ngày', note: 'Tư vấn đúng nhu cầu' },
     { icon: <FaAward />, label: 'Đổi trả minh bạch', note: 'Mua sắm yên tâm' }
   ];
-
-  if (loading) return <Loading />;
 
   return (
     <div className="home-page">
@@ -79,7 +78,9 @@ export default function HomePage() {
           <Link to="/products">Xem tất cả</Link>
         </div>
         <div className="product-grid home-product-grid featured-product-grid">
-          {pageData.featured.slice(0, 4).length ? pageData.featured.slice(0, 4).map((product) => (
+          {!productsReady ? (
+            <Loading text="Đang tải sản phẩm..." />
+          ) : pageData.featured.slice(0, 4).length ? pageData.featured.slice(0, 4).map((product) => (
             <ProductCard product={product} key={product.id} />
           )) : (
             <div className="empty-state">Chưa có sản phẩm để hiển thị.</div>
@@ -90,17 +91,19 @@ export default function HomePage() {
         title="Hàng mới về"
         subtitle="Cập nhật nhanh các sản phẩm vừa lên kệ"
         products={pageData.latest}
+        ready={productsReady}
       />
       <ProductSection
         title="Bán chạy"
         subtitle="Các sản phẩm quen thuộc trong giỏ hàng gia đình"
         products={pageData.best}
+        ready={productsReady}
       />
     </div>
   );
 }
 
-function ProductSection({ title, subtitle, products }) {
+function ProductSection({ title, subtitle, products, ready }) {
   const visibleProducts = (products || []).slice(0, 4);
 
   return (
@@ -114,7 +117,9 @@ function ProductSection({ title, subtitle, products }) {
         <Link to="/products">Xem tất cả</Link>
       </div>
       <div className="product-grid home-product-grid">
-        {visibleProducts.length ? visibleProducts.map((product) => (
+        {!ready ? (
+          <Loading text="Đang tải sản phẩm..." />
+        ) : visibleProducts.length ? visibleProducts.map((product) => (
           <ProductCard product={product} key={product.id} />
         )) : (
           <div className="empty-state">Chưa có sản phẩm để hiển thị.</div>

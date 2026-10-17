@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Card, Rate, Space, Switch, Table, Tag, Typography } from 'antd';
 import api from '../../api/client';
-import Loading from '../../components/Loading';
 import { useFetch } from '../../hooks/useFetch';
 import { useUiFeedback } from '../../context/UiFeedbackContext';
 
@@ -65,8 +64,7 @@ export default function AdminReviewPage() {
     }
   ], [reviews]);
 
-  if (loading) return <Loading />;
-  if (error) {
+  if (error && !reviews.length) {
     return (
       <div className="admin-page">
         <Card><Text type="danger">{error}</Text></Card>
@@ -87,6 +85,7 @@ export default function AdminReviewPage() {
           rowKey="id"
           columns={columns}
           dataSource={reviews}
+          loading={loading}
           className="admin-antd-table"
           pagination={reviews.length > 10 ? { pageSize: 10 } : false}
           locale={{ emptyText: 'Chưa có đánh giá nào.' }}

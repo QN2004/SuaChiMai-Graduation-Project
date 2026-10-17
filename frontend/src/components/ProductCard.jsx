@@ -21,6 +21,9 @@ export default function ProductCard({ product }) {
         <img
           src={imageUrl(product.image)}
           alt={product.name}
+          loading="lazy"
+          width="400"
+          height="400"
           onError={(event) => {
             event.currentTarget.src = fallbackImage;
           }}

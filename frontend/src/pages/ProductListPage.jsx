@@ -29,9 +29,12 @@ export default function ProductListPage() {
   const [params, setParams] = useSearchParams();
   const [filters, setFilters] = useState(() => readFilters(params));
   const [searchInput, setSearchInput] = useState(() => params.get('q') || '');
+  const [minPriceInput, setMinPriceInput] = useState(() => params.get('minPrice') || '');
+  const [maxPriceInput, setMaxPriceInput] = useState(() => params.get('maxPrice') || '');
   const [data, setData] = useState({ items: [], total: 0 });
   const [meta, setMeta] = useState({ brands: [], categories: [] });
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     Promise.all([api.get('/brands'), api.get('/categories')]).then(([brands, categories]) => {
@@ -46,17 +49,21 @@ export default function ProductListPage() {
       return same ? current : next;
     });
     setSearchInput(next.q);
+    setMinPriceInput(next.minPrice);
+    setMaxPriceInput(next.maxPrice);
   }, [params]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setFilters((current) => {
-        if (current.q === searchInput) return current;
-        return { ...current, q: searchInput, page: 1 };
+        if (current.q === searchInput && current.minPrice === minPriceInput && current.maxPrice === maxPriceInput) {
+          return current;
+        }
+        return { ...current, q: searchInput, minPrice: minPriceInput, maxPrice: maxPriceInput, page: 1 };
       });
     }, 350);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, minPriceInput, maxPriceInput]);
 
   useEffect(() => {
     let alive = true;
@@ -65,6 +72,7 @@ export default function ProductListPage() {
       .then((res) => {
         if (!alive) return;
         setData(res.data);
+        setHasLoaded(true);
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -72,9 +80,12 @@ export default function ProductListPage() {
 
     const next = {};
     Object.entries(filters).forEach(([key, value]) => {
-      if (value !== '' && value !== null && value !== undefined) next[key] = value;
+      if (value !== '' && value !== null && value !== undefined) next[key] = String(value);
     });
-    setParams(next, { replace: true });
+    const nextQuery = new URLSearchParams(next).toString();
+    if (params.toString() !== nextQuery) {
+      setParams(next, { replace: true });
+    }
 
     return () => {
       alive = false;
@@ -89,6 +100,8 @@ export default function ProductListPage() {
 
   const clearFilters = () => {
     setSearchInput('');
+    setMinPriceInput('');
+    setMaxPriceInput('');
     setFilters({ ...emptyFilters });
   };
 
@@ -111,6 +124,8 @@ export default function ProductListPage() {
 
   const removeChip = (key) => {
     if (key === 'q') setSearchInput('');
+    if (key === 'minPrice') setMinPriceInput('');
+    if (key === 'maxPrice') setMaxPriceInput('');
     if (key === 'sort') update('sort', 'latest');
     else update(key, '');
   };
@@ -211,8 +226,8 @@ export default function ProductListPage() {
                   type="number"
                   min="0"
                   placeholder="Từ"
-                  value={filters.minPrice}
-                  onChange={(event) => update('minPrice', event.target.value)}
+                  value={minPriceInput}
+                  onChange={(event) => setMinPriceInput(event.target.value)}
                 />
               </label>
               <span className="filter-price-sep" aria-hidden="true">–</span>
@@ -222,15 +237,15 @@ export default function ProductListPage() {
                   type="number"
                   min="0"
                   placeholder="Đến"
-                  value={filters.maxPrice}
-                  onChange={(event) => update('maxPrice', event.target.value)}
+                  value={maxPriceInput}
+                  onChange={(event) => setMaxPriceInput(event.target.value)}
                 />
               </label>
             </div>
           </div>
         </aside>
 
-        <div className="shop-results">
+        <div className={`shop-results${loading && hasLoaded ? ' is-refreshing' : ''}`}>
           <div className="shop-toolbar">
             <div className="shop-toolbar-meta">
               {loading ? (
@@ -265,7 +280,7 @@ export default function ProductListPage() {
             </div>
           )}
 
-          {loading ? (
+          {!hasLoaded && loading ? (
             <Loading />
           ) : data.items.length ? (
             <div className="product-grid shop-product-grid">

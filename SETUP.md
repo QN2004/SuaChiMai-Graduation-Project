@@ -26,6 +26,7 @@ Thấy `Import completed` (lần đầu) hoặc `already imported — skip` (l�
 - http://localhost:3000 — cửa hàng  
 - http://localhost:3000/admin — `admin@gmail.com` / `123456`  
 - http://localhost:5000 — API  
+- http://localhost:5000/api/docs — Swagger UI 
 
 ## Reset DB
 

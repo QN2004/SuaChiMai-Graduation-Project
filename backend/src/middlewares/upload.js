@@ -13,7 +13,7 @@ export const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith('image/')) return cb(new Error('Chi cho phep upload hinh anh'));
+    if (!file.mimetype.startsWith('image/')) return cb(new Error('Chỉ cho phép upload hình ảnh'));
     cb(null, true);
   }
 });

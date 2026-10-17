@@ -14,7 +14,7 @@ export const dashboard = async (req, res, next) => {
       query('SELECT id, name, stock FROM products WHERE stock <= 10 ORDER BY stock ASC LIMIT 8'),
       query('SELECT * FROM orders ORDER BY id DESC LIMIT 8')
     ]);
-    ok(res, 'Thanh cong', { products, categories, brands, users, orders, revenue, pending, lowStock, latestOrders });
+    ok(res, 'Thành công', { products, categories, brands, users, orders, revenue, pending, lowStock, latestOrders });
   } catch (err) {
     next(err);
   }
@@ -27,7 +27,7 @@ export const revenueByMonth = async (req, res, next) => {
       FROM orders WHERE order_status='COMPLETED'
       GROUP BY month ORDER BY month DESC LIMIT 12
     `);
-    ok(res, 'Thanh cong', rows.reverse());
+    ok(res, 'Thành công', rows.reverse());
   } catch (err) {
     next(err);
   }
@@ -40,7 +40,7 @@ export const bestSellingProducts = async (req, res, next) => {
       FROM order_details od JOIN products p ON p.id=od.product_id
       GROUP BY p.id ORDER BY sold DESC LIMIT 10
     `);
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
@@ -49,7 +49,7 @@ export const bestSellingProducts = async (req, res, next) => {
 export const lowStockProducts = async (req, res, next) => {
   try {
     const rows = await query('SELECT id, name, image, stock FROM products WHERE stock <= 10 ORDER BY stock ASC LIMIT 20');
-    ok(res, 'Thanh cong', rows);
+    ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
   }
