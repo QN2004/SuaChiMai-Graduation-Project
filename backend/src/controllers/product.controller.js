@@ -11,6 +11,27 @@ const productSelect = `
   LEFT JOIN reviews r ON r.product_id=p.id AND r.status=1
 `;
 
+const productFields = [
+  'category_id',
+  'brand_id',
+  'name',
+  'slug',
+  'image',
+  'price',
+  'sale_price',
+  'stock',
+  'age_range',
+  'origin',
+  'weight',
+  'ingredients',
+  'benefits',
+  'usage_instructions',
+  'short_description',
+  'description',
+  'status',
+  'is_featured'
+];
+
 const normalizeProductPayload = (payload) => ({
   ...payload,
   sale_price: payload.sale_price === '' || payload.sale_price === undefined ? null : payload.sale_price
@@ -97,26 +118,7 @@ export const getProductBySlug = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
-    const fields = [
-      'category_id',
-      'brand_id',
-      'name',
-      'slug',
-      'image',
-      'price',
-      'sale_price',
-      'stock',
-      'age_range',
-      'origin',
-      'weight',
-      'ingredients',
-      'benefits',
-      'usage_instructions',
-      'short_description',
-      'description',
-      'status',
-      'is_featured'
-    ];
+    const fields = productFields;
     req.body = normalizeProductPayload(req.body);
     req.body.slug = req.body.slug || makeSlug(req.body.name);
     const values = fields.map((f) => req.body[f] ?? null);
@@ -131,7 +133,7 @@ export const updateProduct = async (req, res, next) => {
   try {
     req.body = normalizeProductPayload(req.body);
     if (req.body.name && !req.body.slug) req.body.slug = makeSlug(req.body.name);
-    const fields = Object.keys(req.body).filter((k) => !['id', 'created_at', 'updated_at'].includes(k));
+    const fields = productFields.filter((key) => Object.prototype.hasOwnProperty.call(req.body, key));
     if (!fields.length) return fail(res, 422, 'Không có dữ liệu cập nhật');
     await query(`UPDATE products SET ${fields.map((f) => `${f}=?`).join(',')} WHERE id=?`, [
       ...fields.map((f) => req.body[f]),
@@ -175,9 +177,10 @@ export const bestSelling = async (req, res, next) => {
     const rows = await query(`
       ${productSelect}
       LEFT JOIN order_details od ON od.product_id=p.id
+      LEFT JOIN orders o ON o.id=od.order_id AND o.order_status='COMPLETED'
       WHERE p.status=1
       GROUP BY p.id
-      ORDER BY COALESCE(SUM(od.quantity),0) DESC, p.id DESC
+      ORDER BY COALESCE(SUM(CASE WHEN o.id IS NULL THEN 0 ELSE od.quantity END),0) DESC, p.id DESC
       LIMIT 8
     `);
     ok(res, 'Thành công', rows);

@@ -1,5 +1,27 @@
 import { pool, query } from '../config/db.js';
 import { fail, ok } from '../utils/response.js';
+
+const ORDER_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPING', 'COMPLETED', 'CANCELLED'];
+const PAYMENT_STATUSES = ['UNPAID', 'PAID'];
+
+const restoreStock = async (conn, orderId) => {
+  const [details] = await conn.execute('SELECT product_id, quantity FROM order_details WHERE order_id=?', [orderId]);
+  for (const item of details) {
+    await conn.execute('UPDATE products SET stock=stock+? WHERE id=?', [item.quantity, item.product_id]);
+  }
+};
+
+const reserveStock = async (conn, orderId) => {
+  const [details] = await conn.execute('SELECT product_id, quantity FROM order_details WHERE order_id=?', [orderId]);
+  for (const item of details) {
+    const [products] = await conn.execute('SELECT id, name, stock FROM products WHERE id=? FOR UPDATE', [item.product_id]);
+    if (!products.length) throw new Error('Sản phẩm không tồn tại');
+    if (products[0].stock < item.quantity) {
+      throw new Error(`Sản phẩm ${products[0].name} không đủ tồn kho`);
+    }
+    await conn.execute('UPDATE products SET stock=stock-? WHERE id=?', [item.quantity, item.product_id]);
+  }
+};
 const orderDetailSql = `
   SELECT o.*, JSON_ARRAYAGG(JSON_OBJECT(
     'id', od.id, 'product_id', od.product_id, 'product_name', od.product_name,
@@ -72,7 +94,8 @@ export const createOrder = async (req, res, next) => {
       const [products] = await conn.execute('SELECT id, name, price, sale_price, stock FROM products WHERE id=? AND status=1 FOR UPDATE', [item.product_id]);
       if (!products.length) throw new Error('Sản phẩm không tồn tại');
       const product = products[0];
-      const qty = Number(item.quantity || 1);
+      const qty = Number(item.quantity);
+      if (!Number.isInteger(qty) || qty < 1) throw new Error('Số lượng sản phẩm không hợp lệ');
       if (product.stock < qty) throw new Error(`Sản phẩm ${product.name} không đủ tồn kho`);
       const price = Number(product.sale_price || product.price);
       total += price * qty;
@@ -99,9 +122,32 @@ export const createOrder = async (req, res, next) => {
   }
 };
 export const updateStatus = async (req, res, next) => {
+  const conn = await pool.getConnection();
   try {
     const { order_status, payment_status } = req.body;
     if (!order_status && !payment_status) return fail(res, 422, 'Vui lòng chọn trạng thái');
+    if (order_status && !ORDER_STATUSES.includes(order_status)) {
+      return fail(res, 422, 'Trạng thái đơn không hợp lệ');
+    }
+    if (payment_status && !PAYMENT_STATUSES.includes(payment_status)) {
+      return fail(res, 422, 'Trạng thái thanh toán không hợp lệ');
+    }
+
+    await conn.beginTransaction();
+    const [orders] = await conn.execute('SELECT * FROM orders WHERE id=? FOR UPDATE', [req.params.id]);
+    if (!orders.length) {
+      await conn.rollback();
+      return fail(res, 404, 'Không tìm thấy đơn hàng');
+    }
+
+    const order = orders[0];
+    if (order_status && order_status !== order.order_status) {
+      const wasCancelled = order.order_status === 'CANCELLED';
+      const willCancel = order_status === 'CANCELLED';
+      if (willCancel && !wasCancelled) await restoreStock(conn, order.id);
+      if (wasCancelled && !willCancel) await reserveStock(conn, order.id);
+    }
+
     const fields = [];
     const params = [];
     if (order_status) {
@@ -112,10 +158,14 @@ export const updateStatus = async (req, res, next) => {
       fields.push('payment_status=?');
       params.push(payment_status);
     }
-    await query(`UPDATE orders SET ${fields.join(',')} WHERE id=?`, [...params, req.params.id]);
+    await conn.execute(`UPDATE orders SET ${fields.join(',')} WHERE id=?`, [...params, req.params.id]);
+    await conn.commit();
     ok(res, 'Cập nhật trạng thái thành công');
   } catch (err) {
-    next(err);
+    await conn.rollback();
+    fail(res, 400, err.message);
+  } finally {
+    conn.release();
   }
 };
 export const cancelOrder = async (req, res, next) => {
@@ -127,10 +177,7 @@ export const cancelOrder = async (req, res, next) => {
     const order = orders[0];
     if (req.user.role !== 'admin' && order.user_id !== req.user.id) throw new Error('Không có quyền hủy đơn');
     if (order.order_status !== 'PENDING') throw new Error('Chỉ có thể hủy đơn chờ xác nhận');
-    const [details] = await conn.execute('SELECT product_id, quantity FROM order_details WHERE order_id=?', [order.id]);
-    for (const item of details) {
-      await conn.execute('UPDATE products SET stock=stock+? WHERE id=?', [item.quantity, item.product_id]);
-    }
+    await restoreStock(conn, order.id);
     await conn.execute("UPDATE orders SET order_status='CANCELLED' WHERE id=?", [order.id]);
     await conn.commit();
     ok(res, 'Hủy đơn hàng thành công');

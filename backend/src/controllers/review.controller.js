@@ -16,6 +16,12 @@ export const productReviews = async (req, res, next) => {
 export const createReview = async (req, res, next) => {
   try {
     const { product_id, rating, comment } = req.body;
+    const score = Number(rating);
+    if (!Number.isInteger(score) || score < 1 || score > 5) {
+      return fail(res, 422, 'Đánh giá phải từ 1 đến 5 sao');
+    }
+    const existing = await query('SELECT id FROM reviews WHERE user_id=? AND product_id=? LIMIT 1', [req.user.id, product_id]);
+    if (existing.length) return fail(res, 409, 'Bạn đã đánh giá sản phẩm này');
     const bought = await query(
       `SELECT od.id FROM order_details od
        JOIN orders o ON o.id=od.order_id

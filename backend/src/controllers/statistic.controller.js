@@ -37,7 +37,9 @@ export const bestSellingProducts = async (req, res, next) => {
   try {
     const rows = await query(`
       SELECT p.id, p.name, p.image, SUM(od.quantity) sold
-      FROM order_details od JOIN products p ON p.id=od.product_id
+      FROM order_details od
+      JOIN orders o ON o.id=od.order_id AND o.order_status='COMPLETED'
+      JOIN products p ON p.id=od.product_id
       GROUP BY p.id ORDER BY sold DESC LIMIT 10
     `);
     ok(res, 'Thành công', rows);
