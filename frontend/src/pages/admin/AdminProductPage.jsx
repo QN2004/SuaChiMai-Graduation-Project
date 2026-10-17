@@ -84,7 +84,25 @@ export default function AdminProductPage() {
     event.preventDefault();
     try {
       setSaving(true);
-      const payload = normalizeForm({ ...form, status: 1 });
+      const payload = normalizeForm({
+        category_id: form.category_id,
+        brand_id: form.brand_id,
+        name: form.name,
+        image: form.image,
+        price: form.price,
+        sale_price: form.sale_price,
+        stock: form.stock,
+        age_range: form.age_range,
+        origin: form.origin,
+        weight: form.weight,
+        ingredients: form.ingredients,
+        benefits: form.benefits,
+        usage_instructions: form.usage_instructions,
+        short_description: form.short_description,
+        description: form.description,
+        status: Number(form.status) === 0 ? 0 : 1,
+        is_featured: Number(form.is_featured) === 1 ? 1 : 0
+      });
 
       if (pendingFile) {
         const data = new FormData();
@@ -123,7 +141,8 @@ export default function AdminProductPage() {
   const edit = (product) => {
     clearPendingImage();
     setEditing(product.id);
-    setForm({ ...empty, ...product });
+    const { category_name, brand_name, average_rating, review_count, ...rest } = product;
+    setForm({ ...empty, ...rest });
     setPreviewOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -287,6 +306,14 @@ export default function AdminProductPage() {
               onChange={(event) => setForm({ ...form, is_featured: event.target.checked ? 1 : 0 })}
             />
             Sản phẩm nổi bật
+          </label>
+          <label className="admin-check">
+            <input
+              type="checkbox"
+              checked={Number(form.status) === 1}
+              onChange={(event) => setForm({ ...form, status: event.target.checked ? 1 : 0 })}
+            />
+            Đang bán
           </label>
         </div>
 

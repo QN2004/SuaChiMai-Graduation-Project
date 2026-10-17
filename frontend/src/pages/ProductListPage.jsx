@@ -35,6 +35,7 @@ export default function ProductListPage() {
   const [meta, setMeta] = useState({ brands: [], categories: [] });
   const [loading, setLoading] = useState(true);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [listError, setListError] = useState('');
 
   useEffect(() => {
     Promise.all([api.get('/brands'), api.get('/categories')]).then(([brands, categories]) => {
@@ -72,7 +73,12 @@ export default function ProductListPage() {
       .then((res) => {
         if (!alive) return;
         setData(res.data);
+        setListError('');
         setHasLoaded(true);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setListError(err.message || 'Không tải được danh sách sản phẩm');
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -282,6 +288,11 @@ export default function ProductListPage() {
 
           {!hasLoaded && loading ? (
             <Loading />
+          ) : listError ? (
+            <div className="empty-state shop-empty">
+              <h3>Không tải được sản phẩm</h3>
+              <p>{listError}</p>
+            </div>
           ) : data.items.length ? (
             <div className="product-grid shop-product-grid">
               {data.items.map((product) => (

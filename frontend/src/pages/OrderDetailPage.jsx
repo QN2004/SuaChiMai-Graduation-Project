@@ -2,15 +2,40 @@ import { useParams } from 'react-router-dom';
 import api, { imageUrl } from '../api/client';
 import Loading from '../components/Loading';
 import { useFetch } from '../hooks/useFetch';
+import { useUiFeedback } from '../context/UiFeedbackContext';
 import { money, orderCode, paymentStatusText, paymentText, statusText, statusTone } from '../utils/format';
+import { qrPaymentUrl, storePayment } from '../utils/payment';
+
+const parseOrderItems = (raw) => {
+  try {
+    const items = typeof raw === 'string' ? JSON.parse(raw || '[]') : raw;
+    return Array.isArray(items) ? items.filter((item) => item && item.product_id) : [];
+  } catch {
+    return [];
+  }
+};
 
 export default function OrderDetailPage() {
   const { id } = useParams();
+  const { toast, confirm } = useUiFeedback();
   const { data, loading, setData } = useFetch(() => api.get(`/orders/${id}`), [id]);
 
   const cancel = async () => {
-    await api.put(`/orders/${id}/cancel`);
-    setData({ ...data, order_status: 'CANCELLED' });
+    const ok = await confirm({
+      title: 'Hủy đơn hàng?',
+      message: 'Đơn đang chờ xác nhận sẽ bị hủy và tồn kho được hoàn lại.',
+      confirmText: 'Hủy đơn',
+      cancelText: 'Giữ đơn',
+      tone: 'danger'
+    });
+    if (!ok) return;
+    try {
+      await api.put(`/orders/${id}/cancel`);
+      setData({ ...data, order_status: 'CANCELLED' });
+      toast('Đã hủy đơn hàng');
+    } catch (err) {
+      toast(err.message || 'Không thể hủy đơn hàng', 'error');
+    }
   };
 
   if (loading && !data) {
@@ -29,8 +54,7 @@ export default function OrderDetailPage() {
     );
   }
 
-  const items = (typeof data.items === 'string' ? JSON.parse(data.items || '[]') : data.items || [])
-    .filter((item) => item && item.product_id);
+  const items = parseOrderItems(data.items);
   const orderNumber = orderCode(data);
 
   return (
@@ -97,6 +121,27 @@ export default function OrderDetailPage() {
         <div style={{ textAlign: 'right', fontSize: 18 }}>
           <strong>Tổng cộng: {money(data.total_amount)}</strong>
         </div>
+
+        {data.payment_method === 'BANK_TRANSFER' && data.payment_status !== 'PAID' && data.order_status !== 'CANCELLED' && (
+          <div className="qr-card">
+            <div className="qr-visual">
+              <span>VietQR</span>
+              <img src={qrPaymentUrl({ amount: data.total_amount, orderNumber })} alt="QR chuyển khoản" />
+            </div>
+            <div className="qr-info">
+              <span className="section-kicker">Thanh toán QR</span>
+              <h3>Chuyển khoản theo mã đơn</h3>
+              <p>Nội dung chuyển khoản dùng mã đơn để cửa hàng đối soát nhanh.</p>
+              <div className="qr-payment-lines">
+                <span>Ngân hàng</span><strong>MB Bank</strong>
+                <span>Số tài khoản</span><strong>{storePayment.accountNo}</strong>
+                <span>Chủ tài khoản</span><strong>{storePayment.accountName}</strong>
+                <span>Số tiền</span><strong>{money(data.total_amount)}</strong>
+                <span>Nội dung</span><strong>{orderNumber}</strong>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -15,7 +15,9 @@ export default function AdminOrderPage() {
   };
 
   const orders = data ?? [];
-  const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
+  const totalRevenue = orders
+    .filter((order) => order.order_status === 'COMPLETED')
+    .reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
 
   return (
     <div className={`admin-page${loading ? ' is-refreshing' : ''}`}>
@@ -27,7 +29,7 @@ export default function AdminOrderPage() {
         </div>
         <div className="admin-hero-metrics">
           <span><strong>{orders.length}</strong> đơn</span>
-          <span><strong>{money(totalRevenue)}</strong> doanh thu lọc</span>
+          <span><strong>{money(totalRevenue)}</strong> doanh thu hoàn thành</span>
         </div>
       </div>
 

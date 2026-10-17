@@ -35,7 +35,7 @@ export default function MyOrdersPage() {
     const processing = orders.filter((order) => isProcessingStatus(order.order_status)).length;
     const completed = orders.filter((order) => isCompletedStatus(order.order_status)).length;
     const spent = orders
-      .filter((order) => order.order_status !== 'CANCELLED')
+      .filter((order) => isCompletedStatus(order.order_status))
       .reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
     return { processing, completed, spent };
   }, [orders]);

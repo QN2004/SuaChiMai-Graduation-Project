@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   FaBars,
   FaBoxOpen,
@@ -27,6 +27,7 @@ export default function MainLayout() {
   const { user, logout } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const accountRef = useRef(null);
 
   useDocumentMeta({
@@ -46,6 +47,10 @@ export default function MainLayout() {
     navigate(q ? `/products?q=${encodeURIComponent(q)}` : '/products');
     setOpen(false);
   };
+
+  useEffect(() => {
+    setHeaderSearch(searchParams.get('q') || '');
+  }, [searchParams]);
 
   useEffect(() => {
     const onPointerDown = (event) => {
