@@ -2,8 +2,19 @@ import { createContext, useContext, useMemo, useState } from 'react';
 
 const CartContext = createContext(null);
 
+const readCart = () => {
+  try {
+    const raw = localStorage.getItem('milk_cart');
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    localStorage.removeItem('milk_cart');
+    return [];
+  }
+};
+
 export const CartProvider = ({ children }) => {
-  const [items, setItems] = useState(() => JSON.parse(localStorage.getItem('milk_cart') || '[]'));
+  const [items, setItems] = useState(readCart);
 
   const persist = (next) => {
     setItems(next);
@@ -11,10 +22,13 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (product, quantity = 1) => {
+    const stock = Math.max(0, Number(product.stock) || 0);
+    const addQty = Math.max(1, Number(quantity) || 1);
+    if (stock <= 0) return;
     const next = [...items];
     const found = next.find((item) => item.id === product.id);
-    if (found) found.quantity = Math.min(Number(product.stock || 999), found.quantity + quantity);
-    else next.push({ ...product, quantity });
+    if (found) found.quantity = Math.min(stock, found.quantity + addQty);
+    else next.push({ ...product, quantity: Math.min(stock, addQty) });
     persist(next);
   };
 

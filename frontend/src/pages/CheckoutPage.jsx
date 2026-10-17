@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaMoneyBillWave, FaQrcode, FaTruck } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
@@ -19,9 +19,29 @@ export default function CheckoutPage() {
     payment_method: 'COD'
   });
   const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [edited, setEdited] = useState(false);
+
+  useEffect(() => {
+    if (!user || edited) return;
+    setForm((current) => ({
+      ...current,
+      customer_name: current.customer_name || user.full_name || '',
+      phone: current.phone || user.phone || '',
+      address: current.address || user.address || ''
+    }));
+  }, [user, edited]);
+
+  const updateField = (key, value) => {
+    setEdited(true);
+    setForm((current) => ({ ...current, [key]: value }));
+  };
 
   const submit = async (event) => {
     event.preventDefault();
+    if (submitting || !items.length) return;
+    setSubmitting(true);
+    setMessage('');
     try {
       const payload = { ...form, items: items.map((item) => ({ product_id: item.id, quantity: item.quantity })) };
       const res = await api.post('/orders', payload);
@@ -29,6 +49,7 @@ export default function CheckoutPage() {
       navigate(`/my-orders/${res.data.id}`);
     } catch (err) {
       setMessage(err.message);
+      setSubmitting(false);
     }
   };
 
@@ -46,19 +67,19 @@ export default function CheckoutPage() {
       <form className="checkout-grid" onSubmit={submit}>
         <div className="form-card checkout-form">
           {message && <div className="alert">{message}</div>}
-          <input required placeholder="Họ tên người nhận" value={form.customer_name} onChange={(event) => setForm({ ...form, customer_name: event.target.value })} />
-          <input required placeholder="Số điện thoại" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
-          <input required placeholder="Địa chỉ giao hàng" value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
-          <textarea placeholder="Ghi chú đơn hàng" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} />
+          <input required placeholder="Họ tên người nhận" value={form.customer_name} onChange={(event) => updateField('customer_name', event.target.value)} />
+          <input required placeholder="Số điện thoại" value={form.phone} onChange={(event) => updateField('phone', event.target.value)} />
+          <input required placeholder="Địa chỉ giao hàng" value={form.address} onChange={(event) => updateField('address', event.target.value)} />
+          <textarea placeholder="Ghi chú đơn hàng" value={form.note} onChange={(event) => updateField('note', event.target.value)} />
 
           <div className="payment-options">
             <label className={form.payment_method === 'COD' ? 'active' : ''}>
-              <input type="radio" name="payment_method" value="COD" checked={form.payment_method === 'COD'} onChange={(event) => setForm({ ...form, payment_method: event.target.value })} />
+              <input type="radio" name="payment_method" value="COD" checked={form.payment_method === 'COD'} onChange={(event) => updateField('payment_method', event.target.value)} />
               <FaTruck />
               <span>{paymentText.COD}</span>
             </label>
             <label className={form.payment_method === 'BANK_TRANSFER' ? 'active' : ''}>
-              <input type="radio" name="payment_method" value="BANK_TRANSFER" checked={form.payment_method === 'BANK_TRANSFER'} onChange={(event) => setForm({ ...form, payment_method: event.target.value })} />
+              <input type="radio" name="payment_method" value="BANK_TRANSFER" checked={form.payment_method === 'BANK_TRANSFER'} onChange={(event) => updateField('payment_method', event.target.value)} />
               <FaQrcode />
               <span>{paymentText.BANK_TRANSFER}</span>
             </label>
@@ -85,8 +106,8 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          <button className="btn primary full" disabled={!items.length}>
-            <FaMoneyBillWave /> Xác nhận đặt hàng
+          <button className="btn primary full" disabled={!items.length || submitting}>
+            <FaMoneyBillWave /> {submitting ? 'Đang đặt hàng...' : 'Xác nhận đặt hàng'}
           </button>
         </div>
 

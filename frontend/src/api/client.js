@@ -14,7 +14,17 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res.data,
-  (error) => Promise.reject(error.response?.data || { message: 'Không thể kết nối máy chủ' })
+  (error) => {
+    const status = error.response?.status;
+    const url = error.config?.url || '';
+    const isAuthCall = url.includes('/auth/login') || url.includes('/auth/register');
+    if (status === 401 && !isAuthCall && localStorage.getItem('milk_token')) {
+      localStorage.removeItem('milk_token');
+      localStorage.removeItem('milk_user');
+      window.dispatchEvent(new Event('suachimai:logout'));
+    }
+    return Promise.reject(error.response?.data || { message: 'Không thể kết nối máy chủ' });
+  }
 );
 
 export const imageUrl = (url) => {

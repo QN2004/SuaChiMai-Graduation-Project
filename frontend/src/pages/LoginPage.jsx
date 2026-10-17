@@ -22,7 +22,12 @@ export default function LoginPage() {
     event.preventDefault();
     try {
       const user = await login(form.email, form.password);
-      navigate(user.role === 'admin' ? '/admin' : '/');
+      const from = location.state?.from?.pathname;
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from && !from.startsWith('/admin') ? from : '/', { replace: true });
+      }
     } catch (err) {
       setMessage(err.message || 'Không thể đăng nhập. Vui lòng thử lại.');
     }
