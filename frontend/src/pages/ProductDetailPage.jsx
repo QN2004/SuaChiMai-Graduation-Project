@@ -44,14 +44,17 @@ export default function ProductDetailPage() {
   const mainImage = activeImg || gallery[0];
   const currentPrice = Number(product.sale_price || product.price);
   const intro = product.short_description || product.description || 'Sản phẩm chính hãng, được chọn lọc phù hợp cho nhu cầu dinh dưỡng hằng ngày.';
+  const stock = Math.max(0, Number(product.stock) || 0);
+  const outOfStock = stock <= 0;
   const specs = [
     ['Độ tuổi', product.age_range || 'Đang cập nhật'],
     ['Xuất xứ', product.origin || 'Đang cập nhật'],
     ['Quy cách', product.weight || 'Đang cập nhật'],
-    ['Tồn kho', product.stock ?? 0]
+    ['Tồn kho', stock]
   ];
 
   const buyNow = () => {
+    if (outOfStock) return;
     addToCart(product, qty);
     navigate('/checkout');
   };
@@ -101,15 +104,24 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="buy-row">
-            <div className="qty-control">
-              <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.max(1, value - 1))}>-</button>
-              <input type="number" min="1" max={product.stock} value={qty} onChange={(event) => setQty(Math.max(1, Number(event.target.value) || 1))} />
-              <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.min(product.stock, value + 1))}>+</button>
-            </div>
-            <div className="detail-actions">
-              <button className="btn primary" disabled={product.stock <= 0} onClick={() => addToCart(product, qty)}>Thêm vào giỏ</button>
-              <button className="btn accent" disabled={product.stock <= 0} onClick={buyNow}>Mua ngay</button>
-            </div>
+            {outOfStock ? (
+              <div className="sold-out-banner">
+                <strong>Hết hàng</strong>
+                <span>Sản phẩm tạm hết. Chọn sản phẩm khác hoặc liên hệ cửa hàng để được tư vấn.</span>
+              </div>
+            ) : (
+              <>
+                <div className="qty-control">
+                  <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.max(1, value - 1))}>-</button>
+                  <input type="number" min="1" max={stock} value={qty} onChange={(event) => setQty(Math.min(stock, Math.max(1, Number(event.target.value) || 1)))} />
+                  <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.min(stock, value + 1))}>+</button>
+                </div>
+                <div className="detail-actions">
+                  <button className="btn primary" type="button" onClick={() => addToCart(product, qty)}>Thêm vào giỏ</button>
+                  <button className="btn accent" type="button" onClick={buyNow}>Mua ngay</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaCartPlus, FaStar } from 'react-icons/fa';
+import { FaBan, FaCartPlus, FaStar } from 'react-icons/fa';
 import { imageUrl } from '../api/client';
 import { useCart } from '../context/CartContext';
 import { money } from '../utils/format';
@@ -14,9 +14,10 @@ export default function ProductCard({ product }) {
   const discount = hasSale ? Math.round(((original - price) / original) * 100) : 0;
   const rating = Number(product.average_rating || 0);
   const reviews = Number(product.review_count || 0);
+  const outOfStock = Number(product.stock) <= 0;
 
   return (
-    <article className="product-card">
+    <article className={`product-card${outOfStock ? ' is-sold-out' : ''}`}>
       <Link to={`/products/${product.slug}`} className="product-image">
         <img
           src={imageUrl(product.image)}
@@ -28,11 +29,12 @@ export default function ProductCard({ product }) {
             event.currentTarget.src = fallbackImage;
           }}
         />
-        {hasSale && (
+        {hasSale && !outOfStock && (
           <span className="badge">
             {discount > 0 ? `-${discount}%` : 'Khuyến mãi'}
           </span>
         )}
+        {outOfStock && <span className="sold-out-badge">Hết hàng</span>}
       </Link>
 
       <div className="product-body">
@@ -56,15 +58,22 @@ export default function ProductCard({ product }) {
           {hasSale && <del>{money(original)}</del>}
         </div>
 
-        <button
-          type="button"
-          aria-label={`Thêm ${product.name} vào giỏ`}
-          className="btn primary full product-cart-btn"
-          onClick={() => addToCart(product, 1)}
-        >
-          <FaCartPlus />
-          Thêm vào giỏ
-        </button>
+        {outOfStock ? (
+          <button type="button" className="btn sold-out-btn full product-cart-btn" disabled>
+            <FaBan />
+            Hết hàng
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-label={`Thêm ${product.name} vào giỏ`}
+            className="btn primary full product-cart-btn"
+            onClick={() => addToCart(product, 1)}
+          >
+            <FaCartPlus />
+            Thêm vào giỏ
+          </button>
+        )}
       </div>
     </article>
   );

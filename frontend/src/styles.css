@@ -298,6 +298,16 @@ table button {
 
 .btn { border: 0; border-radius: 8px; padding: 11px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; cursor: pointer; transition: .2s ease; }
 .btn:hover { transform: translateY(-1px); }
+.btn:disabled,
+.btn:disabled:hover,
+.icon-btn:disabled,
+.icon-btn:disabled:hover {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: grayscale(.25);
+}
 .primary { background: var(--primary); color: white; }
 .accent { background: var(--accent); color: white; }
 .ghost { background: #edf7f9; color: var(--primary-dark); }
@@ -492,6 +502,64 @@ del { color: var(--muted); }
   border-radius: 999px;
   font-weight: 800;
   gap: 8px;
+}
+.sold-out-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 24, 32, .48);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.product-card.is-sold-out {
+  background: #f6f7f8;
+  border-color: #e4e7ea;
+  box-shadow: none;
+}
+.product-card.is-sold-out:hover {
+  transform: none;
+  border-color: #e4e7ea;
+  box-shadow: none;
+}
+.product-card.is-sold-out img {
+  filter: grayscale(.7) brightness(.92);
+}
+.product-card.is-sold-out:hover img {
+  transform: none;
+}
+.product-card.is-sold-out .product-name,
+.product-card.is-sold-out .price-row strong {
+  color: #6b7c86;
+}
+.btn.sold-out-btn,
+.btn.sold-out-btn:disabled,
+.btn.sold-out-btn:disabled:hover {
+  background: #e8eaed;
+  color: #6b7380;
+  cursor: not-allowed;
+  opacity: 1;
+  filter: none;
+  box-shadow: none;
+  transform: none;
+}
+.sold-out-banner {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+}
+.sold-out-banner strong {
+  color: #9b2350;
+  font-size: 16px;
 }
 
 .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
