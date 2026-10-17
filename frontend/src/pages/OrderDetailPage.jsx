@@ -1,8 +1,8 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import api, { imageUrl } from '../api/client';
 import Loading from '../components/Loading';
 import { useFetch } from '../hooks/useFetch';
-import { money, paymentText, statusText } from '../utils/format';
+import { money, orderCode, paymentStatusText, paymentText, statusText, statusTone } from '../utils/format';
 
 export default function OrderDetailPage() {
   const { id } = useParams();
@@ -31,7 +31,7 @@ export default function OrderDetailPage() {
 
   const items = (typeof data.items === 'string' ? JSON.parse(data.items || '[]') : data.items || [])
     .filter((item) => item && item.product_id);
-  const orderNumber = data.order_number || `CM${String(data.id).padStart(6, '0')}`;
+  const orderNumber = orderCode(data);
 
   return (
     <section className={`section page-shell${loading ? ' is-refreshing' : ''}`}>
@@ -41,12 +41,11 @@ export default function OrderDetailPage() {
           <h2>#{orderNumber}</h2>
           <p>Ngày đặt: {data.created_at ? new Date(data.created_at).toLocaleString('vi-VN') : ''}</p>
         </div>
-        <div className="profile-actions">
-          <Link className="btn ghost" to="/my-orders">Danh sách đơn</Link>
-          {data.order_status === 'PENDING' && (
+        {data.order_status === 'PENDING' && (
+          <div className="profile-actions">
             <button className="btn danger" type="button" onClick={cancel}>Hủy đơn</button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="panel" style={{ display: 'grid', gap: 16, padding: 20 }}>
@@ -59,9 +58,9 @@ export default function OrderDetailPage() {
           </div>
           <div>
             <strong>Trạng thái</strong>
-            <p>{statusText[data.order_status] || data.order_status}</p>
+            <p><span className={`status-chip ${statusTone(data.order_status)}`}>{statusText[data.order_status] || data.order_status}</span></p>
             <p>{paymentText[data.payment_method] || data.payment_method}</p>
-            <p>{data.payment_status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}</p>
+            <p>{paymentStatusText[data.payment_status] || 'Chưa thanh toán'}</p>
           </div>
           <div>
             <strong>Ghi chú</strong>

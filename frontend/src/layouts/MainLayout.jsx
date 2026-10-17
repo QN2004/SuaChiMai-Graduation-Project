@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   FaBars,
+  FaBoxOpen,
   FaClock,
   FaEnvelope,
   FaFacebookF,
@@ -125,6 +126,14 @@ export default function MainLayout() {
                 >
                   <FaUserCircle />
                   {user.role === 'admin' ? 'Vào trang quản trị' : 'Hồ sơ của tôi'}
+                </Link>
+                <Link
+                  role="menuitem"
+                  to="/my-orders"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <FaBoxOpen />
+                  Đơn hàng của tôi
                 </Link>
                 <button type="button" role="menuitem" className="account-logout" onClick={handleLogout}>
                   <FaSignOutAlt />

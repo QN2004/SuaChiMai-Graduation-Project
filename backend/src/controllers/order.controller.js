@@ -31,7 +31,17 @@ export const listOrders = async (req, res, next) => {
 };
 export const myOrders = async (req, res, next) => {
   try {
-    const rows = await query('SELECT * FROM orders WHERE user_id=? ORDER BY id DESC', [req.user.id]);
+    const rows = await query(
+      `SELECT o.*,
+        COUNT(od.id) AS item_count,
+        COALESCE(SUM(od.quantity), 0) AS item_qty
+      FROM orders o
+      LEFT JOIN order_details od ON od.order_id = o.id
+      WHERE o.user_id=?
+      GROUP BY o.id
+      ORDER BY o.id DESC`,
+      [req.user.id]
+    );
     ok(res, 'Thành công', rows);
   } catch (err) {
     next(err);
