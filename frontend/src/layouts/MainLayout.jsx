@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import useDocumentMeta from '../hooks/useDocumentMeta';
+import ChatWidget from '../components/chat/ChatWidget';
 
 export default function MainLayout() {
   const [open, setOpen] = useState(false);
@@ -156,6 +157,8 @@ export default function MainLayout() {
       </header>
 
       <main><Outlet /></main>
+
+      <ChatWidget key={user?.id || 'guest'} />
 
       <footer className="footer">
         <div className="footer-brand">

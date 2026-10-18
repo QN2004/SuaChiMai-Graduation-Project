@@ -13,6 +13,7 @@ import contactRoutes from './routes/contact.routes.js';
 import statisticRoutes from './routes/statistic.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import userRoutes from './routes/user.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 import { errorHandler, notFound } from './middlewares/error.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
@@ -54,6 +55,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/statistics', statisticRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

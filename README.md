@@ -37,7 +37,7 @@ docker compose down -v          # dừng + xóa DB (lần up sau import lại)
 frontend/   React + Nginx (Docker)
 backend/    Express API
 database/   SQL + docker-init.sh
-docs/       ERD, báo cáo
+docs/       analysis, architecture, data
 ```
 
 ## Lưu ý

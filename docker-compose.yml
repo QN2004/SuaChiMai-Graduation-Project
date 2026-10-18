@@ -54,11 +54,16 @@ services:
       JWT_SECRET: milk_store_secret_key
       CLIENT_URL: http://localhost:3000
       CLIENT_URLS: http://localhost:3000
+      DIFY_API_URL: ${DIFY_API_URL:-http://host.docker.internal/v1}
+      DIFY_API_KEY: ${DIFY_API_KEY:-}
+      DIFY_TIMEOUT_MS: ${DIFY_TIMEOUT_MS:-120000}
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "5000:5000"
     volumes:
       - ./backend/src/uploads:/app/src/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db-init:
         condition: service_completed_successfully
