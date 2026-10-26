@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Use case — vận hành</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #fff9fb; --color-ink: #122b35; --color-muted: #64737d;
+      --font-sans: 'Inter', system-ui, sans-serif; --font-serif: 'Instrument Serif', 'Noto Serif', serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body { font-family: var(--font-sans); background: var(--color-paper); color: var(--color-ink); min-height: 100vh; padding: 3rem 2rem; }
+    .frame { max-width: 960px; width: 100%; margin: 0 auto; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.5rem; }
+    h1 { font-family: var(--font-serif); font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .lede { font-size: 0.95rem; line-height: 1.5; color: var(--color-muted); max-width: 46rem; margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 960px; display: block; }
+    @media print { .diagram-container { overflow-x: visible; } svg { min-width: 0; } }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Use case · Nhân viên</p>
+    <h1>Vận hành đơn và chăm sóc</h1>
+    <p class="lede">Nhân viên xử lý đơn, ghi nhận thanh toán, kiểm duyệt đánh giá, trả lời liên hệ, khóa hoặc mở tài khoản khách và xem thống kê. Hàng hóa nằm ở sơ đồ riêng.</p>
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 686" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="usecase-nhan-vien-title usecase-nhan-vien-desc">
+        <title id="usecase-nhan-vien-title">Vận hành đơn và chăm sóc</title>
+        <desc id="usecase-nhan-vien-desc">Nhân viên xử lý đơn, ghi nhận thanh toán, kiểm duyệt đánh giá, trả lời liên hệ, khóa hoặc mở tài khoản khách và xem thống kê. Hàng hóa nằm ở sơ đồ riêng.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64737d"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#d03169"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#1a5f78"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#fff9fb"/>
+
+        <rect x="248" y="40" width="660" height="566" rx="8" fill="rgba(18,43,53,0.02)" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <rect x="264" y="48" width="108" height="12" rx="2" fill="#fff9fb"/>
+        <text x="318" y="57" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">SỮA CHI MAI</text>
+
+<line x1="200" y1="88" x2="404" y2="88" stroke="#d03169" stroke-width="1.2"/>
+<line x1="200" y1="176" x2="404" y2="176" stroke="#64737d" stroke-width="1.2"/>
+<line x1="200" y1="264" x2="404" y2="264" stroke="#64737d" stroke-width="1.2"/>
+<line x1="200" y1="352" x2="404" y2="352" stroke="#64737d" stroke-width="1.2"/>
+<line x1="200" y1="440" x2="404" y2="440" stroke="#64737d" stroke-width="1.2"/>
+<line x1="200" y1="528" x2="404" y2="528" stroke="#64737d" stroke-width="1.2"/>
+<line x1="560" y1="114" x2="560" y2="150" stroke="#64737d" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+<rect x="572" y="126.0" width="64" height="12" rx="2" fill="#fff9fb"/>
+<text x="604.0" y="135.0" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">INCLUDE</text>
+
+        <rect x="32" y="56" width="168" height="534" rx="6" fill="#fff9fb"/>
+        <rect x="32" y="56" width="168" height="534" rx="6" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <rect x="48" y="72" width="52" height="12" rx="2" fill="transparent" stroke="rgba(92,115,125,0.45)" stroke-width="0.8"/>
+        <text x="74" y="81" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">ACTOR</text>
+        <text x="116.0" y="327.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Nhân viên</text>
+        <text x="116.0" y="345.0" fill="#64737d" font-size="9" font-weight="500" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Quyền quản trị</text>
+
+
+        <ellipse cx="560" cy="88" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="88" rx="156" ry="26" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1.2"/>
+        <text x="560" y="92" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Xử lý đơn hàng</text>
+
+
+        <ellipse cx="560" cy="176" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="176" rx="156" ry="26" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="560" y="180" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Cập nhật thanh toán</text>
+
+
+        <ellipse cx="560" cy="264" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="264" rx="156" ry="26" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="560" y="268" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Kiểm duyệt đánh giá</text>
+
+
+        <ellipse cx="560" cy="352" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="352" rx="156" ry="26" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="560" y="356" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Phản hồi liên hệ</text>
+
+
+        <ellipse cx="560" cy="440" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="440" rx="156" ry="26" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="560" y="444" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Khóa hoặc mở tài khoản</text>
+
+
+        <ellipse cx="560" cy="528" rx="156" ry="26" fill="#fff9fb"/>
+        <ellipse cx="560" cy="528" rx="156" ry="26" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="560" y="532" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Xem thống kê</text>
+
+
+        <line x1="40" y1="634" x2="920" y2="634" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <text x="40" y="658" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">LEGEND</text>
+        <rect x="140" y="648" width="14" height="10" rx="2" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <text x="162" y="657" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">ACTOR</text>
+        <ellipse cx="280" cy="653" rx="16" ry="7" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="304" y="657" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">USE CASE</text>
+        <ellipse cx="448" cy="653" rx="16" ry="7" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1"/>
+        <text x="472" y="657" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">FOCAL</text>
+        <line x1="560" y1="653" x2="592" y2="653" stroke="#64737d" stroke-width="1.2"/>
+        <text x="600" y="657" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">ASSOCIATION</text>
+
+        <line x1="760" y1="653" x2="792" y2="653" stroke="#64737d" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="800" y="657" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">INCLUDE / EXTEND</text>
+
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

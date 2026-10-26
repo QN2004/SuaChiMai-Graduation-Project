@@ -5,6 +5,7 @@
 Phân tích nghiệp vụ và yêu cầu.
 
 - [PhanTichYeuCau_SuaChiMai.docx](./analysis/PhanTichYeuCau_SuaChiMai.docx) — phân tích yêu cầu
+- [PhanTichThietKeHeThong_SuaChiMai.docx](./analysis/PhanTichThietKeHeThong_SuaChiMai.docx) — phân tích và thiết kế hệ thống
 - [QuyTrinhNhapBan_SuaChiMai.pdf](./analysis/QuyTrinhNhapBan_SuaChiMai.pdf) — quy trình nhập và bán
 - [YTuongPhatTrien_SuaChiMai.pdf](./analysis/YTuongPhatTrien_SuaChiMai.pdf) — ý tưởng phát triển
 

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sữa Chi Mai — kiến trúc hệ thống</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #fff9fb;
+      --color-ink: #122b35;
+      --color-muted: #64737d;
+      --color-accent: #d03169;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-serif: 'Instrument Serif', 'Noto Serif', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1280px; width: 100%; margin: 0 auto; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 0.75rem;
+    }
+    .lede {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--color-muted);
+      max-width: 42rem;
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Sữa Chi Mai</p>
+    <h1>Kiến trúc hệ thống</h1>
+    <p class="lede">Khách và quản trị vào SPA. SPA gọi API. API ghi MySQL và ảnh upload. db-init nạp schema lần đầu. Chuyển khoản lấy QR từ VietQR.</p>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="suachimai-system-architecture-title suachimai-system-architecture-desc">
+        <title id="suachimai-system-architecture-title">Kiến trúc hệ thống Sữa Chi Mai</title>
+        <desc id="suachimai-system-architecture-desc">Khách và quản trị mở SPA, SPA gọi API, API đọc MySQL và ghi uploads, db-init nạp schema từ thư mục database, và cửa hàng lấy mã QR VietQR khi chuyển khoản.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64737d"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#d03169"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#1a5f78"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#fff9fb"/>
+
+        <rect x="336" y="120" width="872" height="432" rx="8" fill="rgba(18,43,53,0.02)" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <rect x="348" y="124" width="112" height="12" rx="2" fill="#fff9fb"/>
+        <text x="404" y="133" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">DOCKER COMPOSE</text>
+
+        <path d="M 264,240 H 344 Q 352,240 352,248 V 308 Q 352,316 360,316" fill="none" stroke="#1a5f78" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <path d="M 264,428 H 344 Q 352,428 352,420 V 352 Q 352,344 360,344" fill="none" stroke="#1a5f78" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <path d="M 560,330 H 672" fill="none" stroke="#d03169" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+        <path d="M 872,330 H 984" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 872,60 H 1076 Q 1084,60 1084,68 V 152" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 1084,224 V 292" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 772,368 V 404 Q 772,412 780,412 H 1076 Q 1084,412 1084,420 V 456" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 460,368 V 468 Q 460,476 452,476 H 188 Q 180,476 180,484 V 488" fill="none" stroke="#64737d" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+
+        <rect x="272" y="220" width="72" height="12" rx="2" fill="#fff9fb"/>
+        <text x="308" y="229" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS :3000</text>
+        <rect x="292" y="408" width="48" height="12" rx="2" fill="#fff9fb"/>
+        <text x="316" y="417" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">/ADMIN</text>
+        <rect x="584" y="310" width="64" height="12" rx="2" fill="#fff9fb"/>
+        <text x="616" y="319" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">REST :5000</text>
+        <rect x="908" y="310" width="32" height="12" rx="2" fill="#fff9fb"/>
+        <text x="924" y="319" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SQL</text>
+        <rect x="1004" y="80" width="72" height="12" rx="2" fill="#fff9fb"/>
+        <text x="1040" y="89" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SQL + SEED</text>
+        <rect x="1028" y="252" width="48" height="12" rx="2" fill="#fff9fb"/>
+        <text x="1052" y="261" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">IMPORT</text>
+        <rect x="904" y="392" width="48" height="12" rx="2" fill="#fff9fb"/>
+        <text x="928" y="401" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">UPLOAD</text>
+        <rect x="276" y="456" width="52" height="12" rx="2" fill="#fff9fb"/>
+        <text x="302" y="465" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">VIETQR</text>
+
+        <rect x="96" y="204" width="168" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="96" y="204" width="168" height="72" rx="6" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <rect x="104" y="212" width="36" height="12" rx="2" fill="transparent" stroke="rgba(92,115,125,0.45)" stroke-width="0.8"/>
+        <text x="122" y="221" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
+        <text x="180" y="244" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Khách hàng</text>
+        <text x="180" y="260" fill="#64737d" font-size="9" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Trình duyệt</text>
+
+        <rect x="96" y="392" width="168" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="96" y="392" width="168" height="72" rx="6" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <rect x="104" y="400" width="40" height="12" rx="2" fill="transparent" stroke="rgba(92,115,125,0.45)" stroke-width="0.8"/>
+        <text x="124" y="409" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">ADMIN</text>
+        <text x="180" y="432" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Quản trị</text>
+        <text x="180" y="448" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">/admin</text>
+
+        <rect x="96" y="488" width="168" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="96" y="488" width="168" height="72" rx="6" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <rect x="104" y="496" width="28" height="12" rx="2" fill="transparent" stroke="rgba(18,43,53,0.28)" stroke-width="0.8"/>
+        <text x="118" y="505" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">QR</text>
+        <text x="180" y="528" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">img.vietqr.io</text>
+        <text x="180" y="544" fill="#64737d" font-size="9" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">QR chuyển khoản</text>
+
+        <rect x="672" y="24" width="200" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="672" y="24" width="200" height="72" rx="6" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <rect x="680" y="32" width="32" height="12" rx="2" fill="transparent" stroke="rgba(18,43,53,0.28)" stroke-width="0.8"/>
+        <text x="696" y="41" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">SQL</text>
+        <text x="772" y="64" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">./database</text>
+        <text x="772" y="80" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">schema + seed</text>
+
+        <rect x="360" y="292" width="200" height="76" rx="6" fill="#fff9fb"/>
+        <rect x="360" y="292" width="200" height="76" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <rect x="368" y="300" width="32" height="12" rx="2" fill="transparent" stroke="rgba(18,43,53,0.40)" stroke-width="0.8"/>
+        <text x="384" y="309" fill="#122b35" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
+        <text x="460" y="334" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">suachimai-frontend</text>
+        <text x="460" y="350" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">nginx SPA :3000</text>
+
+        <rect x="672" y="292" width="200" height="76" rx="6" fill="#fff9fb"/>
+        <rect x="672" y="292" width="200" height="76" rx="6" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1.2"/>
+        <rect x="680" y="300" width="32" height="12" rx="2" fill="transparent" stroke="rgba(208,49,105,0.45)" stroke-width="0.8"/>
+        <text x="696" y="309" fill="#d03169" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+        <text x="772" y="334" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">suachimai-backend</text>
+        <text x="772" y="350" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">Express :5000</text>
+
+        <rect x="984" y="152" width="200" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="984" y="152" width="200" height="72" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <rect x="992" y="160" width="36" height="12" rx="2" fill="transparent" stroke="rgba(18,43,53,0.40)" stroke-width="0.8"/>
+        <text x="1010" y="169" fill="#122b35" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">INIT</text>
+        <text x="1084" y="192" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">suachimai-db-init</text>
+        <text x="1084" y="208" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">one-shot import</text>
+
+        <rect x="984" y="292" width="200" height="76" rx="6" fill="#fff9fb"/>
+        <rect x="984" y="292" width="200" height="76" rx="6" fill="rgba(18,43,53,0.05)" stroke="#64737d" stroke-width="1"/>
+        <rect x="992" y="300" width="28" height="12" rx="2" fill="transparent" stroke="rgba(100,115,125,0.45)" stroke-width="0.8"/>
+        <text x="1006" y="309" fill="#64737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
+        <text x="1084" y="334" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">suachimai-mysql</text>
+        <text x="1084" y="350" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">MySQL 8 milk_store</text>
+
+        <rect x="984" y="456" width="200" height="72" rx="6" fill="#fff9fb"/>
+        <rect x="984" y="456" width="200" height="72" rx="6" fill="rgba(18,43,53,0.05)" stroke="#64737d" stroke-width="1"/>
+        <rect x="992" y="464" width="36" height="12" rx="2" fill="transparent" stroke="rgba(100,115,125,0.45)" stroke-width="0.8"/>
+        <text x="1010" y="473" fill="#64737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">FILE</text>
+        <text x="1084" y="496" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">uploads volume</text>
+        <text x="1084" y="512" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">/app/src/uploads</text>
+
+        <line x1="40" y1="608" x2="1240" y2="608" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <text x="40" y="632" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">LEGEND</text>
+        <rect x="128" y="622" width="14" height="10" rx="2" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <text x="148" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">ACTOR</text>
+        <rect x="230" y="622" width="14" height="10" rx="2" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="250" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">SERVICE</text>
+        <rect x="360" y="622" width="14" height="10" rx="2" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1"/>
+        <text x="380" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">API</text>
+        <rect x="450" y="622" width="14" height="10" rx="2" fill="rgba(18,43,53,0.05)" stroke="#64737d" stroke-width="1"/>
+        <text x="470" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">DATA</text>
+        <rect x="560" y="622" width="14" height="10" rx="2" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="580" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">EXTERNAL</text>
+        <line x1="710" y1="627" x2="738" y2="627" stroke="#1a5f78" stroke-width="1.2"/>
+        <text x="746" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">HTTP</text>
+        <line x1="830" y1="627" x2="858" y2="627" stroke="#64737d" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="866" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">OPTIONAL</text>
+        <line x1="990" y1="627" x2="1018" y2="627" stroke="#d03169" stroke-width="1.2"/>
+        <text x="1026" y="631" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">MAIN PATH</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

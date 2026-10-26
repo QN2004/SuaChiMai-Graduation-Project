@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm vào giỏ hàng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #fff9fb;
+      --color-ink: #122b35;
+      --color-muted: #64737d;
+      --color-accent: #d03169;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-serif: 'Instrument Serif', 'Noto Serif', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Sequence · Giỏ hàng</p>
+    <h1>Thêm vào giỏ hàng</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 588" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="06-gio-hang-title 06-gio-hang-desc">
+        <title id="06-gio-hang-title">Thêm vào giỏ hàng</title>
+        <desc id="06-gio-hang-desc">Web giữ giỏ trên máy khách, chặn sản phẩm hết hàng và không cho số lượng vượt tồn, rồi ghi localStorage để còn sau khi tải lại trang.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64737d"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#d03169"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#1a5f78"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#fff9fb"/>
+        <line x1="240" y1="88" x2="240" y2="492" stroke="rgba(18,43,53,0.20)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="640" y1="88" x2="640" y2="492" stroke="rgba(18,43,53,0.20)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="1040" y1="88" x2="1040" y2="492" stroke="rgba(18,43,53,0.20)" stroke-width="1" stroke-dasharray="3,3"/>
+        <rect x="204" y="216" width="872" height="236" rx="4" fill="rgba(18,43,53,0.02)" stroke="rgba(18,43,53,0.22)" stroke-width="1"/>
+        <rect x="204" y="216" width="40" height="16" rx="2" fill="#fff9fb" stroke="rgba(18,43,53,0.22)" stroke-width="1"/>
+        <text x="224" y="228" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+        <text x="216" y="248" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">[còn hàng]</text>
+        <text x="216" y="392" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">[hết hoặc vượt tồn]</text>
+        <line x1="212" y1="372" x2="1068" y2="372" stroke="rgba(18,43,53,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="236" y="124" width="8" height="8" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="236" y="344" width="8" height="8" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="236" y="424" width="8" height="8" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="636" y="124" width="8" height="72" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="636" y="280" width="8" height="72" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="636" y="424" width="8" height="8" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <rect x="1036" y="280" width="8" height="40" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <line x1="244" y1="128" x2="636" y2="128" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <rect x="400" y="108" width="80" height="12" rx="2" fill="#fff9fb"/>
+        <text x="440.0" y="117" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">THÊM VÀO GIỎ</text>
+        <path d="M 644 160 L 672 160 L 672 188 L 644 188" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <rect x="680" y="168" width="72" height="12" rx="2" fill="#fff9fb"/>
+        <text x="716.0" y="177" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SO VỚI TỒN</text>
+        <line x1="644" y1="284" x2="1036" y2="284" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <rect x="808" y="264" width="60" height="12" rx="2" fill="#fff9fb"/>
+        <text x="838.0" y="273" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">GHI CART</text>
+        <line x1="1036" y1="316" x2="644" y2="316" stroke="#64737d" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+        <rect x="816" y="296" width="48" height="12" rx="2" fill="#fff9fb"/>
+        <text x="840.0" y="305" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">ĐÃ LƯU</text>
+        <line x1="636" y1="348" x2="244" y2="348" stroke="#d03169" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <rect x="412" y="328" width="56" height="12" rx="2" fill="#fff9fb"/>
+        <text x="440.0" y="337" fill="#d03169" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">GIỎ MỚI</text>
+        <line x1="636" y1="428" x2="244" y2="428" stroke="#64737d" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+        <rect x="404" y="408" width="72" height="12" rx="2" fill="#fff9fb"/>
+        <text x="440.0" y="417" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">KHÔNG THÊM</text>
+        <rect x="152.0" y="32" width="176" height="56" rx="6" fill="#fff9fb"/>
+        <rect x="152.0" y="32" width="176" height="56" rx="6" fill="rgba(100,115,125,0.10)" stroke="#5c737d" stroke-width="1"/>
+        <rect x="160.0" y="38" width="32" height="12" rx="2" fill="transparent" stroke="#5c737d" stroke-opacity="0.4" stroke-width="0.8"/>
+        <text x="176.0" y="47" fill="#5c737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
+        <text x="240" y="64" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Khách</text>
+        <text x="240" y="78" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">trình duyệt</text>
+        <rect x="552.0" y="32" width="176" height="56" rx="6" fill="#fff9fb"/>
+        <rect x="552.0" y="32" width="176" height="56" rx="6" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1"/>
+        <rect x="560.0" y="38" width="28" height="12" rx="2" fill="transparent" stroke="#d03169" stroke-opacity="0.4" stroke-width="0.8"/>
+        <text x="574.0" y="47" fill="#d03169" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
+        <text x="640" y="64" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Web</text>
+        <text x="640" y="78" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">React</text>
+        <rect x="952.0" y="32" width="176" height="56" rx="6" fill="#fff9fb"/>
+        <rect x="952.0" y="32" width="176" height="56" rx="6" fill="rgba(18,43,53,0.05)" stroke="#64737d" stroke-width="1"/>
+        <rect x="960.0" y="38" width="28" height="12" rx="2" fill="transparent" stroke="#64737d" stroke-opacity="0.4" stroke-width="0.8"/>
+        <text x="974.0" y="47" fill="#64737d" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">MEM</text>
+        <text x="1040" y="64" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Bộ nhớ máy</text>
+        <text x="1040" y="78" fill="#64737d" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">localStorage</text>
+        <line x1="48" y1="520" x2="1232" y2="520" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <text x="48" y="536" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.18em">CHÚ THÍCH</text>
+        <rect x="48" y="552" width="14" height="10" rx="2" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1"/>
+        <text x="68" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Trọng tâm</text>
+        <rect x="141" y="552" width="14" height="10" rx="2" fill="rgba(18,43,53,0.05)" stroke="#64737d" stroke-width="1"/>
+        <text x="161" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Bộ nhớ máy</text>
+        <rect x="240" y="546" width="4" height="18" fill="rgba(18,43,53,0.06)" stroke="#64737d" stroke-width="0.8"/>
+        <text x="252" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Đang xử lý</text>
+        <line x1="331" y1="558" x2="359" y2="558" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <text x="367" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Thao tác</text>
+        <line x1="435" y1="558" x2="463" y2="558" stroke="#64737d" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+        <text x="471" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Phản hồi</text>
+        <line x1="539" y1="558" x2="567" y2="558" stroke="#d03169" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <text x="575" y="560" fill="#64737d" font-size="8.5" font-family="'Inter', system-ui, sans-serif">Kết quả chính</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

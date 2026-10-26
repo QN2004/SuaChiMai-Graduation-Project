@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity — giỏ hàng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #fff9fb; --color-ink: #122b35; --color-muted: #64737d;
+      --font-sans: 'Inter', system-ui, sans-serif; --font-serif: 'Instrument Serif', 'Noto Serif', serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body { font-family: var(--font-sans); background: var(--color-paper); color: var(--color-ink); min-height: 100vh; padding: 3rem 2rem; }
+    .frame { max-width: 840px; width: 100%; margin: 0 auto; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.5rem; }
+    h1 { font-family: var(--font-serif); font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .lede { font-size: 0.95rem; line-height: 1.5; color: var(--color-muted); max-width: 46rem; margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 840px; display: block; }
+    @media print { .diagram-container { overflow-x: visible; } svg { min-width: 0; } }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Activity · Giỏ hàng</p>
+    <h1>Thêm và sửa giỏ hàng</h1>
+    <p class="lede">Khách chỉ thêm được sản phẩm còn hàng, và số lượng không được vượt tồn kho. Giỏ được giữ khi tải lại trang trên cùng thiết bị.</p>
+    <div class="diagram-container">
+      <svg viewBox="0 0 840 680" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="activity-gio-hang-title activity-gio-hang-desc">
+        <title id="activity-gio-hang-title">Thêm và sửa giỏ hàng</title>
+        <desc id="activity-gio-hang-desc">Khách chỉ thêm được sản phẩm còn hàng, và số lượng không được vượt tồn kho. Giỏ được giữ khi tải lại trang trên cùng thiết bị.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64737d"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#d03169"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#1a5f78"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#fff9fb"/>
+<line x1="220" y1="60" x2="220" y2="80" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="308" y1="116" x2="392" y2="116" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="220" y1="152" x2="220" y2="184" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="220" y1="232" x2="220" y2="260" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="308" y1="296" x2="392" y2="296" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="220" y1="332" x2="220" y2="364" stroke="#d03169" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+<line x1="220" y1="412" x2="220" y2="436" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="220" y1="484" x2="220" y2="508" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="324" y="96" width="56" height="12" rx="2" fill="#fff9fb"/>
+<text x="352.0" y="105" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">KHÔNG</text>
+<rect x="232" y="160" width="32" height="12" rx="2" fill="#fff9fb"/>
+<text x="248.0" y="169" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CÓ</text>
+<rect x="324" y="276" width="32" height="12" rx="2" fill="#fff9fb"/>
+<text x="340.0" y="285" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CÓ</text>
+<rect x="232" y="340" width="56" height="12" rx="2" fill="#fff9fb"/>
+<text x="260.0" y="349" fill="#d03169" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">KHÔNG</text>
+<rect x="110" y="24" width="220" height="36" rx="18.0" fill="#fff9fb"/>
+<rect x="110" y="24" width="220" height="36" rx="18.0" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+<text x="220.0" y="46.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Chọn sản phẩm</text>
+<polygon points="220,80 308,116 220,152 132,116" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+<text x="220" y="120" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Còn hàng?</text>
+<rect x="392" y="94.0" width="200" height="44" rx="22.0" fill="#fff9fb"/>
+<rect x="392" y="94.0" width="200" height="44" rx="22.0" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+<text x="492.0" y="120.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Báo hết hàng</text>
+<rect x="110" y="184" width="220" height="48" rx="6" fill="#fff9fb"/>
+<rect x="110" y="184" width="220" height="48" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+<text x="220.0" y="212.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Nhập số lượng</text>
+<polygon points="220,260 308,296 220,332 132,296" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+<text x="220" y="300" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Vượt tồn kho?</text>
+<rect x="392" y="274.0" width="200" height="44" rx="22.0" fill="#fff9fb"/>
+<rect x="392" y="274.0" width="200" height="44" rx="22.0" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+<text x="492.0" y="300.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Báo vượt số kho</text>
+<rect x="110" y="364" width="220" height="48" rx="6" fill="#fff9fb"/>
+<rect x="110" y="364" width="220" height="48" rx="6" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1.2"/>
+<text x="220.0" y="392.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Thêm vào giỏ</text>
+<rect x="110" y="436" width="220" height="48" rx="6" fill="#fff9fb"/>
+<rect x="110" y="436" width="220" height="48" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+<text x="220.0" y="464.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Sửa số lượng hoặc xóa</text>
+<rect x="110" y="508" width="220" height="44" rx="22.0" fill="#fff9fb"/>
+<rect x="110" y="508" width="220" height="44" rx="22.0" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+<text x="220.0" y="534.0" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Giỏ được giữ lại</text>
+        <line x1="40" y1="600" x2="760" y2="600" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <text x="40" y="624" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">LEGEND</text>
+        <rect x="140" y="614" width="22" height="10" rx="5" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="170" y="623" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">START / END</text>
+        <rect x="320" y="614" width="18" height="10" rx="2" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="346" y="623" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">STEP</text>
+        <polygon points="440,619 448,614 456,619 448,624" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="464" y="623" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">DECISION</text>
+        <line x1="600" y1="619" x2="628" y2="619" stroke="#d03169" stroke-width="1.2"/>
+        <text x="636" y="623" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.08em">HAPPY PATH</text>
+
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

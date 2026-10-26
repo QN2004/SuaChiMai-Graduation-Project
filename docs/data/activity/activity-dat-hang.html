@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity — đặt hàng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --color-paper: #fff9fb; --color-ink: #122b35; --color-muted: #64737d; --font-sans: 'Inter', system-ui, sans-serif; --font-serif: 'Instrument Serif', 'Noto Serif', serif; --font-mono: 'Geist Mono', ui-monospace, monospace; }
+    body { font-family: var(--font-sans); background: var(--color-paper); color: var(--color-ink); min-height: 100vh; padding: 3rem 2rem; }
+    .frame { max-width: 1040px; width: 100%; margin: 0 auto; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.5rem; }
+    h1 { font-family: var(--font-serif); font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .lede { font-size: 0.95rem; line-height: 1.5; color: var(--color-muted); max-width: 42rem; margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 1040px; display: block; }
+    @media print { .diagram-container { overflow-x: visible; } svg { min-width: 0; } }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Activity · Đặt hàng</p>
+    <h1>Tìm sản phẩm và tạo đơn</h1>
+    <p class="lede">Khách xem danh sách, lọc, mở chi tiết, thêm giỏ rồi kiểm tra lại. Chưa đăng nhập thì đăng nhập trước. Chuyển khoản thì hiện QR. Hệ thống chỉ trừ kho và tạo đơn chờ xác nhận khi còn đúng giá và đủ hàng.</p>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1040 1040" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="activity-dat-hang-title activity-dat-hang-desc">
+        <title id="activity-dat-hang-title">Activity đặt hàng</title>
+        <desc id="activity-dat-hang-desc">Khách xem, lọc, xem chi tiết, thêm giỏ, đăng nhập nếu cần, nhập địa chỉ, chọn COD hoặc QR, và hệ thống tạo đơn khi còn đủ hàng.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64737d"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#d03169"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#1a5f78"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#fff9fb"/>
+
+        <line x1="400" y1="60" x2="400" y2="80" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="124" x2="400" y2="144" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="188" x2="400" y2="208" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="252" x2="400" y2="272" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="316" x2="400" y2="336" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="380" x2="400" y2="400" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="480" x2="400" y2="516" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="490" y1="440" x2="620" y2="440" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 730,462 V 532 Q 730,540 722,540 H 520" fill="none" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="564" x2="400" y2="584" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="490" y1="624" x2="620" y2="624" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="664" x2="400" y2="724" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <path d="M 730,646 V 696 Q 730,704 722,704 H 400" fill="none" stroke="#64737d" stroke-width="1.2"/>
+        <line x1="490" y1="764" x2="620" y2="764" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="400" y1="804" x2="400" y2="840" stroke="#d03169" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+        <line x1="400" y1="888" x2="400" y2="908" stroke="#64737d" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <rect x="408" y="490" width="28" height="12" rx="2" fill="#fff9fb"/>
+        <text x="422" y="499" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CÓ</text>
+        <rect x="524" y="420" width="52" height="12" rx="2" fill="#fff9fb"/>
+        <text x="550" y="429" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">KHÔNG</text>
+        <rect x="520" y="604" width="28" height="12" rx="2" fill="#fff9fb"/>
+        <text x="534" y="613" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CÓ</text>
+        <rect x="408" y="678" width="36" height="12" rx="2" fill="#fff9fb"/>
+        <text x="426" y="687" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">COD</text>
+        <rect x="524" y="744" width="52" height="12" rx="2" fill="#fff9fb"/>
+        <text x="550" y="753" fill="#5c737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">KHÔNG</text>
+        <rect x="408" y="814" width="28" height="12" rx="2" fill="#fff9fb"/>
+        <text x="422" y="823" fill="#d03169" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CÓ</text>
+
+        <rect x="280" y="24" width="240" height="36" rx="18" fill="#fff9fb"/>
+        <rect x="280" y="24" width="240" height="36" rx="18" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="400" y="46" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Bắt đầu</text>
+        <rect x="280" y="80" width="240" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="80" width="240" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="106" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Xem danh sách sản phẩm</text>
+        <rect x="280" y="144" width="240" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="144" width="240" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="170" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Tìm kiếm hoặc lọc</text>
+        <rect x="280" y="208" width="240" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="208" width="240" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="234" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Xem chi tiết sản phẩm</text>
+        <rect x="280" y="272" width="240" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="272" width="240" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="298" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Thêm sản phẩm vào giỏ</text>
+        <rect x="280" y="336" width="240" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="336" width="240" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="362" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Kiểm tra lại giỏ hàng</text>
+        <polygon points="400,400 490,440 400,480 310,440" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="444" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Đã đăng nhập?</text>
+        <rect x="620" y="418" width="220" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="620" y="418" width="220" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="730" y="444" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Đăng nhập</text>
+        <rect x="280" y="516" width="240" height="48" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="516" width="240" height="48" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="536" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Nhập người nhận</text>
+        <text x="400" y="552" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">và địa chỉ giao</text>
+        <polygon points="400,584 490,624 400,664 310,624" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="628" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Chuyển khoản?</text>
+        <rect x="620" y="602" width="220" height="44" rx="6" fill="#fff9fb"/>
+        <rect x="620" y="602" width="220" height="44" rx="6" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="730" y="628" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Hiện QR chuyển khoản</text>
+        <polygon points="400,724 490,764 400,804 310,764" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="400" y="768" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Còn đủ hàng?</text>
+        <rect x="620" y="742" width="220" height="44" rx="18" fill="#fff9fb"/>
+        <rect x="620" y="742" width="220" height="44" rx="18" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="730" y="768" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Báo không đủ hàng</text>
+        <rect x="280" y="840" width="240" height="48" rx="6" fill="#fff9fb"/>
+        <rect x="280" y="840" width="240" height="48" rx="6" fill="rgba(208,49,105,0.08)" stroke="#d03169" stroke-width="1.2"/>
+        <text x="400" y="860" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Trừ kho, tạo đơn</text>
+        <text x="400" y="876" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">chờ xác nhận</text>
+        <rect x="280" y="908" width="240" height="36" rx="18" fill="#fff9fb"/>
+        <rect x="280" y="908" width="240" height="36" rx="18" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="400" y="930" fill="#122b35" font-size="12" font-weight="600" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">Mở trang chi tiết đơn</text>
+
+        <line x1="40" y1="980" x2="1000" y2="980" stroke="rgba(18,43,53,0.10)" stroke-width="0.8"/>
+        <text x="40" y="1004" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">LEGEND</text>
+        <rect x="140" y="994" width="22" height="10" rx="5" fill="rgba(18,43,53,0.03)" stroke="rgba(18,43,53,0.30)" stroke-width="1"/>
+        <text x="170" y="1003" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">START / END</text>
+        <rect x="320" y="994" width="18" height="10" rx="2" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="346" y="1003" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">STEP</text>
+        <polygon points="430,999 438,994 446,999 438,1004" fill="#ffffff" stroke="#122b35" stroke-width="1"/>
+        <text x="454" y="1003" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">DECISION</text>
+        <line x1="590" y1="999" x2="618" y2="999" stroke="#d03169" stroke-width="1.2"/>
+        <text x="626" y="1003" fill="#64737d" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.08em">HAPPY PATH</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
