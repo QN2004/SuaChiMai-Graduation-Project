@@ -17,9 +17,10 @@ Lần sau: data còn trong volume → `db-init` **skip** import.
 
 | | URL |
 |--|--|
-| Cửa hàng | http://localhost:3000 |
-| Admin | http://localhost:3000/admin |
+| Cửa hàng | http://localhost:3001 |
+| Admin | http://localhost:3001/admin |
 | API | http://localhost:5000 |
+| Dify | http://localhost:3080 |
 
 **Admin mẫu:** `admin@gmail.com` / `123456`
 
@@ -37,6 +38,7 @@ docker compose down -v          # dừng + xóa DB (lần up sau import lại)
 frontend/   React + Nginx (Docker)
 backend/    Express API
 database/   SQL + docker-init.sh
+dify/       Dify 1.18, cùng `docker compose up`
 docs/       analysis, architecture, data
 ```
 
