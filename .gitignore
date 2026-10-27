@@ -38,3 +38,12 @@ Thumbs.db
 # Temporary / local backups of git metadata
 .git.old-backup/
 .git.bak/
+
+# Dify runtime data created on first start
+dify/volumes/*
+!dify/volumes/sandbox/
+dify/volumes/sandbox/*
+!dify/volumes/sandbox/conf/
+dify/volumes/sandbox/conf/*
+!dify/volumes/sandbox/conf/config.yaml
+!dify/volumes/sandbox/conf/config.yaml.example

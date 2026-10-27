@@ -1,5 +1,8 @@
 name: suachimai
 
+include:
+  - path: ./dify/docker-compose.yaml
+
 services:
   mysql:
     image: mysql:8.0
@@ -54,7 +57,7 @@ services:
       JWT_SECRET: milk_store_secret_key
       CLIENT_URL: http://localhost:3000
       CLIENT_URLS: http://localhost:3000
-      DIFY_API_URL: ${DIFY_API_URL:-http://host.docker.internal/v1}
+      DIFY_API_URL: ${DIFY_API_URL:-http://nginx/v1}
       DIFY_API_KEY: ${DIFY_API_KEY:-}
       DIFY_TIMEOUT_MS: ${DIFY_TIMEOUT_MS:-120000}
       TZ: Asia/Ho_Chi_Minh
@@ -67,6 +70,16 @@ services:
     depends_on:
       db-init:
         condition: service_completed_successfully
+      nginx:
+        condition: service_started
+
+  # Upstream Dify gates these behind profiles. This project always starts them.
+  db_postgres:
+    profiles: !override []
+  weaviate:
+    profiles: !override []
+  api_websocket:
+    profiles: !override []
 
   frontend:
     build:
