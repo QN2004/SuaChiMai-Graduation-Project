@@ -6,6 +6,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+credentials.json
 **/.env
 **/.env.*
 !**/.env.example
@@ -47,3 +48,7 @@ dify/volumes/sandbox/*
 dify/volumes/sandbox/conf/*
 !dify/volumes/sandbox/conf/config.yaml
 !dify/volumes/sandbox/conf/config.yaml.example
+
+
+# Cloudflare Tunnel credentials
+credentials.json

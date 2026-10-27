@@ -55,8 +55,6 @@ services:
       DB_NAME: milk_store
       DB_PORT: 3306
       JWT_SECRET: milk_store_secret_key
-      CLIENT_URL: ${FRONTEND_URL:-http://localhost:3000}
-      CLIENT_URLS: ${FRONTEND_URL:-http://localhost:3000}
       DIFY_API_URL: ${DIFY_API_URL:-http://nginx/v1}
       DIFY_API_KEY: ${DIFY_API_KEY:-}
       DIFY_TIMEOUT_MS: ${DIFY_TIMEOUT_MS:-120000}
@@ -84,8 +82,6 @@ services:
   frontend:
     build:
       context: ./frontend
-      args:
-        VITE_API_URL: http://localhost:5000
     image: suachimai-frontend:local
     container_name: suachimai-frontend
     restart: unless-stopped
@@ -112,6 +108,19 @@ services:
     restart: "no"
     profiles:
       - tools
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: suachimai-cloudflared
+    restart: unless-stopped
+    profiles:
+      - tools
+    volumes:
+      - ./cloudflared/config.yml:/etc/cloudflared/config.yml
+      - ./credentials.json:/etc/cloudflared/credentials.json
+    command: tunnel --config /etc/cloudflared/config.yml run
+    depends_on:
+      - nginx
 
 volumes:
   mysql_data:
