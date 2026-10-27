@@ -232,6 +232,7 @@ export default function ChatWidget() {
   const [conversationId, setConversationId] = useState('');
   const bodyRef = useRef(null);
   const inputRef = useRef(null);
+  const windowRef = useRef(null);
   const sessionId = useRef(makeSessionId());
 
   useEffect(() => {
@@ -249,7 +250,63 @@ export default function ChatWidget() {
   }, [messages, sending]);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
+    if (!open) return undefined;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    if (!coarse) inputRef.current?.focus();
+    if (!coarse || window.innerWidth > 600) return undefined;
+
+    const frame = windowRef.current;
+    const viewport = window.visualViewport;
+    const root = document.documentElement;
+    const body = document.body;
+    const previous = {
+      rootOverflow: root.style.overflow,
+      bodyOverflow: body.style.overflow
+    };
+
+    const place = () => {
+      if (!frame) return;
+      const height = viewport?.height || window.innerHeight;
+      frame.style.top = '0px';
+      frame.style.left = '0px';
+      frame.style.right = 'auto';
+      frame.style.bottom = 'auto';
+      frame.style.transform = 'none';
+      frame.style.width = '100%';
+      frame.style.height = `${height}px`;
+      if (window.scrollY !== 0 || root.scrollTop !== 0) window.scrollTo(0, 0);
+    };
+
+    const keepInputVisible = (event) => {
+      if (frame?.contains(event.target)) return;
+      event.preventDefault();
+    };
+
+    root.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    place();
+    viewport?.addEventListener('resize', place);
+    viewport?.addEventListener('scroll', place);
+    window.addEventListener('scroll', place);
+    document.addEventListener('touchmove', keepInputVisible, { passive: false });
+
+    return () => {
+      viewport?.removeEventListener('resize', place);
+      viewport?.removeEventListener('scroll', place);
+      window.removeEventListener('scroll', place);
+      document.removeEventListener('touchmove', keepInputVisible);
+      root.style.overflow = previous.rootOverflow;
+      body.style.overflow = previous.bodyOverflow;
+      if (frame) {
+        frame.style.top = '';
+        frame.style.left = '';
+        frame.style.right = '';
+        frame.style.bottom = '';
+        frame.style.transform = '';
+        frame.style.width = '';
+        frame.style.height = '';
+      }
+    };
   }, [open]);
 
   const send = async (message = input) => {
@@ -314,7 +371,7 @@ export default function ChatWidget() {
       </button>
 
       {open && (
-        <section className={`chatbot-window${expanded ? ' is-expanded' : ''}`} aria-label="Trợ lý mua sắm Sữa Chi Mai">
+        <section ref={windowRef} className={`chatbot-window${expanded ? ' is-expanded' : ''}`} aria-label="Trợ lý mua sắm Sữa Chi Mai">
           <header className="chatbot-header">
             <span className="chatbot-avatar"><img src={mascot} alt="" /></span>
             <div>
@@ -399,6 +456,14 @@ export default function ChatWidget() {
               }}
               placeholder="Hỏi về sản phẩm, giá, đơn hàng..."
               aria-label="Nhập câu hỏi"
+              onFocus={() => {
+                if (!window.matchMedia('(pointer: coarse)').matches) return;
+                const reset = () => window.scrollTo(0, 0);
+                reset();
+                requestAnimationFrame(reset);
+                window.setTimeout(reset, 60);
+                window.setTimeout(reset, 280);
+              }}
             />
             <button type="submit" disabled={sending || (!input.trim() && !file)} aria-label="Gửi câu hỏi">
               <FaPaperPlane />
