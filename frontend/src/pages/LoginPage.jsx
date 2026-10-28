@@ -22,11 +22,12 @@ export default function LoginPage() {
     event.preventDefault();
     try {
       const user = await login(form.email, form.password);
-      const from = location.state?.from?.pathname;
+      const from = location.state?.from;
       if (user.role === 'admin') {
         navigate('/admin', { replace: true });
       } else {
-        navigate(from && !from.startsWith('/admin') ? from : '/', { replace: true });
+        const target = from?.pathname && !from.pathname.startsWith('/admin') ? from.pathname : '/';
+        navigate(target, { replace: true, state: from?.state });
       }
     } catch (err) {
       setMessage(err.message || 'Không thể đăng nhập. Vui lòng thử lại.');
@@ -41,7 +42,7 @@ export default function LoginPage() {
       setForm={setForm}
       submit={submit}
       button="Đăng nhập"
-      footer={<p>Chưa có tài khoản? <Link to="/register">Đăng ký</Link></p>}
+      footer={<p>Chưa có tài khoản? <Link to="/register" state={location.state}>Đăng ký</Link></p>}
     />
   );
 }
