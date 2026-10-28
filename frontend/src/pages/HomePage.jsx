@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
-import { FaArrowRight, FaAward, FaHeadset, FaShieldAlt, FaShippingFast } from 'react-icons/fa';
+import { FaArrowRight, FaAward, FaCheckCircle, FaHeadset, FaShieldAlt, FaShippingFast } from 'react-icons/fa';
 import api from '../api/client';
 import ProductCard from '../components/ProductCard';
 import Loading from '../components/Loading';
 import { useFetch } from '../hooks/useFetch';
-import heroMilkFamily from '../assets/hero-milk-family.png';
+import heroFamilyNutrition from '../assets/hero-family-nutrition-v7.png';
+import heroFamilyNutritionTablet from '../assets/hero-family-nutrition-tablet-v1.png';
+import heroFamilyNutritionMobile from '../assets/hero-family-nutrition-mobile-v1.png';
 
 export default function HomePage() {
   const { data, loading } = useFetch(async () => {
@@ -38,24 +40,32 @@ export default function HomePage() {
       <section
         className="hero"
         style={{
-          backgroundImage: `linear-gradient(90deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, .38)), url(${heroMilkFamily})`
+          '--hero-image-desktop': `url(${heroFamilyNutrition})`,
+          '--hero-image-tablet': `url(${heroFamilyNutritionTablet})`,
+          '--hero-image-mobile': `url(${heroFamilyNutritionMobile})`
         }}
       >
         <div className="hero-inner">
           <div className="hero-content">
             <span className="hero-eyebrow">Sữa Chi Mai - Đại Lộc</span>
-            <h1>Sữa chính hãng cho từng nhu cầu dinh dưỡng</h1>
-            <p>Chọn nhanh sữa bột, sữa tươi và sản phẩm chăm sóc sức khỏe phù hợp cho bé, mẹ bầu và cả gia đình.</p>
+            <h1>Chọn đúng sữa,<br /><em>an tâm cho cả nhà</em></h1>
+            <p>Sản phẩm chính hãng, nguồn gốc rõ ràng — chọn theo độ tuổi và nhu cầu của bé, mẹ bầu, ba mẹ.</p>
             <div className="hero-actions">
               <Link className="btn primary" to="/products">
                 Mua sắm ngay <FaArrowRight />
               </Link>
               <Link className="btn ghost" to="/contact">Nhận tư vấn</Link>
             </div>
+            <div className="hero-proof" aria-label="Cam kết dịch vụ">
+              <span><FaCheckCircle /> 100% chính hãng</span>
+              <span><FaCheckCircle /> Tư vấn tận tâm</span>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div className="hero-features">
+      <section className="home-benefits-section" aria-label="Cam kết dịch vụ">
+        <div className="hero-features home-benefits">
           {features.map((feature) => (
             <div className="hero-feature-item" key={feature.label}>
               <span className="feature-icon">{feature.icon}</span>
