@@ -127,9 +127,9 @@ export default function ProductDetailPage() {
                   <>
                   <div className="quantity-label">Số lượng</div>
                   <div className="qty-control">
-                    <button className="icon-btn" type="button" aria-label="Giảm số lượng" onClick={() => setQty((value) => Math.max(1, value - 1))}>−</button>
-                    <input type="number" min="1" max={stock} value={qty} onChange={(event) => setQty(Math.min(stock, Math.max(1, Number(event.target.value) || 1)))} />
-                    <button className="icon-btn" type="button" aria-label="Tăng số lượng" onClick={() => setQty((value) => Math.min(stock, value + 1))}>+</button>
+                    <button className="icon-btn" type="button" aria-label="Giảm số lượng" disabled={qty <= 1} onClick={() => setQty((value) => Math.max(1, value - 1))}>−</button>
+                    <input aria-label="Nhập số lượng" type="number" inputMode="numeric" min="1" max={stock} value={qty} onChange={(event) => setQty(Math.min(stock, Math.max(1, Math.trunc(Number(event.target.value)) || 1)))} />
+                    <button className="icon-btn" type="button" aria-label="Tăng số lượng" disabled={qty >= stock} onClick={() => setQty((value) => Math.min(stock, value + 1))}>+</button>
                   </div>
                   <div className="detail-actions">
                     <button className="btn primary" type="button" onClick={() => addToCart(product, qty)}><FaShoppingBag /> Thêm vào giỏ</button>
