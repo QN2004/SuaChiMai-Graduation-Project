@@ -1,0 +1,17 @@
+tunnel: 50d7e184-56fc-4813-9569-a4153b9a5a23
+credentials-file: /etc/cloudflared/credentials.json
+
+ingress:
+  - hostname: suachimai.store
+    service: http://frontend:80
+    originRequest:
+      noTLSVerify: true
+  - hostname: api.suachimai.store
+    service: http://backend:5000
+    originRequest:
+      noTLSVerify: true
+  - hostname: dify.suachimai.store
+    service: http://nginx:80
+    originRequest:
+      noTLSVerify: true
+  - service: http_status:404
