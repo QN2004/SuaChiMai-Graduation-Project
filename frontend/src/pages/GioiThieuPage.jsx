@@ -1,184 +1,183 @@
 import { Link } from 'react-router-dom';
+import {
+  FaArrowRight,
+  FaCheck,
+  FaHeadset,
+  FaHeart,
+  FaShieldAlt,
+  FaStore,
+  FaTruck,
+} from 'react-icons/fa';
+import consultationHero from '../assets/about/consultation-1440.webp';
+import consultationHero960 from '../assets/about/consultation-960.webp';
+import consultationHero640 from '../assets/about/consultation-640.webp';
+import orderCare from '../assets/about/order-care-1200.webp';
+import orderCare800 from '../assets/about/order-care-800.webp';
+import orderCare560 from '../assets/about/order-care-560.webp';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
-const highlights = [
-  'Sữa chính hãng cho bé, mẹ bầu và gia đình',
-  'Giao nhanh trong ngày tại TP.HCM',
-  'Tư vấn chọn sản phẩm phù hợp theo nhu cầu',
-];
-
-const stats = [
-  { value: '200+', label: 'Sản phẩm dinh dưỡng' },
-  { value: '24h', label: 'Hỗ trợ đặt hàng' },
-  { value: '100%', label: 'Hàng chính hãng' },
-];
-
-const pillars = [
+const commitments = [
   {
-    title: 'Tư vấn đúng nhu cầu',
-    text: 'Chúng tôi hỗ trợ chọn sữa theo độ tuổi, thể trạng và mục tiêu sử dụng để bạn mua đúng ngay từ đầu.',
+    icon: FaHeadset,
+    title: 'Hiểu nhu cầu trước khi tư vấn',
+    text: 'Mỗi lựa chọn bắt đầu từ độ tuổi, thói quen và mục tiêu dinh dưỡng của người sử dụng.',
   },
   {
-    title: 'Nguồn gốc rõ ràng',
-    text: 'Ưu tiên sản phẩm chính hãng, thông tin minh bạch, hạn sử dụng và mô tả được kiểm tra kỹ trước khi bán.',
+    icon: FaShieldAlt,
+    title: 'Thông tin rõ ràng, dễ kiểm tra',
+    text: 'Nguồn gốc, đối tượng sử dụng và hướng dẫn dùng được trình bày minh bạch trước khi mua.',
   },
   {
-    title: 'Giao hàng nhanh',
-    text: 'Xử lý đơn nhanh, giao trong ngày tại TP.HCM khi có thể, giúp khách hàng yên tâm cần là có.',
+    icon: FaTruck,
+    title: 'Chuẩn bị đơn hàng cẩn thận',
+    text: 'Sản phẩm được kiểm tra, đóng gói gọn gàng và giao theo thông tin khách hàng cung cấp.',
   },
 ];
 
 const journey = [
-  { step: '01', title: 'Chọn nhu cầu', text: 'Bạn xác định đối tượng sử dụng và mục tiêu dinh dưỡng.' },
-  { step: '02', title: 'Được tư vấn', text: 'Nhân viên gợi ý dòng sản phẩm phù hợp và dễ dùng nhất.' },
-  { step: '03', title: 'Nhận hàng', text: 'Đóng gói cẩn thận, giao nhanh tận nơi theo yêu cầu.' },
-];
-
-const makeStoreImage = (accent, secondary) => `data:image/svg+xml;utf8,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900">
-  <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#fffdfb" />
-      <stop offset="100%" stop-color="${secondary}" />
-    </linearGradient>
-    <linearGradient id="glass" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="100%" stop-color="#f5f7fb" />
-    </linearGradient>
-  </defs>
-  <rect width="1400" height="900" rx="56" fill="url(#bg)" />
-  <rect x="92" y="92" width="1216" height="716" rx="42" fill="#ffffff" opacity="0.82" />
-  <rect x="150" y="175" width="1100" height="24" rx="12" fill="${accent}" />
-  <rect x="150" y="405" width="1100" height="24" rx="12" fill="${accent}" opacity="0.72" />
-  <rect x="150" y="635" width="1100" height="24" rx="12" fill="${accent}" opacity="0.55" />
-  <g opacity="0.98">
-    <rect x="190" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="205" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="215" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-    <rect x="360" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="375" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="385" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-    <rect x="530" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="545" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="555" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-    <rect x="700" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="715" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="725" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-    <rect x="870" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="885" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="895" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-    <rect x="1040" y="220" width="130" height="165" rx="24" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="1055" y="190" width="100" height="44" rx="18" fill="${accent}" />
-    <rect x="1065" y="250" width="80" height="88" rx="16" fill="#fff4f7" />
-  </g>
-  <g opacity="0.98">
-    <rect x="225" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="238" y="425" width="82" height="36" rx="14" fill="${accent}" />
-    <rect x="392" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="405" y="425" width="82" height="36" rx="14" fill="${accent}" />
-    <rect x="559" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="572" y="425" width="82" height="36" rx="14" fill="${accent}" />
-    <rect x="726" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="739" y="425" width="82" height="36" rx="14" fill="${accent}" />
-    <rect x="893" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="906" y="425" width="82" height="36" rx="14" fill="${accent}" />
-    <rect x="1060" y="450" width="108" height="148" rx="20" fill="url(#glass)" stroke="#e7edf1" />
-    <rect x="1073" y="425" width="82" height="36" rx="14" fill="${accent}" />
-  </g>
-  <rect x="160" y="730" width="1080" height="28" rx="14" fill="${accent}" opacity="0.24" />
-  <circle cx="1188" cy="154" r="72" fill="${accent}" opacity="0.12" />
-</svg>
-`)}`;
-
-const gallery = [
-  makeStoreImage('#d6336c', '#fff2f6'),
-  makeStoreImage('#f0b429', '#fff9ea'),
-  makeStoreImage('#2f9ea6', '#eefbfc'),
+  {
+    step: '01',
+    title: 'Chia sẻ nhu cầu',
+    text: 'Cho chúng tôi biết người dùng, độ tuổi và điều bạn đang quan tâm.',
+  },
+  {
+    step: '02',
+    title: 'So sánh phù hợp',
+    text: 'Nhận gợi ý ngắn gọn, dễ hiểu giữa những lựa chọn phù hợp nhất.',
+  },
+  {
+    step: '03',
+    title: 'An tâm nhận hàng',
+    text: 'Xác nhận sản phẩm, kiểm tra đơn và nhận hàng được đóng gói cẩn thận.',
+  },
 ];
 
 export default function GioiThieuPage() {
+  useDocumentMeta({
+    title: 'Giới thiệu Sữa Chi Mai | Tư vấn dinh dưỡng tận tâm',
+  });
+
   return (
-    <div className="section">
-      <div className="store-page-shell">
-        <section className="store-hero-card">
-          <div className="store-hero-copy">
-            <span className="store-eyebrow">Giới thiệu cửa hàng</span>
-            <h1>Sữa Chi Mai - chọn đúng sản phẩm, chăm đúng nhu cầu</h1>
-            <p className="store-lead">
-              Chúng tôi tập trung vào các dòng sữa và dinh dưỡng chính hãng cho bé, mẹ bầu và gia đình,
-              kèm tư vấn nhanh để bạn chọn đúng sản phẩm theo độ tuổi, thể trạng và mục tiêu sử dụng.
+    <div className="about-page">
+      <div className="about-shell">
+        <section className="about-hero" aria-labelledby="about-title">
+          <div className="about-hero-copy">
+            <span className="about-kicker"><FaStore /> Câu chuyện Sữa Chi Mai</span>
+            <h1 id="about-title">Chọn đúng dinh dưỡng, an tâm cho cả nhà</h1>
+            <p>
+              Sữa Chi Mai giúp việc chọn sữa và sản phẩm dinh dưỡng trở nên đơn giản hơn bằng
+              thông tin rõ ràng, tư vấn theo nhu cầu và trải nghiệm mua sắm gần gũi.
             </p>
 
-            <div className="store-highlight-list">
-              {highlights.map((item) => (
-                <div className="store-highlight-item" key={item}>
-                  <span />
-                  <p>{item}</p>
-                </div>
-              ))}
+            <div className="about-actions">
+              <Link className="btn primary about-primary-action" to="/products">
+                Khám phá sản phẩm <FaArrowRight />
+              </Link>
+              <Link className="about-text-link" to="/contact">
+                Nhận tư vấn <FaArrowRight />
+              </Link>
             </div>
 
-            <div className="store-stat-grid">
-              {stats.map((stat) => (
-                <div className="store-stat" key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="store-actions">
-              <Link className="btn primary" to="/products">Khám phá sản phẩm</Link>
-              <Link className="btn ghost" to="/contact">Liên hệ tư vấn</Link>
+            <div className="about-proof-row" aria-label="Cam kết nổi bật">
+              <span><FaCheck /> Nguồn gốc rõ ràng</span>
+              <span><FaCheck /> Tư vấn theo nhu cầu</span>
+              <span><FaCheck /> Hỗ trợ mỗi ngày</span>
             </div>
           </div>
 
-          <div className="store-hero-visual">
-            <div className="visual-main">
-              <img src={gallery[0]} alt="Cửa hàng Sữa Chi Mai" />
-              <div className="visual-badge">Tươi ngon mỗi ngày</div>
-            </div>
-            <div className="visual-mini-grid">
-              <img src={gallery[1]} alt="Sản phẩm sữa chính hãng" />
-              <img src={gallery[2]} alt="Sản phẩm dinh dưỡng nổi bật" />
-            </div>
-            <div className="visual-note">
-              <strong>Không gian mua sắm thân thiện</strong>
-              <span>Kệ hàng rõ ràng, sản phẩm trưng bày gọn gàng và dễ chọn theo từng nhu cầu.</span>
+          <div className="about-hero-media">
+            <picture>
+              <source
+                srcSet={`${consultationHero640} 640w, ${consultationHero960} 960w, ${consultationHero} 1440w`}
+                sizes="(max-width: 900px) 100vw, 52vw"
+              />
+              <img
+                src={consultationHero}
+                alt="Nhân viên Sữa Chi Mai tư vấn sản phẩm dinh dưỡng cho mẹ và bé"
+                width="1440"
+                height="901"
+                fetchPriority="high"
+              />
+            </picture>
+            <div className="about-media-note">
+              <span><FaHeart /></span>
+              <div>
+                <strong>Gần gũi như người nhà</strong>
+                <small>Lắng nghe trước, tư vấn sau</small>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="store-section">
-          <div className="section-title store-section-title">
-            <h2>Vì sao khách hàng chọn Sữa Chi Mai</h2>
+        <section className="about-commitments" aria-labelledby="commitment-title">
+          <div className="about-section-heading">
+            <span className="about-kicker">Điều chúng tôi theo đuổi</span>
+            <h2 id="commitment-title">Một trải nghiệm mua sữa nhẹ nhàng và đáng tin cậy</h2>
+            <p>Không cần quá nhiều lựa chọn. Điều quan trọng là lựa chọn phù hợp và dễ hiểu.</p>
           </div>
-          <div className="store-pillars-grid">
-            {pillars.map((pillar) => (
-              <article className="store-pillar-card" key={pillar.title}>
-                <h3>{pillar.title}</h3>
-                <p>{pillar.text}</p>
+
+          <div className="about-commitment-grid">
+            {commitments.map(({ icon: Icon, title, text }) => (
+              <article className="about-commitment-card" key={title}>
+                <span className="about-card-icon"><Icon /></span>
+                <h3>{title}</h3>
+                <p>{text}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="store-section store-story-section">
-          <div className="store-story-copy">
-            <span className="store-eyebrow">Hành trình phục vụ</span>
-            <h2>Gọn gàng từ khâu chọn sản phẩm đến lúc giao hàng</h2>
-            <p>
-              Chúng tôi xây dựng quy trình mua sắm đơn giản: xem sản phẩm, được tư vấn nhanh, đặt hàng và
-              nhận hàng trong thời gian ngắn nhất có thể. Mục tiêu là giúp việc mua sữa không còn rối.
-            </p>
+        <section className="about-journey" aria-labelledby="journey-title">
+          <div className="about-journey-media">
+            <picture>
+              <source
+                srcSet={`${orderCare560} 560w, ${orderCare800} 800w, ${orderCare} 1200w`}
+                sizes="(max-width: 900px) 100vw, 44vw"
+              />
+              <img
+                src={orderCare}
+                alt="Đơn hàng sản phẩm dinh dưỡng được đóng gói cẩn thận"
+                width="1200"
+                height="800"
+                loading="lazy"
+              />
+            </picture>
+            <div className="about-image-caption">
+              <FaShieldAlt /> Kiểm tra sản phẩm trước khi đóng gói
+            </div>
           </div>
-          <div className="store-journey-grid">
-            {journey.map((item) => (
-              <div className="journey-card" key={item.step}>
-                <span>{item.step}</span>
-                <strong>{item.title}</strong>
-                <p>{item.text}</p>
-              </div>
-            ))}
+
+          <div className="about-journey-copy">
+            <span className="about-kicker">Hành trình phục vụ</span>
+            <h2 id="journey-title">Từ câu hỏi đầu tiên đến khi đơn hàng tới tay bạn</h2>
+            <p className="about-journey-lead">
+              Quy trình được rút gọn để bạn dễ quyết định, nhưng vẫn có đủ thông tin cần thiết
+              ở từng bước.
+            </p>
+
+            <div className="about-steps">
+              {journey.map((item) => (
+                <article className="about-step" key={item.step}>
+                  <span>{item.step}</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="about-cta" aria-label="Liên hệ Sữa Chi Mai">
+          <div>
+            <span className="about-kicker about-kicker-light">Sữa Chi Mai đồng hành cùng bạn</span>
+            <h2>Bạn chưa biết sản phẩm nào phù hợp?</h2>
+            <p>Hãy chia sẻ nhu cầu, chúng tôi sẽ giúp bạn thu hẹp lựa chọn.</p>
+          </div>
+          <div className="about-cta-actions">
+            <Link className="btn about-cta-button" to="/contact">Liên hệ tư vấn</Link>
+            <Link className="about-cta-link" to="/products">Xem tất cả sản phẩm <FaArrowRight /></Link>
           </div>
         </section>
       </div>
