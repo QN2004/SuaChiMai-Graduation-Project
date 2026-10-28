@@ -1,9 +1,17 @@
 import { useMemo, useState } from 'react';
-import { FaBoxOpen, FaShoppingBag } from 'react-icons/fa';
+import {
+  FaArrowRight,
+  FaBoxOpen,
+  FaCheckCircle,
+  FaClock,
+  FaReceipt,
+  FaShoppingBag,
+  FaWallet
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../api/client';
-import { useFetch } from '../hooks/useFetch';
 import { useUiFeedback } from '../context/UiFeedbackContext';
+import { useFetch } from '../hooks/useFetch';
 import {
   isCompletedStatus,
   isProcessingStatus,
@@ -23,6 +31,10 @@ const statusFilters = [
   { value: 'COMPLETED', label: statusText.COMPLETED },
   { value: 'CANCELLED', label: statusText.CANCELLED }
 ];
+
+const formatOrderDate = (value) => value
+  ? new Date(value).toLocaleString('vi-VN', { dateStyle: 'medium', timeStyle: 'short' })
+  : 'Chưa cập nhật';
 
 export default function MyOrdersPage() {
   const { toast, confirm } = useUiFeedback();
@@ -67,114 +79,113 @@ export default function MyOrdersPage() {
     }
   };
 
+  const statCards = [
+    { label: 'Tổng đơn hàng', value: orders.length, icon: <FaReceipt />, tone: 'pink' },
+    { label: 'Đang xử lý', value: stats.processing, icon: <FaClock />, tone: 'amber' },
+    { label: 'Đã hoàn thành', value: stats.completed, icon: <FaCheckCircle />, tone: 'green' },
+    { label: 'Tổng chi tiêu', value: money(stats.spent), icon: <FaWallet />, tone: 'blue' }
+  ];
+
   return (
-    <section className={`section orders-page page-shell${loading ? ' is-refreshing' : ''}`}>
-      <div className="section-title">
-        <div>
-          <span className="section-kicker">Tài khoản</span>
-          <h2>Đơn hàng của tôi</h2>
-          <p>Theo dõi trạng thái giao hàng, thanh toán và hủy đơn đang chờ xác nhận.</p>
+    <main className={`orders-page orders-page-v2 page-shell${loading ? ' is-refreshing' : ''}`}>
+      <div className="orders-shell">
+        <header className="orders-header">
+          <div>
+            <span className="section-kicker">Tài khoản của bạn</span>
+            <h1>Đơn hàng của tôi</h1>
+            <p>Theo dõi trạng thái, thanh toán và lịch sử mua hàng tại một nơi.</p>
+          </div>
+          <Link className="btn ghost orders-shop-link" to="/products"><FaShoppingBag /> Tiếp tục mua sắm</Link>
+        </header>
+
+        <section className="orders-stats orders-stats-v2" aria-label="Tổng quan đơn hàng">
+          {statCards.map((card) => (
+            <article key={card.label}>
+              <span className={`orders-stat-icon ${card.tone}`}>{card.icon}</span>
+              <div><span>{card.label}</span><strong>{card.value}</strong></div>
+            </article>
+          ))}
+        </section>
+
+        <div className="orders-filter-wrap">
+          <div className="orders-toolbar" role="tablist" aria-label="Lọc theo trạng thái">
+            {statusFilters.map((filter) => {
+              const count = filter.value
+                ? orders.filter((order) => order.order_status === filter.value).length
+                : orders.length;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  key={filter.value || 'all'}
+                  className={`orders-filter${statusFilter === filter.value ? ' active' : ''}`}
+                  aria-selected={statusFilter === filter.value}
+                  onClick={() => setStatusFilter(filter.value)}
+                >
+                  {filter.label}<span>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          <span className="orders-result-count">{visibleOrders.length} đơn hàng</span>
         </div>
-        <Link className="btn ghost" to="/products">Tiếp tục mua sắm</Link>
-      </div>
 
-      <div className="orders-stats">
-        <article>
-          <span>Tổng đơn</span>
-          <strong>{orders.length}</strong>
-        </article>
-        <article>
-          <span>Đang xử lý</span>
-          <strong>{stats.processing}</strong>
-        </article>
-        <article>
-          <span>Hoàn thành</span>
-          <strong>{stats.completed}</strong>
-        </article>
-        <article>
-          <span>Tổng chi tiêu</span>
-          <strong>{money(stats.spent)}</strong>
-        </article>
-      </div>
-
-      <div className="orders-toolbar" role="tablist" aria-label="Lọc theo trạng thái">
-        {statusFilters.map((filter) => (
-          <button
-            type="button"
-            role="tab"
-            key={filter.value || 'all'}
-            className={`orders-filter${statusFilter === filter.value ? ' active' : ''}`}
-            aria-selected={statusFilter === filter.value}
-            onClick={() => setStatusFilter(filter.value)}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
-
-      {visibleOrders.length ? (
-        <div className="orders-list">
-          {visibleOrders.map((order) => {
-            const itemCount = Number(order.item_count || 0);
-            const itemQty = Number(order.item_qty || 0);
-            return (
-              <article className="order-card" key={order.id}>
-                <div className="order-card-head">
-                  <div>
-                    <span className="order-code">{orderCode(order)}</span>
-                    <p>
-                      Đặt ngày {order.created_at ? new Date(order.created_at).toLocaleString('vi-VN') : '—'}
-                    </p>
+        {visibleOrders.length ? (
+          <div className="orders-list orders-list-v2">
+            {visibleOrders.map((order) => {
+              const itemCount = Number(order.item_count || 0);
+              const itemQty = Number(order.item_qty || 0);
+              return (
+                <article className="order-card order-card-v2" key={order.id}>
+                  <div className="order-card-main">
+                    <div className="order-card-identity">
+                      <span className="order-card-icon"><FaBoxOpen /></span>
+                      <div>
+                        <span className="order-code">{orderCode(order)}</span>
+                        <p>{formatOrderDate(order.created_at)}</p>
+                      </div>
+                    </div>
+                    <span className={`status-chip ${statusTone(order.order_status)}`}>
+                      {statusText[order.order_status] || order.order_status}
+                    </span>
                   </div>
-                  <span className={`status-chip ${statusTone(order.order_status)}`}>
-                    {statusText[order.order_status] || order.order_status}
-                  </span>
-                </div>
 
-                <div className="order-card-meta">
-                  <span>{itemQty || itemCount ? `${itemQty || itemCount} sản phẩm` : 'Chưa có sản phẩm'}</span>
-                  <span>{paymentText[order.payment_method] || order.payment_method}</span>
-                  <span className={`status-chip compact ${order.payment_status === 'PAID' ? 'success' : 'muted'}`}>
-                    {paymentStatusText[order.payment_status] || 'Chưa thanh toán'}
-                  </span>
-                </div>
-
-                <div className="order-card-foot">
-                  <strong>{money(order.total_amount)}</strong>
-                  <div className="order-card-actions">
-                    {order.order_status === 'PENDING' && (
-                      <button
-                        className="btn danger"
-                        type="button"
-                        disabled={cancellingId === order.id}
-                        onClick={() => cancelOrder(order)}
-                      >
-                        {cancellingId === order.id ? 'Đang hủy...' : 'Hủy đơn'}
-                      </button>
-                    )}
-                    <Link className="btn primary" to={`/my-orders/${order.id}`}>Xem chi tiết</Link>
+                  <div className="order-card-details">
+                    <div><span>Sản phẩm</span><strong>{itemQty || itemCount || 0}</strong></div>
+                    <div><span>Thanh toán</span><strong>{paymentText[order.payment_method] || order.payment_method}</strong></div>
+                    <div><span>Trạng thái tiền</span><strong>{paymentStatusText[order.payment_status] || 'Chưa thanh toán'}</strong></div>
+                    <div className="order-card-amount"><span>Tổng tiền</span><strong>{money(order.total_amount)}</strong></div>
                   </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="orders-empty">
-          <FaBoxOpen />
-          <h3>{orders.length ? 'Không có đơn phù hợp với bộ lọc' : 'Bạn chưa có đơn hàng nào'}</h3>
-          <p>
-            {orders.length
-              ? 'Thử chọn trạng thái khác để xem các đơn còn lại.'
-              : 'Chọn sữa phù hợp rồi đặt hàng, mọi đơn sẽ hiện tại đây.'}
-          </p>
-          {!orders.length && (
-            <Link className="btn primary" to="/products">
-              <FaShoppingBag /> Mua sắm ngay
-            </Link>
-          )}
-        </div>
-      )}
-    </section>
+
+                  <div className="order-card-foot order-card-foot-v2">
+                    <span>{order.order_status === 'PENDING' ? 'Bạn có thể hủy trước khi cửa hàng xác nhận.' : 'Xem chi tiết để theo dõi đơn hàng.'}</span>
+                    <div className="order-card-actions">
+                      {order.order_status === 'PENDING' && (
+                        <button
+                          className="btn order-cancel-btn"
+                          type="button"
+                          disabled={cancellingId === order.id}
+                          onClick={() => cancelOrder(order)}
+                        >
+                          {cancellingId === order.id ? 'Đang hủy...' : 'Hủy đơn'}
+                        </button>
+                      )}
+                      <Link className="btn primary order-detail-link" to={`/my-orders/${order.id}`}>Xem chi tiết <FaArrowRight /></Link>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="orders-empty">
+            <FaBoxOpen />
+            <h3>{orders.length ? 'Không có đơn phù hợp với bộ lọc' : 'Bạn chưa có đơn hàng nào'}</h3>
+            <p>{orders.length ? 'Thử chọn trạng thái khác để xem các đơn còn lại.' : 'Chọn sữa phù hợp rồi đặt hàng, mọi đơn sẽ hiện tại đây.'}</p>
+            {!orders.length && <Link className="btn primary" to="/products"><FaShoppingBag /> Mua sắm ngay</Link>}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
