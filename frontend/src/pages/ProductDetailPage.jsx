@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FaCheckCircle, FaHeadset, FaShoppingBag, FaShieldAlt, FaShippingFast } from 'react-icons/fa';
 import api, { imageUrl } from '../api/client';
 import Loading from '../components/Loading';
 import ProductCard from '../components/ProductCard';
@@ -43,14 +44,16 @@ export default function ProductDetailPage() {
   const gallery = product.images?.length ? product.images : (product.gallery?.length ? product.gallery : [product.image]);
   const mainImage = activeImg || gallery[0];
   const currentPrice = Number(product.sale_price || product.price);
+  const discount = product.sale_price && Number(product.price) > currentPrice
+    ? Math.round((1 - currentPrice / Number(product.price)) * 100)
+    : 0;
   const intro = product.short_description || product.description || 'Sản phẩm chính hãng, được chọn lọc phù hợp cho nhu cầu dinh dưỡng hằng ngày.';
   const stock = Math.max(0, Number(product.stock) || 0);
   const outOfStock = stock <= 0;
   const specs = [
     ['Độ tuổi', product.age_range || 'Đang cập nhật'],
     ['Xuất xứ', product.origin || 'Đang cập nhật'],
-    ['Quy cách', product.weight || 'Đang cập nhật'],
-    ['Tồn kho', stock]
+    ['Quy cách', product.weight || 'Đang cập nhật']
   ];
 
   const buyNow = () => {
@@ -61,131 +64,162 @@ export default function ProductDetailPage() {
 
   return (
     <section className={`section product-detail-page page-shell${loading ? ' is-refreshing' : ''}`}>
-      <div className="detail-hero">
-        <div>
-          <span className="badge-soft">Chi tiết sản phẩm</span>
-          <h1>{product.name}</h1>
-          <p>{intro}</p>
-        </div>
-        <div className="detail-hero-card">
-          <span>Giá hiện tại</span>
-          <strong>{money(currentPrice)}</strong>
-          <small>{product.sale_price ? `Giá niêm yết ${money(product.price)}` : 'Giá bán chính hãng'}</small>
-        </div>
-      </div>
+      <div className="product-detail-shell">
+        <nav className="product-breadcrumb" aria-label="Đường dẫn">
+          <button type="button" onClick={() => navigate('/')}>Trang chủ</button>
+          <span>/</span>
+          <button type="button" onClick={() => navigate('/products')}>Sản phẩm</button>
+          <span>/</span>
+          <strong>{product.name}</strong>
+        </nav>
 
-      <div className="detail-layout">
-        <div className="detail-image">
+        <div className="detail-layout">
+          <div className="detail-image">
           <div className="detail-main">
             <img src={imageUrl(mainImage)} alt={product.name} />
+            {discount > 0 && <span className="detail-discount-badge">-{discount}%</span>}
           </div>
-          <div className="detail-thumbs">
-            {gallery.map((img, index) => (
-              <button key={index} className={`thumb ${img === mainImage ? 'active' : ''}`} onClick={() => setActiveImg(img)}>
-                <img src={imageUrl(img)} alt={`${product.name} ${index + 1}`} />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="detail-info">
-          <span className="badge-soft">{product.category_name} / {product.brand_name}</span>
-          <h1>{product.name}</h1>
-          <div className="detail-price">
-            {money(currentPrice)}
-            {product.sale_price && <del>{money(product.price)}</del>}
-          </div>
-          <p>{intro}</p>
-
-          <div className="spec-grid">
-            {specs.map(([label, value]) => (
-              <span key={label}>{label}: <b>{value}</b></span>
-            ))}
-          </div>
-
-          <div className="buy-row">
-            {outOfStock ? (
-              <div className="sold-out-banner">
-                <strong>Hết hàng</strong>
-                <span>Sản phẩm tạm hết. Chọn sản phẩm khác hoặc liên hệ cửa hàng để được tư vấn.</span>
+            {gallery.length > 1 && (
+              <div className="detail-thumbs">
+                {gallery.map((img, index) => (
+                  <button key={index} type="button" className={`thumb ${img === mainImage ? 'active' : ''}`} onClick={() => setActiveImg(img)}>
+                    <img src={imageUrl(img)} alt={`${product.name} ${index + 1}`} />
+                  </button>
+                ))}
               </div>
-            ) : (
-              <>
-                <div className="qty-control">
-                  <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.max(1, value - 1))}>-</button>
-                  <input type="number" min="1" max={stock} value={qty} onChange={(event) => setQty(Math.min(stock, Math.max(1, Number(event.target.value) || 1)))} />
-                  <button className="icon-btn" type="button" onClick={() => setQty((value) => Math.min(stock, value + 1))}>+</button>
-                </div>
-                <div className="detail-actions">
-                  <button className="btn primary" type="button" onClick={() => addToCart(product, qty)}>Thêm vào giỏ</button>
-                  <button className="btn accent" type="button" onClick={buyNow}>Mua ngay</button>
-                </div>
-              </>
             )}
           </div>
-        </div>
-      </div>
 
-      <div className="detail-intro">
-        <div className="detail-intro-copy">
-          <span className="badge-soft">Tổng quan</span>
-          <h2>{product.name}</h2>
-          <p>{intro}</p>
-          {product.benefits && <p><b>Lợi ích:</b> {product.benefits}</p>}
-        </div>
-        <div className="detail-intro-box">
-          <h3>Điểm nổi bật</h3>
-          <ul>
-            <li>Hàng chính hãng, nguồn gốc rõ ràng</li>
-            <li>Phù hợp: {product.age_range || 'đang cập nhật'}</li>
-            <li>Quy cách: {product.weight || 'đang cập nhật'}</li>
-            <li>Còn {product.stock ?? 0} sản phẩm trong kho</li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="tabs-panel">
-        <div className="detail-tabs">
-          <button className={`btn ${tab === 'description' ? 'primary' : 'ghost'}`} onClick={() => setTab('description')}>Mô tả</button>
-          <button className={`btn ${tab === 'ingredients' ? 'primary' : 'ghost'}`} onClick={() => setTab('ingredients')}>Thành phần</button>
-          <button className={`btn ${tab === 'reviews' ? 'primary' : 'ghost'}`} onClick={() => setTab('reviews')}>Đánh giá ({reviews.data?.length || 0})</button>
-        </div>
-
-        {tab === 'description' && (
-          <div>
-            <h3>Thông tin chi tiết</h3>
-            <p>{product.description || intro}</p>
-            {product.usage_instructions && <p><b>Hướng dẫn sử dụng:</b> {product.usage_instructions}</p>}
-          </div>
-        )}
-
-        {tab === 'ingredients' && (
-          <div>
-            <h3>Thành phần & công dụng</h3>
-            {product.ingredients && <p><b>Thành phần:</b> {product.ingredients}</p>}
-            {product.benefits && <p><b>Công dụng:</b> {product.benefits}</p>}
-            {!product.ingredients && !product.benefits && <p>Thông tin thành phần đang được cập nhật.</p>}
-          </div>
-        )}
-
-        {tab === 'reviews' && (
-          <div>
-            <h3>Đánh giá sản phẩm</h3>
-            {reviews.data?.length ? reviews.data.map((review) => (
-              <div className="review" key={review.id}>
-                <b>{review.full_name}</b>
-                <div className="small muted">{review.rating}/5</div>
-                <p>{review.comment}</p>
+          <div className="detail-info">
+            <div className="detail-info-top">
+              <div className="detail-meta-line">
+                <span>{product.brand_name || 'Sữa Chi Mai'}</span>
+                <span className={outOfStock ? 'stock-pill is-out' : 'stock-pill'}>{outOfStock ? 'Hết hàng' : `Còn hàng · ${stock} sản phẩm`}</span>
               </div>
-            )) : <p>Chưa có đánh giá.</p>}
+              <h1>{product.name}</h1>
+              <p className="detail-summary">{intro}</p>
+            </div>
+
+            <div className="detail-price-panel">
+              <div className="detail-price-block">
+                <div className="detail-price">
+                  {money(currentPrice)}
+                  {product.sale_price && <del>{money(product.price)}</del>}
+                </div>
+                {discount > 0 && <span className="detail-saving">Tiết kiệm {money(Number(product.price) - currentPrice)}</span>}
+              </div>
+
+              <div className="spec-grid">
+                {specs.map(([label, value]) => (
+                  <div key={label}><span>{label}</span><strong>{value}</strong></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="detail-action-panel">
+              <div className="buy-row">
+                {outOfStock ? (
+                  <div className="sold-out-banner">
+                    <strong>Hiện sản phẩm đang hết hàng</strong>
+                    <span>Liên hệ cửa hàng để được tư vấn sản phẩm thay thế phù hợp.</span>
+                  </div>
+                ) : (
+                  <>
+                  <div className="quantity-label">Số lượng</div>
+                  <div className="qty-control">
+                    <button className="icon-btn" type="button" aria-label="Giảm số lượng" onClick={() => setQty((value) => Math.max(1, value - 1))}>−</button>
+                    <input type="number" min="1" max={stock} value={qty} onChange={(event) => setQty(Math.min(stock, Math.max(1, Number(event.target.value) || 1)))} />
+                    <button className="icon-btn" type="button" aria-label="Tăng số lượng" onClick={() => setQty((value) => Math.min(stock, value + 1))}>+</button>
+                  </div>
+                  <div className="detail-actions">
+                    <button className="btn primary" type="button" onClick={() => addToCart(product, qty)}><FaShoppingBag /> Thêm vào giỏ</button>
+                    <button className="btn accent" type="button" onClick={buyNow}>Mua ngay</button>
+                  </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="detail-support-grid">
+          <section className="detail-assurance-card">
+            <div className="detail-support-heading">
+              <span>An tâm mua sắm</span>
+              <small>Dịch vụ tại Sữa Chi Mai</small>
+            </div>
+            <div className="detail-assurances">
+              <div><FaShieldAlt /><span><strong>Sản phẩm chính hãng</strong><small>Nguồn gốc rõ ràng</small></span></div>
+              <div><FaShippingFast /><span><strong>Giao hàng nhanh</strong><small>Nội khu Đại Lộc</small></span></div>
+              <div><FaHeadset /><span><strong>Hỗ trợ mỗi ngày</strong><small>7:00 – 22:00</small></span></div>
+            </div>
+          </section>
+        </div>
+
+        <div className="detail-content-layout">
+          <div className="tabs-panel">
+            <div className="detail-tabs">
+              <button className={tab === 'description' ? 'active' : ''} onClick={() => setTab('description')}>Mô tả sản phẩm</button>
+              <button className={tab === 'ingredients' ? 'active' : ''} onClick={() => setTab('ingredients')}>Thành phần &amp; công dụng</button>
+              <button className={tab === 'reviews' ? 'active' : ''} onClick={() => setTab('reviews')}>Đánh giá ({reviews.data?.length || 0})</button>
+            </div>
+
+            <div className="detail-tab-content">
+              {tab === 'description' && (
+                <div>
+                  <h2>Thông tin về {product.name}</h2>
+                  <p>{product.description || intro}</p>
+                  {product.usage_instructions && <><h3>Hướng dẫn sử dụng</h3><p>{product.usage_instructions}</p></>}
+                </div>
+              )}
+
+              {tab === 'ingredients' && (
+                <div>
+                  <h2>Thành phần &amp; công dụng</h2>
+                  {product.ingredients && <><h3>Thành phần</h3><p>{product.ingredients}</p></>}
+                  {product.benefits && <><h3>Công dụng</h3><p>{product.benefits}</p></>}
+                  {!product.ingredients && !product.benefits && <p>Thông tin thành phần đang được cập nhật.</p>}
+                </div>
+              )}
+
+              {tab === 'reviews' && (
+                <div>
+                  <h2>Đánh giá sản phẩm</h2>
+                  {reviews.data?.length ? reviews.data.map((review) => (
+                    <div className="review" key={review.id}>
+                      <b>{review.full_name}</b>
+                      <div className="small muted">{review.rating}/5</div>
+                      <p>{review.comment}</p>
+                    </div>
+                  )) : <div className="detail-empty-review">Chưa có đánh giá cho sản phẩm này.</div>}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <aside className="detail-highlights">
+            <span className="badge-soft">Thông tin nhanh</span>
+            <h2>Điểm nổi bật</h2>
+            <ul>
+              <li><FaCheckCircle /><span>Hàng chính hãng, nguồn gốc rõ ràng</span></li>
+              <li><FaCheckCircle /><span>Phù hợp: <strong>{product.age_range || 'đang cập nhật'}</strong></span></li>
+              <li><FaCheckCircle /><span>Quy cách: <strong>{product.weight || 'đang cập nhật'}</strong></span></li>
+              {product.benefits && <li><FaCheckCircle /><span>{product.benefits}</span></li>}
+            </ul>
+            <button className="btn ghost" type="button" onClick={() => navigate('/contact')}><FaHeadset /> Cần tư vấn thêm</button>
+          </aside>
+        </div>
+
+        {!!data.related?.length && (
+          <section className="detail-related">
+            <div className="section-title related-title">
+              <div><span className="section-kicker">Có thể bạn quan tâm</span><h2>Sản phẩm liên quan</h2></div>
+              <button className="btn ghost" type="button" onClick={() => navigate('/products')}>Xem tất cả</button>
+            </div>
+            <div className="product-grid">{data.related.map((item) => <ProductCard product={item} key={item.id} />)}</div>
+          </section>
         )}
       </div>
-
-      <div className="section-title related-title">
-        <h2>Sản phẩm liên quan</h2>
-      </div>
-      <div className="product-grid">{data.related.map((item) => <ProductCard product={item} key={item.id} />)}</div>
     </section>
   );
 }
