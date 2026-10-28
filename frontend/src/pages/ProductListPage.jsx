@@ -204,16 +204,6 @@ export default function ProductListPage() {
           </label>
 
           <label className="filter-field">
-            <span>Danh mục</span>
-            <select value={filters.category} onChange={(event) => update('category', event.target.value)}>
-              <option value="">Tất cả danh mục</option>
-              {meta.categories.map((category) => (
-                <option value={category.id} key={category.id}>{category.name}</option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
             <span>Thương hiệu</span>
             <select value={filters.brand} onChange={(event) => update('brand', event.target.value)}>
               <option value="">Tất cả thương hiệu</option>
