@@ -148,7 +148,7 @@ export default function MainLayout() {
               </div>
             </div>
           ) : (
-            <Link className="btn header-login-btn" to="/login">
+            <Link className="btn header-login-btn" to="/login" aria-label="Đăng nhập">
               <FaUserCircle />
               Đăng nhập
             </Link>

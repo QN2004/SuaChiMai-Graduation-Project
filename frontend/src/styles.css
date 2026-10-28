@@ -3024,11 +3024,29 @@ del { color: var(--muted); }
 @media (max-width: 720px) {
   .home-page .hero {
     min-height: auto;
-    padding: 54px 16px 18px;
+    padding: 28px 16px 168px;
   }
 
   .home-page .hero h1 {
-    font-size: clamp(36px, 12vw, 48px);
+    margin: 8px 0;
+    font-size: clamp(30px, 8.4vw, 40px);
+    line-height: 1.05;
+  }
+
+  .home-page .hero p {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .hero-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .home-page .hero .btn {
+    min-height: 44px;
+    padding: 10px 12px;
   }
 
   .hero-card {
@@ -3037,6 +3055,18 @@ del { color: var(--muted); }
 
   .home-page .hero-features {
     grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .home-page .hero-feature-item {
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .home-page .feature-icon {
+    width: 36px;
+    height: 36px;
   }
 
   .home-page .section-title {
@@ -3044,7 +3074,8 @@ del { color: var(--muted); }
   }
 
   .hero-actions .btn {
-    width: 100%;
+    flex: 1;
+    width: auto;
   }
 }
 
@@ -3262,16 +3293,15 @@ del { color: var(--muted); }
 
 @media (max-width: 600px) {
   .chatbot-window {
-    bottom: 0;
+    top: 0;
     right: 0;
+    bottom: auto;
+    left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     border-radius: 0;
-    animation: chatSlideUpMobile .3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes chatSlideUpMobile {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    transform: none;
+    animation: none;
   }
   .chatbot-trigger {
     bottom: 20px;
@@ -3964,12 +3994,18 @@ del { color: var(--muted); }
 
   .chatbot-window,
   .chatbot-window.is-expanded {
+    top: 0;
+    right: auto;
+    bottom: auto;
+    left: 0;
     width: 100%;
-    height: 100dvh;
+    height: 100%;
+    max-height: none;
     min-width: 0;
     min-height: 0;
-    bottom: 0;
     resize: none;
+    transform: none;
+    animation: none;
     border: 0;
     border-radius: 0;
   }
@@ -3981,6 +4017,12 @@ del { color: var(--muted); }
   .chatbot-trigger {
     width: 66px;
     height: 66px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .footer {
+    padding-bottom: 118px;
   }
 
   .chatbot-header .chatbot-close:first-of-type {
@@ -6404,4 +6446,109 @@ del { color: var(--muted); }
 .admin-antd-page .ant-form-item-label > label {
   font-weight: 700;
   color: #243746;
+}
+
+/* Later rules above re-declare desktop grids and override earlier breakpoints. */
+@media (max-width: 1100px) {
+  .home-product-grid,
+  .featured-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    grid-template-columns: auto auto minmax(0, 1fr);
+    row-gap: 10px;
+  }
+
+  .header-left { grid-column: 1; grid-row: 1; }
+  .logo { font-size: 20px; white-space: nowrap; }
+  .mobile-only { grid-column: 2; grid-row: 1; justify-self: end; }
+  .header-actions {
+    grid-column: 3;
+    grid-row: 1;
+    width: auto;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+  .header-login-btn { white-space: nowrap; flex-shrink: 0; }
+  .header-search-form {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .nav {
+    display: none;
+    position: static;
+    width: auto;
+  }
+  .nav.open {
+    display: flex;
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+  }
+  .logo-subtitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .store-showcase,
+  .store-hero-card,
+  .store-story-section,
+  .store-pillars-grid,
+  .store-journey-grid,
+  .store-stat-grid,
+  .footer {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card,
+  .product-body,
+  .product-name,
+  .product-meta-row,
+  .price-row {
+    min-width: 0;
+  }
+
+  .product-cart-btn {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-login-btn {
+    font-size: 0;
+    gap: 0;
+    padding: 10px;
+  }
+  .header-login-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .home-product-grid,
+  .featured-product-grid,
+  .home-page .news-grid,
+  .home-page .category-grid,
+  .product-detail-page .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* iOS Safari zooms a focused field when its font size is below 16px. */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
