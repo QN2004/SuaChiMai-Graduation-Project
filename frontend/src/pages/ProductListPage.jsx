@@ -25,6 +25,11 @@ const readFilters = (params) => ({
   page: Number(params.get('page')) || 1
 });
 
+const categoryIdsFromValue = (value) => String(value || '')
+  .split(',')
+  .map((item) => item.trim())
+  .filter(Boolean);
+
 export default function ProductListPage() {
   const [params, setParams] = useSearchParams();
   const [filters, setFilters] = useState(() => readFilters(params));
@@ -112,7 +117,10 @@ export default function ProductListPage() {
   };
 
   const pages = Math.max(1, Math.ceil(data.total / 12));
-  const selectedCategory = meta.categories.find((item) => String(item.id) === String(filters.category));
+  const selectedCategoryIds = useMemo(() => categoryIdsFromValue(filters.category), [filters.category]);
+  const selectedCategories = useMemo(() => meta.categories.filter(
+    (item) => selectedCategoryIds.includes(String(item.id))
+  ), [meta.categories, selectedCategoryIds]);
   const selectedBrand = meta.brands.find((item) => String(item.id) === String(filters.brand));
   const hasActiveFilters = Boolean(
     filters.q || filters.category || filters.brand || filters.minPrice || filters.maxPrice || (filters.sort && filters.sort !== 'latest')
@@ -121,14 +129,29 @@ export default function ProductListPage() {
   const activeChips = useMemo(() => {
     const chips = [];
     if (filters.q) chips.push({ key: 'q', label: `“${filters.q}”` });
-    if (selectedCategory) chips.push({ key: 'category', label: selectedCategory.name });
+    selectedCategories.forEach((category) => chips.push({
+      key: `category:${category.id}`,
+      label: category.name
+    }));
     if (selectedBrand) chips.push({ key: 'brand', label: selectedBrand.name });
     if (filters.minPrice) chips.push({ key: 'minPrice', label: `Từ ${Number(filters.minPrice).toLocaleString('vi-VN')}đ` });
     if (filters.maxPrice) chips.push({ key: 'maxPrice', label: `Đến ${Number(filters.maxPrice).toLocaleString('vi-VN')}đ` });
     return chips;
-  }, [filters, selectedBrand, selectedCategory]);
+  }, [filters, selectedBrand, selectedCategories]);
+
+  const toggleCategory = (categoryId) => {
+    const value = String(categoryId);
+    const next = selectedCategoryIds.includes(value)
+      ? selectedCategoryIds.filter((id) => id !== value)
+      : [...selectedCategoryIds, value];
+    update('category', next.join(','));
+  };
 
   const removeChip = (key) => {
+    if (key.startsWith('category:')) {
+      toggleCategory(key.split(':')[1]);
+      return;
+    }
     if (key === 'q') setSearchInput('');
     if (key === 'minPrice') setMinPriceInput('');
     if (key === 'maxPrice') setMaxPriceInput('');
@@ -136,9 +159,11 @@ export default function ProductListPage() {
     else update(key, '');
   };
 
-  const title = selectedCategory?.name || 'Tất cả sản phẩm';
-  const subtitle = selectedCategory
-    ? `Sản phẩm thuộc danh mục ${selectedCategory.name}.`
+  const title = selectedCategories.length === 1 ? selectedCategories[0].name : 'Tất cả sản phẩm';
+  const subtitle = selectedCategories.length > 1
+    ? `Đang hiển thị sản phẩm thuộc ${selectedCategories.length} danh mục đã chọn.`
+    : selectedCategories.length === 1
+      ? `Sản phẩm thuộc danh mục ${selectedCategories[0].name}.`
     : 'Tìm theo tên, lọc danh mục, thương hiệu và khoảng giá phù hợp.';
 
   return (
@@ -156,10 +181,11 @@ export default function ProductListPage() {
       </div>
 
       {meta.categories.length > 0 && (
-        <div className="shop-category-pills" role="tablist" aria-label="Lọc nhanh theo danh mục">
+        <div className="shop-category-pills" role="group" aria-label="Lọc theo một hoặc nhiều danh mục">
           <button
             type="button"
-            className={`shop-pill${!filters.category ? ' active' : ''}`}
+            className={`shop-pill${selectedCategoryIds.length === 0 ? ' active' : ''}`}
+            aria-pressed={selectedCategoryIds.length === 0}
             onClick={() => update('category', '')}
           >
             Tất cả
@@ -168,8 +194,9 @@ export default function ProductListPage() {
             <button
               type="button"
               key={category.id}
-              className={`shop-pill${String(filters.category) === String(category.id) ? ' active' : ''}`}
-              onClick={() => update('category', String(category.id))}
+              className={`shop-pill${selectedCategoryIds.includes(String(category.id)) ? ' active' : ''}`}
+              aria-pressed={selectedCategoryIds.includes(String(category.id))}
+              onClick={() => toggleCategory(category.id)}
             >
               {category.name}
             </button>
