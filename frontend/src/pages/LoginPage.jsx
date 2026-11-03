@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FaEnvelope, FaEye, FaEyeSlash, FaLock, FaPhoneAlt, FaUser } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useDocumentMeta from '../hooks/useDocumentMeta';
@@ -48,45 +49,86 @@ export default function LoginPage() {
 }
 
 export function AuthForm({ title, message, form, setForm, submit, button, register = false, footer }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <section className="auth-page">
       <form className="auth-card" onSubmit={submit}>
-        <h1>{title}</h1>
+        <div className="auth-card-heading">
+          <h1>{title}</h1>
+        </div>
         {message && <div className="alert">{message}</div>}
         {register && (
-          <input
-            required
-            placeholder="Họ tên"
-            value={form.full_name}
-            onChange={(event) => setForm({ ...form, full_name: event.target.value })}
-          />
+          <label className="auth-field">
+            <span>Họ và tên</span>
+            <div className="auth-input-wrap">
+              <FaUser />
+              <input
+                required
+                placeholder="Nhập họ và tên"
+                autoComplete="name"
+                value={form.full_name}
+                onChange={(event) => setForm({ ...form, full_name: event.target.value })}
+              />
+            </div>
+          </label>
         )}
         {register && (
-          <input
-            required
-            placeholder="Số điện thoại"
-            value={form.phone}
-            onChange={(event) => setForm({ ...form, phone: event.target.value })}
-          />
+          <label className="auth-field">
+            <span>Số điện thoại</span>
+            <div className="auth-input-wrap">
+              <FaPhoneAlt />
+              <input
+                required
+                type="tel"
+                inputMode="tel"
+                placeholder="Nhập số điện thoại"
+                autoComplete="tel"
+                value={form.phone}
+                onChange={(event) => setForm({ ...form, phone: event.target.value })}
+              />
+            </div>
+          </label>
         )}
-        <input
-          required
-          type="email"
-          placeholder="Nhập email"
-          autoComplete="username"
-          value={form.email}
-          onChange={(event) => setForm({ ...form, email: event.target.value })}
-        />
-        <input
-          required
-          type="password"
-          placeholder="Nhập mật khẩu"
-          autoComplete="current-password"
-          value={form.password}
-          onChange={(event) => setForm({ ...form, password: event.target.value })}
-        />
-        <button className="btn primary full">{button}</button>
-        {footer}
+        <label className="auth-field">
+          <span>Email</span>
+          <div className="auth-input-wrap">
+            <FaEnvelope />
+            <input
+              required
+              type="email"
+              placeholder="Nhập email"
+              autoComplete="username"
+              value={form.email}
+              onChange={(event) => setForm({ ...form, email: event.target.value })}
+            />
+          </div>
+        </label>
+        <label className="auth-field">
+          <span>Mật khẩu</span>
+          <div className="auth-input-wrap auth-password-wrap">
+            <FaLock />
+            <input
+              required
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Nhập mật khẩu"
+              autoComplete={register ? 'new-password' : 'current-password'}
+              value={form.password}
+              onChange={(event) => setForm({ ...form, password: event.target.value })}
+            />
+            <button
+              className="auth-password-toggle"
+              type="button"
+              aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword((value) => !value)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+        </label>
+        <button className="btn primary full auth-submit" type="submit">{button}</button>
+        <div className="auth-footer">{footer}</div>
       </form>
     </section>
   );
