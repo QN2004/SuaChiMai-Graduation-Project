@@ -95,13 +95,13 @@ export default function MainLayout() {
         </form>
 
         <div className="header-actions">
-          <a className="header-hotline" href="tel:0987654321">
+          <div className="header-hotline">
             <span className="header-hotline-icon"><FaPhoneAlt /></span>
             <span className="header-hotline-text">
               <strong>0987 654 321</strong>
               <small>7:00 - 22:00 mỗi ngày</small>
             </span>
-          </a>
+          </div>
 
           <Link className="cart-link" to="/cart" aria-label={`Giỏ hàng (${count})`}>
             <FaShoppingBag />

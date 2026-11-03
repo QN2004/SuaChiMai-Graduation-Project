@@ -50,8 +50,14 @@ export const getProducts = async (req, res, next) => {
       params.push(keyword, keyword);
     }
     if (category) {
-      where.push('p.category_id=?');
-      params.push(category);
+      const categoryIds = String(category)
+        .split(',')
+        .map((value) => Number(value.trim()))
+        .filter((value) => Number.isInteger(value) && value > 0);
+      if (categoryIds.length) {
+        where.push(`p.category_id IN (${categoryIds.map(() => '?').join(',')})`);
+        params.push(...categoryIds);
+      }
     }
     if (brand) {
       where.push('p.brand_id=?');
