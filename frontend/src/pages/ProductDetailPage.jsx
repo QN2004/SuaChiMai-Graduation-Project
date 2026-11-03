@@ -58,8 +58,9 @@ export default function ProductDetailPage() {
 
   const buyNow = () => {
     if (outOfStock) return;
-    addToCart(product, qty);
-    navigate('/checkout');
+    navigate('/checkout', {
+      state: { buyNow: { product, quantity: qty } }
+    });
   };
 
   return (
