@@ -4,11 +4,14 @@ USE milk_store;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS contacts;
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS order_detail_batches;
 DROP TABLE IF EXISTS order_details;
 DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS product_batches;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS brands;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS baby_profiles;
 DROP TABLE IF EXISTS users;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -23,6 +26,20 @@ CREATE TABLE users (
   address TEXT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Hồ sơ bé: mỗi khách có thể tạo nhiều bé, một bé đang chọn (is_default) dùng cho tư vấn và cảnh báo.
+CREATE TABLE baby_profiles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  name VARCHAR(60) NOT NULL,
+  birth_date DATE NOT NULL,
+  weight_kg DECIMAL(4,1) NULL,
+  conditions VARCHAR(200) NOT NULL DEFAULT '',
+  is_default TINYINT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT chk_baby_weight CHECK (weight_kg IS NULL OR weight_kg BETWEEN 0.5 AND 60),
+  CONSTRAINT fk_babies_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE categories (
@@ -57,6 +74,14 @@ CREATE TABLE products (
   price DECIMAL(12,2) NOT NULL,
   sale_price DECIMAL(12,2) NULL,
   stock INT DEFAULT 0,
+  usage_days INT NOT NULL DEFAULT 30,
+  -- Thông tin cho tư vấn theo hồ sơ bé: giai đoạn tuổi (tháng), đối tượng, an toàn dị ứng.
+  audience ENUM('CHILD','MOTHER','ADULT') NOT NULL DEFAULT 'CHILD',
+  stage_min_months INT NULL,
+  stage_max_months INT NULL,
+  cmpa_safe TINYINT NOT NULL DEFAULT 0,
+  lactose_free TINYINT NOT NULL DEFAULT 0,
+  net_weight_g INT NULL,
   age_range VARCHAR(100),
   origin VARCHAR(100),
   weight VARCHAR(100),
@@ -73,6 +98,25 @@ CREATE TABLE products (
   CONSTRAINT fk_products_brand FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE SET NULL
 );
 
+-- Lô hàng: products.stock = tổng remaining của các lô còn bán được (backend đồng bộ lại).
+CREATE TABLE product_batches (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  lot_number VARCHAR(50) NOT NULL,
+  manufactured_date DATE NOT NULL,
+  expiry_date DATE NOT NULL,
+  quantity INT NOT NULL,
+  remaining INT NOT NULL,
+  discount_percent TINYINT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_product_lot (product_id, lot_number),
+  KEY idx_batches_fefo (product_id, expiry_date),
+  CONSTRAINT chk_batch_dates CHECK (manufactured_date < expiry_date),
+  CONSTRAINT chk_batch_remaining CHECK (remaining >= 0 AND remaining <= quantity),
+  CONSTRAINT chk_batch_discount CHECK (discount_percent IS NULL OR discount_percent BETWEEN 1 AND 90),
+  CONSTRAINT fk_batches_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
 CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   order_number VARCHAR(50),
@@ -85,6 +129,9 @@ CREATE TABLE orders (
   payment_method ENUM('COD','BANK_TRANSFER') DEFAULT 'COD',
   payment_status ENUM('UNPAID','PAID') DEFAULT 'UNPAID',
   order_status ENUM('PENDING','CONFIRMED','SHIPPING','COMPLETED','CANCELLED') DEFAULT 'PENDING',
+  -- Lý do khi đơn ở trạng thái Đã hủy: khách hủy, cửa hàng hủy, giao thất bại, hoàn hàng.
+  cancel_reason ENUM('CUSTOMER','STORE','DELIVERY_FAILED','RETURNED') NULL,
+  completed_at DATETIME NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
@@ -100,6 +147,18 @@ CREATE TABLE order_details (
   total_price DECIMAL(12,2),
   CONSTRAINT fk_order_details_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   CONSTRAINT fk_order_details_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+);
+
+-- Mỗi dòng đơn lấy bao nhiêu từ lô nào (FEFO); hủy đơn trả về đúng lô này.
+CREATE TABLE order_detail_batches (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_detail_id INT NOT NULL,
+  batch_id INT NULL,
+  lot_number VARCHAR(50),
+  expiry_date DATE,
+  quantity INT NOT NULL,
+  CONSTRAINT fk_odb_detail FOREIGN KEY (order_detail_id) REFERENCES order_details(id) ON DELETE CASCADE,
+  CONSTRAINT fk_odb_batch FOREIGN KEY (batch_id) REFERENCES product_batches(id) ON DELETE SET NULL
 );
 
 CREATE TABLE reviews (

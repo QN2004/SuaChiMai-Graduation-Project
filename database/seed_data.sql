@@ -218,3 +218,179 @@ INSERT INTO contacts(full_name,email,phone,message,status,reply_message,replied_
 ('Lý Minh Khang','minhkhang@gmail.com','0912000003','Tôi cần xuất hóa đơn cho đơn hàng công ty.','read',NULL,NULL,DATE_SUB(NOW(), INTERVAL 3 DAY)),
 ('Phan Thùy Dung','thuydung@gmail.com','0912000004','Sản phẩm đang giảm giá có hạn sử dụng bao lâu?','new',NULL,NULL,DATE_SUB(NOW(), INTERVAL 1 DAY)),
 ('Vũ Hải Yến','haiyen@gmail.com','0912000005','Shop có giao hàng đến Đồng Nai trong ngày không?','new',NULL,NULL,NOW());
+
+-- Thời gian dùng hết một sản phẩm (ngày) theo nhóm hàng; dùng cho hạn tối thiểu khi bán (usage_days + thời gian giao).
+UPDATE products SET usage_days = CASE category_id
+  WHEN 1 THEN 14  -- sữa bột trẻ em
+  WHEN 2 THEN 3   -- sữa tươi, pha sẵn
+  WHEN 3 THEN 7   -- sữa hạt, ngũ cốc
+  WHEN 4 THEN 14  -- sữa bầu
+  WHEN 5 THEN 2   -- sữa chua, lên men
+  WHEN 6 THEN 5   -- phô mai, váng sữa
+  WHEN 7 THEN 14  -- dinh dưỡng chuyên biệt
+  ELSE 30 END;
+
+-- Phân loại cho tư vấn theo hồ sơ bé (tách từ tên và độ tuổi trên nhãn):
+-- đối tượng, giai đoạn tuổi (tháng), khối lượng tịnh. Sữa bột: usage_days = khối lượng / 57 g mỗi ngày
+-- (lon 800g dùng khoảng 14 ngày). Cửa hàng chưa có sữa thủy phân / không lactose nên cmpa_safe, lactose_free = 0.
+UPDATE products SET audience='MOTHER', net_weight_g=400, usage_days=7 WHERE id=1;
+UPDATE products SET audience='MOTHER', net_weight_g=830, usage_days=15 WHERE id=2;
+UPDATE products SET audience='MOTHER', net_weight_g=400, usage_days=7 WHERE id=3;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=120, net_weight_g=850, usage_days=15 WHERE id=4;
+UPDATE products SET audience='MOTHER', net_weight_g=350, usage_days=6 WHERE id=5;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=6;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=36, net_weight_g=800, usage_days=14 WHERE id=7;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=120, net_weight_g=800, usage_days=14 WHERE id=8;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=9;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=850, usage_days=15 WHERE id=10;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=850, usage_days=15 WHERE id=11;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=120, net_weight_g=1600, usage_days=28 WHERE id=12;
+UPDATE products SET audience='ADULT' WHERE id=13;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=14;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=15;
+UPDATE products SET audience='ADULT' WHERE id=16;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=17;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=18;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=800, usage_days=14 WHERE id=19;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=36, net_weight_g=800, usage_days=14 WHERE id=20;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=800, usage_days=14 WHERE id=21;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=22;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=23;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=800, usage_days=14 WHERE id=24;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=25;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=26;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=27;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=28;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=29;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=30;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=31;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=32;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=33;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=34;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=35;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=36;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=37;
+UPDATE products SET audience='MOTHER', net_weight_g=800, usage_days=14 WHERE id=38;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=39;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=40;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=72, net_weight_g=800, usage_days=14 WHERE id=41;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=800, usage_days=14 WHERE id=42;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=43;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=44;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=800, usage_days=14 WHERE id=45;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=120, net_weight_g=800, usage_days=14 WHERE id=46;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=47;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=48;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=800, usage_days=14 WHERE id=49;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=50;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=51;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=52;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=53;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=54;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=55;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=56;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=120, net_weight_g=800, usage_days=14 WHERE id=57;
+UPDATE products SET audience='CHILD', stage_min_months=36, stage_max_months=72, net_weight_g=1700, usage_days=30 WHERE id=58;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=800, usage_days=14 WHERE id=59;
+UPDATE products SET audience='ADULT', net_weight_g=800, usage_days=14 WHERE id=60;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL, net_weight_g=907, usage_days=16 WHERE id=61;
+UPDATE products SET audience='CHILD', stage_min_months=36, stage_max_months=NULL, net_weight_g=800, usage_days=14 WHERE id=62;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=850, usage_days=15 WHERE id=63;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=850, usage_days=15 WHERE id=64;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=380, usage_days=7 WHERE id=65;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=66;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=850, usage_days=15 WHERE id=67;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=1600, usage_days=28 WHERE id=68;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=850, usage_days=15 WHERE id=69;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=1600, usage_days=28 WHERE id=70;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=400, usage_days=7 WHERE id=71;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=850, usage_days=15 WHERE id=72;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=750, usage_days=13 WHERE id=73;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=350, usage_days=6 WHERE id=74;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=12, net_weight_g=810, usage_days=14 WHERE id=75;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL, net_weight_g=1500, usage_days=26 WHERE id=76;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=850, usage_days=15 WHERE id=77;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=1500, usage_days=26 WHERE id=78;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL, net_weight_g=850, usage_days=15 WHERE id=79;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=1500, usage_days=26 WHERE id=80;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL WHERE id=81;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=400, usage_days=7 WHERE id=82;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=400, usage_days=7 WHERE id=83;
+UPDATE products SET audience='CHILD', stage_min_months=36, stage_max_months=NULL, net_weight_g=800, usage_days=14 WHERE id=84;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=36, net_weight_g=800, usage_days=14 WHERE id=85;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=800, usage_days=14 WHERE id=86;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=800, usage_days=14 WHERE id=87;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=88;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=NULL, net_weight_g=1700, usage_days=30 WHERE id=89;
+UPDATE products SET audience='CHILD', stage_min_months=36, stage_max_months=NULL, net_weight_g=900, usage_days=16 WHERE id=90;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL, net_weight_g=900, usage_days=16 WHERE id=91;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=900, usage_days=16 WHERE id=92;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=12, net_weight_g=400, usage_days=7 WHERE id=93;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=900, usage_days=16 WHERE id=94;
+UPDATE products SET audience='CHILD', stage_min_months=0, stage_max_months=6, net_weight_g=400, usage_days=7 WHERE id=95;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=NULL, net_weight_g=1000, usage_days=18 WHERE id=96;
+UPDATE products SET audience='CHILD', stage_min_months=24, stage_max_months=72, net_weight_g=800, usage_days=14 WHERE id=97;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=800, usage_days=14 WHERE id=98;
+UPDATE products SET audience='CHILD', stage_min_months=12, stage_max_months=24, net_weight_g=400, usage_days=7 WHERE id=99;
+UPDATE products SET audience='CHILD', stage_min_months=6, stage_max_months=NULL WHERE id=100;
+
+-- Lô ban đầu của mỗi sản phẩm: vòng đời theo nhóm hàng, đã qua 30% vòng đời (còn hạn dài).
+-- quantity = tồn hiện tại + số đã bán trong các đơn mẫu chưa hủy.
+INSERT INTO product_batches(product_id, lot_number, manufactured_date, expiry_date, quantity, remaining)
+SELECT p.id, CONCAT('L', LPAD(p.id, 3, '0'), '-A'),
+  CURDATE() - INTERVAL ROUND(l.life * 0.3) DAY,
+  CURDATE() - INTERVAL ROUND(l.life * 0.3) DAY + INTERVAL l.life DAY,
+  p.stock + COALESCE((SELECT SUM(od.quantity) FROM order_details od JOIN orders o ON o.id = od.order_id
+                      WHERE od.product_id = p.id AND o.order_status <> 'CANCELLED'), 0),
+  p.stock
+FROM products p
+JOIN (SELECT id, CASE category_id WHEN 2 THEN 180 WHEN 3 THEN 270 WHEN 5 THEN 45 WHEN 6 THEN 90 ELSE 730 END AS life
+      FROM products) l ON l.id = p.id;
+
+-- Dòng đơn mẫu chưa hủy lấy hàng từ lô ban đầu.
+INSERT INTO order_detail_batches(order_detail_id, batch_id, lot_number, expiry_date, quantity)
+SELECT od.id, b.id, b.lot_number, b.expiry_date, od.quantity
+FROM order_details od
+JOIN orders o ON o.id = od.order_id AND o.order_status <> 'CANCELLED'
+JOIN product_batches b ON b.product_id = od.product_id AND b.lot_number = CONCAT('L', LPAD(od.product_id, 3, '0'), '-A');
+
+-- Lô minh họa (HSD gần hơn nên được bán trước theo FEFO):
+-- #1 cận date ~12% vòng đời, chưa duyệt giảm giá (gợi ý 10%)
+-- #6 cận date ~7%, đã duyệt giảm 20%
+-- #21 cận date ~3,5%, chưa duyệt (gợi ý 30%)
+-- #9 còn 6 ngày < 3 + 7 ngày tối thiểu -> ngừng bán online
+-- #26 đã hết hạn
+INSERT INTO product_batches(product_id, lot_number, manufactured_date, expiry_date, quantity, remaining, discount_percent) VALUES
+(1,  'L001-CD', CURDATE() + INTERVAL 88 DAY - INTERVAL 730 DAY, CURDATE() + INTERVAL 88 DAY, 10, 10, NULL),
+(6,  'L006-CD', CURDATE() + INTERVAL 51 DAY - INTERVAL 730 DAY, CURDATE() + INTERVAL 51 DAY, 8, 8, 20),
+(21, 'L021-CD', CURDATE() + INTERVAL 26 DAY - INTERVAL 730 DAY, CURDATE() + INTERVAL 26 DAY, 6, 6, NULL),
+(9,  'L009-NB', CURDATE() + INTERVAL 6 DAY - INTERVAL 180 DAY, CURDATE() + INTERVAL 6 DAY, 6, 6, NULL),
+(26, 'L026-HH', CURDATE() - INTERVAL 2 DAY - INTERVAL 45 DAY, CURDATE() - INTERVAL 2 DAY, 4, 4, NULL);
+
+-- Sản phẩm đại diện riêng cho từng trạng thái lô (không có trong đơn mẫu, bỏ lô ban đầu để chỉ còn lô minh họa):
+-- #22 chỉ còn lô cận date ~3,4% vòng đời, đã duyệt giảm 30%  -> toàn bộ hàng bán giá giảm
+-- #25 chỉ còn lô HSD 15 ngày < 14 + 7 ngày tối thiểu          -> ngừng bán online, web hiện hết hàng
+-- #33 chỉ còn lô đã hết hạn                                    -> web hiện hết hàng
+-- #44 lô cũ đã bán hết (remaining = 0) + lô ban đầu còn hàng   -> xem lịch sử lô
+DELETE FROM product_batches WHERE product_id IN (22, 25, 33);
+INSERT INTO product_batches(product_id, lot_number, manufactured_date, expiry_date, quantity, remaining, discount_percent) VALUES
+(22, 'L022-CD', CURDATE() + INTERVAL 25 DAY - INTERVAL 730 DAY, CURDATE() + INTERVAL 25 DAY, 12, 12, 30),
+(25, 'L025-NB', CURDATE() + INTERVAL 15 DAY - INTERVAL 730 DAY, CURDATE() + INTERVAL 15 DAY, 9, 9, NULL),
+(33, 'L033-HH', CURDATE() - INTERVAL 3 DAY - INTERVAL 180 DAY, CURDATE() - INTERVAL 3 DAY, 14, 14, NULL),
+(44, 'L044-OLD', CURDATE() - INTERVAL 400 DAY, CURDATE() + INTERVAL 330 DAY, 20, 0, NULL);
+
+-- Tồn bán được = tổng các lô còn đủ hạn tối thiểu (backend cũng đồng bộ lại khi khởi động).
+UPDATE products p SET stock = (
+  SELECT COALESCE(SUM(b.remaining), 0) FROM product_batches b
+  WHERE b.product_id = p.id AND DATEDIFF(b.expiry_date, CURDATE()) >= p.usage_days + 7
+);
+
+-- Đơn mẫu: ngày hoàn thành (dùng cho nhắc mua lại) và lý do hủy.
+UPDATE orders SET completed_at = created_at + INTERVAL 2 DAY WHERE order_status = 'COMPLETED';
+UPDATE orders SET cancel_reason = 'CUSTOMER' WHERE order_status = 'CANCELLED';
+
+-- Hồ sơ bé mẫu: bé 3 tháng dị ứng đạm bò (minh họa cảnh báo giỏ hàng), bé 14 tháng hay táo bón.
+INSERT INTO baby_profiles(user_id, name, birth_date, weight_kg, conditions, is_default) VALUES
+(2, 'Bông', CURDATE() - INTERVAL 95 DAY, 6.2, 'CMPA', 1),
+(3, 'Bin', CURDATE() - INTERVAL 14 MONTH, 10.5, 'CONSTIPATION', 1),
+(7, 'Na', CURDATE() - INTERVAL 5 MONTH, 7.0, '', 1);
