@@ -14,6 +14,9 @@ import statisticRoutes from './routes/statistic.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import userRoutes from './routes/user.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import batchRoutes from './routes/batch.routes.js';
+import babyRoutes from './routes/baby.routes.js';
+import { startStockSync } from './services/stock.service.js';
 import { errorHandler, notFound } from './middlewares/error.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
@@ -43,6 +46,8 @@ app.use('/api/statistics', statisticRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/batches', batchRoutes);
+app.use('/api/babies', babyRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -50,4 +55,5 @@ app.use(errorHandler);
 app.listen(port, '0.0.0.0', () => {
   console.log(`Milk Store API: http://localhost:${port}`);
   console.log(`Swagger UI: http://localhost:${port}/api/docs`);
+  startStockSync();
 });

@@ -27,6 +27,8 @@ const spec = {
     { name: 'Reviews' },
     { name: 'Contacts' },
     { name: 'Users' },
+    { name: 'Batches', description: 'Lô hàng – hạn sử dụng (FEFO)' },
+    { name: 'Babies', description: 'Hồ sơ bé – tư vấn, cảnh báo, nhắc mua lại' },
     { name: 'Statistics' },
     { name: 'Upload' }
   ],
@@ -62,7 +64,8 @@ const spec = {
           image: { type: 'string' },
           price: { type: 'number' },
           sale_price: { type: 'number', nullable: true },
-          stock: { type: 'integer' },
+          stock: { type: 'integer', description: 'Tổng các lô còn bán được (chỉ đọc)' },
+          usage_days: { type: 'integer', description: 'Thời gian dùng hết sản phẩm (ngày)' },
           status: { type: 'integer' },
           is_featured: { type: 'integer' }
         }
@@ -290,6 +293,7 @@ const spec = {
         summary: 'Danh sách sản phẩm (cửa hàng)',
         parameters: [
           { name: 'q', in: 'query', schema: { type: 'string' } },
+          { name: 'age_months', in: 'query', schema: { type: 'integer' }, description: 'Tháng tuổi của bé: bỏ sản phẩm trẻ em sai giai đoạn (trợ lý AI dùng)' },
           { name: 'category', in: 'query', schema: { type: 'integer' } },
           { name: 'brand', in: 'query', schema: { type: 'integer' } },
           { name: 'minPrice', in: 'query', schema: { type: 'number' } },
@@ -318,7 +322,7 @@ const spec = {
                   image: { type: 'string' },
                   price: { type: 'number' },
                   sale_price: { type: 'number', nullable: true },
-                  stock: { type: 'integer' },
+                  usage_days: { type: 'integer', description: 'Thời gian dùng hết sản phẩm (ngày), mặc định 30' },
                   age_range: { type: 'string' },
                   origin: { type: 'string' },
                   weight: { type: 'string' },
@@ -454,7 +458,8 @@ const spec = {
                     type: 'string',
                     enum: ['PENDING', 'CONFIRMED', 'SHIPPING', 'COMPLETED', 'CANCELLED']
                   },
-                  payment_status: { type: 'string', enum: ['UNPAID', 'PAID'] }
+                  payment_status: { type: 'string', enum: ['UNPAID', 'PAID'] },
+                  cancel_reason: { type: 'string', enum: ['STORE', 'DELIVERY_FAILED', 'RETURNED'], description: 'Khi chuyển sang CANCELLED; giao thất bại / hoàn hàng chỉ từ CONFIRMED, SHIPPING' }
                 }
               }
             }
@@ -466,9 +471,10 @@ const spec = {
     '/api/orders/{id}/cancel': {
       put: {
         tags: ['Orders'],
-        summary: 'Hủy đơn PENDING (hoàn kho)',
+        summary: 'Hủy đơn, trả hàng về đúng lô (khách: đơn chờ xác nhận; quản trị: đơn chưa hoàn thành, kèm lý do)',
         security: bearer,
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        requestBody: { content: { 'application/json': { schema: { type: 'object', properties: { cancel_reason: { type: 'string', enum: ['STORE', 'DELIVERY_FAILED', 'RETURNED'] } } } } } },
         responses: { 200: { description: 'OK' }, 400: { description: 'Không hủy được' } }
       }
     },
@@ -660,6 +666,107 @@ const spec = {
         security: bearer,
         responses: { 200: { description: 'OK' } }
       }
+    },
+    '/api/orders/preview': {
+      post: {
+        tags: ['Orders'],
+        summary: 'Xem trước giá giỏ hàng theo FEFO (tách dòng giá cận date)',
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { type: 'object', properties: { items: { type: 'array', items: { type: 'object', properties: { product_id: { type: 'integer' }, quantity: { type: 'integer' } } } } } } } }
+        },
+        responses: { 200: { description: '{ lines, problems, total }' } }
+      }
+    },
+    '/api/batches': {
+      get: {
+        tags: ['Batches'],
+        summary: 'Danh sách lô kèm trạng thái HSD và % giảm gợi ý (admin)',
+        security: bearer,
+        parameters: [
+          { name: 'product_id', in: 'query', schema: { type: 'integer' } },
+          { name: 'status', in: 'query', schema: { type: 'string', enum: ['NORMAL', 'NEAR_EXPIRY', 'BLOCKED', 'EXPIRED'] } },
+          { name: 'in_stock', in: 'query', schema: { type: 'string', enum: ['1'] } }
+        ],
+        responses: { 200: { description: 'OK' } }
+      },
+      post: {
+        tags: ['Batches'],
+        summary: 'Nhập lô hàng (admin)',
+        security: bearer,
+        requestBody: { required: true, content: { 'application/json': { schema: {
+                type: 'object',
+                required: ['lot_number', 'manufactured_date', 'expiry_date', 'quantity'],
+                properties: {
+                  product_id: { type: 'integer' },
+                  lot_number: { type: 'string' },
+                  manufactured_date: { type: 'string', format: 'date' },
+                  expiry_date: { type: 'string', format: 'date' },
+                  quantity: { type: 'integer', minimum: 1 }
+                }
+              } } } },
+        responses: { 200: { description: 'OK' }, 409: { description: 'Trùng số lô' }, 422: { description: 'Dữ liệu không hợp lệ' } }
+      }
+    },
+    '/api/batches/{id}': {
+      put: {
+        tags: ['Batches'],
+        summary: 'Sửa lô chưa bán đơn nào (admin)',
+        security: bearer,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        requestBody: { required: true, content: { 'application/json': { schema: {
+                type: 'object',
+                required: ['lot_number', 'manufactured_date', 'expiry_date', 'quantity'],
+                properties: {
+                  product_id: { type: 'integer' },
+                  lot_number: { type: 'string' },
+                  manufactured_date: { type: 'string', format: 'date' },
+                  expiry_date: { type: 'string', format: 'date' },
+                  quantity: { type: 'integer', minimum: 1 }
+                }
+              } } } },
+        responses: { 200: { description: 'OK' }, 400: { description: 'Lô đã có trong đơn' } }
+      }
+    },
+    '/api/batches/{id}/discount': {
+      put: {
+        tags: ['Batches'],
+        summary: 'Duyệt % giảm xả hàng cho lô cận date (0 = bỏ giảm) (admin)',
+        security: bearer,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', properties: { discount_percent: { type: 'integer', minimum: 0, maximum: 90 } } } } } },
+        responses: { 200: { description: 'OK' }, 400: { description: 'Lô không ở trạng thái cận date' } }
+      }
+    },
+    '/api/statistics/expiry-alerts': {
+      get: {
+        tags: ['Statistics'],
+        summary: 'Cảnh báo HSD: lô cận date chưa giảm giá, lô ngừng bán / hết hạn còn hàng',
+        security: bearer,
+        responses: { 200: { description: '{ near_expiry_total, need_discount, blocked }' } }
+      }
+    },
+    '/api/babies': {
+      get: { tags: ['Babies'], summary: 'Hồ sơ bé của tôi (tháng tuổi, size bỉm, giai đoạn sữa)', security: bearer, responses: { 200: { description: 'OK' } } },
+      post: { tags: ['Babies'], summary: 'Tạo hồ sơ bé', security: bearer, requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', required: ['name', 'birth_date'], properties: { name: { type: 'string' }, birth_date: { type: 'string', format: 'date' }, weight_kg: { type: 'number' }, conditions: { type: 'array', items: { type: 'string', enum: ['CMPA', 'LACTOSE', 'CONSTIPATION', 'UNDERWEIGHT', 'PREMATURE'] } } } } } } }, responses: { 200: { description: 'OK' }, 422: { description: 'Dữ liệu không hợp lệ' } } }
+    },
+    '/api/babies/{id}': {
+      put: { tags: ['Babies'], summary: 'Sửa hồ sơ bé', security: bearer, parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', required: ['name', 'birth_date'], properties: { name: { type: 'string' }, birth_date: { type: 'string', format: 'date' }, weight_kg: { type: 'number' }, conditions: { type: 'array', items: { type: 'string', enum: ['CMPA', 'LACTOSE', 'CONSTIPATION', 'UNDERWEIGHT', 'PREMATURE'] } } } } } } }, responses: { 200: { description: 'OK' } } },
+      delete: { tags: ['Babies'], summary: 'Xóa hồ sơ bé', security: bearer, parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { 200: { description: 'OK' } } }
+    },
+    '/api/babies/{id}/default': {
+      put: { tags: ['Babies'], summary: 'Chọn bé dùng để tư vấn', security: bearer, parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { 200: { description: 'OK' } } }
+    },
+    '/api/babies/{id}/recommendations': {
+      get: { tags: ['Babies'], summary: 'Gợi ý sản phẩm theo giai đoạn tuổi và cơ địa của bé', security: bearer, parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { 200: { description: '{ baby, items, note }' } } }
+    },
+    '/api/babies/check-cart': {
+      post: { tags: ['Babies'], summary: 'Cảnh báo an toàn cho sản phẩm trong giỏ theo hồ sơ bé', security: bearer,
+        requestBody: { content: { 'application/json': { schema: { type: 'object', properties: { baby_id: { type: 'integer' }, items: { type: 'array', items: { type: 'object', properties: { product_id: { type: 'integer' } } } } } } } } },
+        responses: { 200: { description: '{ baby, warnings }' } } }
+    },
+    '/api/babies/replenishment': {
+      get: { tags: ['Babies'], summary: 'Sản phẩm sắp hết theo đơn đã hoàn thành (nhắc mua lại)', security: bearer, responses: { 200: { description: 'OK' } } }
     },
     '/api/upload': {
       post: {

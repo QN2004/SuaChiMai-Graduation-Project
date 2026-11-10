@@ -58,6 +58,8 @@ services:
       DIFY_API_URL: ${DIFY_API_URL:-http://nginx/v1}
       DIFY_API_KEY: ${DIFY_API_KEY:-}
       DIFY_TIMEOUT_MS: ${DIFY_TIMEOUT_MS:-120000}
+      NEAR_EXPIRY_PERCENT: ${NEAR_EXPIRY_PERCENT:-15}
+      DELIVERY_DAYS: ${DELIVERY_DAYS:-7}
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "${EXPOSE_BACKEND_PORT:-5000}:5000"

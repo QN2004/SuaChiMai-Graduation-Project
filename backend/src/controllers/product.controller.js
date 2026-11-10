@@ -1,6 +1,7 @@
 import { query } from '../config/db.js';
 import { fail, ok } from '../utils/response.js';
 import { makeSlug } from '../utils/slug.js';
+import { attachExpiryInfo, getBatchesOnSale } from '../services/stock.service.js';
 
 const productSelect = `
   SELECT p.*, c.name AS category_name, b.name AS brand_name,
@@ -19,7 +20,7 @@ const productFields = [
   'image',
   'price',
   'sale_price',
-  'stock',
+  'usage_days',
   'age_range',
   'origin',
   'weight',
@@ -29,19 +30,40 @@ const productFields = [
   'short_description',
   'description',
   'status',
-  'is_featured'
+  'is_featured',
+  'audience',
+  'stage_min_months',
+  'stage_max_months',
+  'cmpa_safe',
+  'lactose_free',
+  'net_weight_g'
 ];
 
-const normalizeProductPayload = (payload) => ({
+// stock không nhận từ form: tồn được tính từ các lô hàng (product_batches).
+const normalizeProductPayload = ({ stock, ...payload }) => ({
   ...payload,
-  sale_price: payload.sale_price === '' || payload.sale_price === undefined ? null : payload.sale_price
+  sale_price: payload.sale_price === '' || payload.sale_price === undefined ? null : payload.sale_price,
+  ...(payload.usage_days !== undefined ? { usage_days: Math.max(1, Math.trunc(Number(payload.usage_days)) || 30) } : {}),
+  ...Object.fromEntries(['stage_min_months', 'stage_max_months', 'net_weight_g']
+    .filter((key) => payload[key] !== undefined)
+    .map((key) => [key, payload[key] === '' || payload[key] === null ? null : Math.max(0, Math.trunc(Number(payload[key])) || 0)])),
+  ...Object.fromEntries(['cmpa_safe', 'lactose_free']
+    .filter((key) => payload[key] !== undefined)
+    .map((key) => [key, Number(payload[key]) ? 1 : 0])),
+  ...(payload.audience !== undefined ? { audience: ['CHILD', 'MOTHER', 'ADULT'].includes(payload.audience) ? payload.audience : 'CHILD' } : {})
 });
 
 export const getProducts = async (req, res, next) => {
   try {
-    const { q, category, brand, minPrice, maxPrice, sort = 'latest', page = 1, limit = 12 } = req.query;
+    const { q, category, brand, minPrice, maxPrice, sort = 'latest', page = 1, limit = 12, age_months: ageMonths } = req.query;
     const where = ['p.status=1'];
     const params = [];
+    // Lọc theo tháng tuổi của bé (trợ lý AI gửi từ hồ sơ bé): bỏ sản phẩm trẻ em sai giai đoạn,
+    // vẫn giữ sản phẩm cho mẹ / người lớn.
+    if (ageMonths !== undefined && ageMonths !== '' && Number.isInteger(Number(ageMonths)) && Number(ageMonths) >= 0) {
+      where.push("(p.audience<>'CHILD' OR (p.stage_min_months <= ? AND (p.stage_max_months IS NULL OR p.stage_max_months > ?)))");
+      params.push(Number(ageMonths), Number(ageMonths));
+    }
     if (q) {
       // Only name + brand. Searching description causes false hits
       // e.g. "óc chó" matching inside "học cho".
@@ -83,7 +105,7 @@ export const getProducts = async (req, res, next) => {
        WHERE ${where.join(' AND ')}`,
       params
     );
-    ok(res, 'Thành công', { items: rows, total: totalRows[0].total, page: safePage, limit: safeLimit });
+    ok(res, 'Thành công', { items: await attachExpiryInfo(rows), total: totalRows[0].total, page: safePage, limit: safeLimit });
   } catch (err) {
     next(err);
   }
@@ -92,7 +114,7 @@ export const getProducts = async (req, res, next) => {
 export const getAllProductsAdmin = async (req, res, next) => {
   try {
     const rows = await query(`${productSelect} GROUP BY p.id ORDER BY p.id DESC`);
-    ok(res, 'Thành công', rows);
+    ok(res, 'Thành công', await attachExpiryInfo(rows));
   } catch (err) {
     next(err);
   }
@@ -102,7 +124,8 @@ export const getProduct = async (req, res, next) => {
   try {
     const rows = await query(`${productSelect} WHERE p.id=? GROUP BY p.id`, [req.params.id]);
     if (!rows.length) return fail(res, 404, 'Không tìm thấy sản phẩm');
-    ok(res, 'Thành công', rows[0]);
+    const batches = await getBatchesOnSale(rows);
+    ok(res, 'Thành công', { ...rows[0], batches_on_sale: batches.get(rows[0].id) });
   } catch (err) {
     next(err);
   }
@@ -116,7 +139,8 @@ export const getProductBySlug = async (req, res, next) => {
       rows[0].category_id,
       rows[0].id
     ]);
-    ok(res, 'Thành công', { product: rows[0], related });
+    const batches = await getBatchesOnSale(rows);
+    ok(res, 'Thành công', { product: { ...rows[0], batches_on_sale: batches.get(rows[0].id) }, related: await attachExpiryInfo(related) });
   } catch (err) {
     next(err);
   }
@@ -125,7 +149,7 @@ export const getProductBySlug = async (req, res, next) => {
 export const createProduct = async (req, res, next) => {
   try {
     const fields = productFields;
-    req.body = normalizeProductPayload(req.body);
+    req.body = normalizeProductPayload({ usage_days: 30, ...req.body });
     req.body.slug = req.body.slug || makeSlug(req.body.name);
     const values = fields.map((f) => req.body[f] ?? null);
     const result = await query(`INSERT INTO products(${fields.join(',')}) VALUES(${fields.map(() => '?').join(',')})`, values);
@@ -163,7 +187,7 @@ export const deleteProduct = async (req, res, next) => {
 export const featured = async (req, res, next) => {
   try {
     const rows = await query(`${productSelect} WHERE p.status=1 AND p.is_featured=1 GROUP BY p.id ORDER BY p.id DESC LIMIT 8`);
-    ok(res, 'Thành công', rows);
+    ok(res, 'Thành công', await attachExpiryInfo(rows));
   } catch (err) {
     next(err);
   }
@@ -172,7 +196,7 @@ export const featured = async (req, res, next) => {
 export const latest = async (req, res, next) => {
   try {
     const rows = await query(`${productSelect} WHERE p.status=1 GROUP BY p.id ORDER BY p.id DESC LIMIT 8`);
-    ok(res, 'Thành công', rows);
+    ok(res, 'Thành công', await attachExpiryInfo(rows));
   } catch (err) {
     next(err);
   }
@@ -189,7 +213,7 @@ export const bestSelling = async (req, res, next) => {
       ORDER BY COALESCE(SUM(CASE WHEN o.id IS NULL THEN 0 ELSE od.quantity END),0) DESC, p.id DESC
       LIMIT 8
     `);
-    ok(res, 'Thành công', rows);
+    ok(res, 'Thành công', await attachExpiryInfo(rows));
   } catch (err) {
     next(err);
   }

@@ -11,7 +11,9 @@ export const pool = mysql.createPool({
   port: Number(process.env.DB_PORT || 3306),
   waitForConnections: true,
   connectionLimit: 10,
-  namedPlaceholders: true
+  namedPlaceholders: true,
+  // Cột DATE (NSX, HSD của lô) trả về chuỗi YYYY-MM-DD, tránh lệch ngày do múi giờ.
+  dateStrings: ['DATE']
 });
 
 export const query = async (sql, params = []) => {
