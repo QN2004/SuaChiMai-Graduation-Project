@@ -9,10 +9,12 @@ export const normalizeChatText = (value) => String(value || '')
 const PRODUCT_INTENT = /(san pham|sua|gia|gia tien|mua|tu van|so sanh|dinh duong|cho be|me bau)/i;
 const ORDER_INTENT = /(don hang|don.{0,60}cua toi|ma don|giao hang|dang giao|da giao|da xu ly|da huy|cho xac nhan|chua thanh toan|da thanh toan)/i;
 const COMPARE_INTENT = /(so sanh|khac nhau|khac gi|khac biet|nao tot hon|nen chon|doi chieu|dat .{0,80} canh nhau|compare|versus|\bvs\b)/i;
+const BABY_RECOMMENDATION_INTENT = /(ho so be|goi y.{0,50}(?:cho )?be|tu van.{0,50}(?:cho )?be|sua.{0,40}phu hop.{0,30}(?:cho )?be|san pham.{0,40}phu hop.{0,30}(?:cho )?be)/i;
 
 export const isProductRequest = (...values) => PRODUCT_INTENT.test(normalizeChatText(values.join(' ')));
 export const isOrderRequest = (value) => ORDER_INTENT.test(normalizeChatText(value));
 export const isComparisonRequest = (value) => COMPARE_INTENT.test(normalizeChatText(value));
+export const isBabyRecommendationRequest = (value) => BABY_RECOMMENDATION_INTENT.test(normalizeChatText(value));
 
 export const getProductIdsFromAnswer = (value) => {
   const match = String(value || '').match(/\[\[PRODUCT_IDS:\s*([^\]]*)\]\]/i);

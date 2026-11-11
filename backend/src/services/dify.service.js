@@ -59,10 +59,15 @@ export const uploadFileToDify = async (file, user) => {
   return requestDify('/files/upload', { method: 'POST', body: form });
 };
 
-export const sendChatMessage = async ({ query, conversationId, user, accessToken, file }) => {
+export const sendChatMessage = async ({ query, conversationId, user, accessToken, file, babyProfile }) => {
   const uploaded = await uploadFileToDify(file, user);
   const inputs = {};
   if (accessToken) inputs.access_token = accessToken;
+  // Hồ sơ bé đang chọn: tóm tắt cho lời nhắc và tháng tuổi để lọc API sản phẩm.
+  if (babyProfile) {
+    inputs.baby_profile = babyProfile.text;
+    inputs.baby_age_months = String(babyProfile.ageMonths);
+  }
 
   const payload = {
     inputs,

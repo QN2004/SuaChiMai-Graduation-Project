@@ -5,6 +5,7 @@ import {
   getOrderIdsFromAnswer,
   getRequestedOrderStatuses,
   getRequestedPaymentStatuses,
+  isBabyRecommendationRequest,
   isComparisonRequest,
   isOrderRequest,
   isProductRequest,
@@ -28,6 +29,12 @@ test('recognizes Vietnamese comparison requests with or without diacritics', () 
 test('does not mark a normal product lookup as a comparison', () => {
   assert.equal(isComparisonRequest('Tìm sữa cho bé 2 tuổi'), false);
   assert.equal(isProductRequest('Tim sua cho be 2 tuoi'), true);
+});
+
+test('recognizes requests that must use deterministic baby-profile recommendations', () => {
+  assert.equal(isBabyRecommendationRequest('Dựa trên hồ sơ bé Bông, hãy tư vấn sữa phù hợp'), true);
+  assert.equal(isBabyRecommendationRequest('Gợi ý sản phẩm cho bé đang chọn'), true);
+  assert.equal(isBabyRecommendationRequest('Tìm sữa Vinamilk đang giảm giá'), false);
 });
 
 test('separates confirmed orders from orders waiting for confirmation', () => {
