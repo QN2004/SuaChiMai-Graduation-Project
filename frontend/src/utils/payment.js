@@ -1,11 +1,12 @@
+// Thông tin cửa hàng đồng bộ với website (header, footer, trang Liên hệ) và tài liệu của trợ lý Mai (docs/ai).
 export const storePayment = {
   bankId: '970436',
   accountNo: '0988888888',
-  accountName: 'CHI MAI MILK',
-  hotline: '0988 888 888',
-  email: 'chimaimilk@gmail.com',
-  address: '123 Nguyễn Văn Cừ, P. An Hòa, Q. Ninh Kiều, TP. Cần Thơ',
-  website: 'www.chimaimilk.vn'
+  accountName: 'SUA CHI MAI',
+  hotline: '0987 654 321',
+  email: 'suachimai.dailoc@gmail.com',
+  address: 'Đại Nghĩa, Đại Lộc, Quảng Nam',
+  website: 'suachimai.store'
 };
 
 export const paymentContent = (orderNumber, fallback = 'SUA CHI MAI') =>

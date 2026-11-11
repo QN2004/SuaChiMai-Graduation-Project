@@ -1,8 +1,10 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { FaBox, FaLayerGroup, FaShoppingCart, FaTags, FaUserFriends, FaWallet } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import api from '../../api/client';
 import { useFetch } from '../../hooks/useFetch';
 import { money, statusText } from '../../utils/format';
+import { batchStatus, formatDate } from '../../utils/expiry';
 
 const emptyDashboard = {
   products: { total: 0 },
@@ -14,17 +16,19 @@ const emptyDashboard = {
   pending: { total: 0 },
   lowStock: [],
   latestOrders: [],
-  revenueChart: []
+  revenueChart: [],
+  expiry: { near_expiry_total: 0, need_discount: [], blocked: [] }
 };
 
 export default function AdminDashboardPage() {
   const { data, loading } = useFetch(async () => {
-    const [dash, revenue] = await Promise.all([
+    const [dash, revenue, expiry] = await Promise.all([
       api.get('/statistics/dashboard'),
-      api.get('/statistics/revenue-by-month')
+      api.get('/statistics/revenue-by-month'),
+      api.get('/statistics/expiry-alerts')
     ]);
 
-    return { data: { ...dash.data, revenueChart: revenue.data } };
+    return { data: { ...dash.data, revenueChart: revenue.data, expiry: expiry.data } };
   }, []);
 
   const dashboard = { ...emptyDashboard, ...data };
@@ -48,8 +52,37 @@ export default function AdminDashboardPage() {
         <div className="admin-hero-metrics">
           <span><strong>{dashboard.pending.total}</strong> đơn chờ xử lý</span>
           <span><strong>{dashboard.lowStock.length}</strong> sản phẩm sắp hết</span>
+          <span><strong>{dashboard.expiry.near_expiry_total}</strong> lô cận date</span>
         </div>
       </div>
+
+      {(dashboard.expiry.need_discount.length > 0 || dashboard.expiry.blocked.length > 0) && (
+        <section className="panel expiry-alert">
+          <div className="panel-head">
+            <div>
+              <h3>Cảnh báo hạn sử dụng</h3>
+              <p>Lô cận date nên tạo giảm giá xả hàng; lô ngừng bán / hết hạn đã tự khóa và cần xử lý ngoài web.</p>
+            </div>
+            <Link className="btn" to="/admin/batches">Mở trang Lô hàng</Link>
+          </div>
+          <ul className="expiry-alert-list">
+            {dashboard.expiry.need_discount.map((batch) => (
+              <li key={batch.id}>
+                <strong>{batch.product_name}</strong>
+                <span className="meta">Lô {batch.lot_number} · HSD {formatDate(batch.expiry_date)} · còn {batch.remaining}</span>
+                <span className="tone-chip warn">Cận date · gợi ý −{batch.suggestedDiscount}%</span>
+              </li>
+            ))}
+            {dashboard.expiry.blocked.map((batch) => (
+              <li key={batch.id}>
+                <strong>{batch.product_name}</strong>
+                <span className="meta">Lô {batch.lot_number} · HSD {formatDate(batch.expiry_date)} · còn {batch.remaining}</span>
+                <span className={`tone-chip ${batchStatus[batch.status].tone}`}>{batchStatus[batch.status].label}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="stat-grid">
         {cards.map(([label, value, icon]) => (

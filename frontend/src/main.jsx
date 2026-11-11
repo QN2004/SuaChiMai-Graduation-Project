@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import { UiFeedbackProvider } from './context/UiFeedbackContext.jsx';
 import './styles.css';
+import './features.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

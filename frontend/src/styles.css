@@ -1649,7 +1649,7 @@ del { color: var(--muted); }
   border: 1px dashed rgba(219, 233, 237, .95);
   color: var(--muted);
 }
-.orders-empty svg { font-size: 34px; color: var(--primary); }
+.orders-empty > svg { font-size: 34px; color: var(--primary); }
 .orders-empty h3 { margin: 8px 0 0; color: #0e3740; }
 .orders-empty p { margin: 0 0 8px; max-width: 420px; }
 .profile-layout {

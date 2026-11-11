@@ -7,6 +7,9 @@ import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { useFetch } from '../hooks/useFetch';
 import { money } from '../utils/format';
+import { formatDate, offlineInfo, stockLabel } from '../utils/expiry';
+import { useBabyCheck } from '../hooks/useBabyCheck';
+import BabyWarnings from '../components/BabyWarnings';
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -16,6 +19,7 @@ export default function ProductDetailPage() {
   const [activeImg, setActiveImg] = useState(null);
   const [tab, setTab] = useState('description');
   const { data, loading } = useFetch(() => api.get(`/products/slug/${slug}`), [slug]);
+  const babyCheck = useBabyCheck(data?.product?.id ? [data.product.id] : []);
   const reviews = useFetch(() => data?.product ? api.get(`/reviews/product/${data.product.id}`) : Promise.resolve({ data: [] }), [data?.product?.id]);
 
   useEffect(() => {
@@ -50,6 +54,10 @@ export default function ProductDetailPage() {
   const intro = product.short_description || product.description || 'Sản phẩm chính hãng, được chọn lọc phù hợp cho nhu cầu dinh dưỡng hằng ngày.';
   const stock = Math.max(0, Number(product.stock) || 0);
   const outOfStock = stock <= 0;
+  // Lô bán theo FEFO: lô đầu tiên là lô khách sẽ nhận trước.
+  const batchesOnSale = product.batches_on_sale || [];
+  const firstBatch = batchesOnSale[0];
+  const clearanceBatch = firstBatch?.discount_percent ? firstBatch : null;
   const specs = [
     ['Độ tuổi', product.age_range || 'Đang cập nhật'],
     ['Xuất xứ', product.origin || 'Đang cập nhật'],
@@ -95,7 +103,7 @@ export default function ProductDetailPage() {
             <div className="detail-info-top">
               <div className="detail-meta-line">
                 <span>{product.brand_name || 'Sữa Chi Mai'}</span>
-                <span className={outOfStock ? 'stock-pill is-out' : 'stock-pill'}>{outOfStock ? 'Hết hàng' : `Còn hàng · ${stock} sản phẩm`}</span>
+                <span className={outOfStock ? `stock-pill is-out${product.offline_reason ? ' is-offline' : ''}` : 'stock-pill'}>{outOfStock ? stockLabel(product) : `Còn hàng · ${stock} sản phẩm`}</span>
               </div>
               <h1>{product.name}</h1>
               <p className="detail-summary">{intro}</p>
@@ -110,6 +118,19 @@ export default function ProductDetailPage() {
                 {discount > 0 && <span className="detail-saving">Tiết kiệm {money(Number(product.price) - currentPrice)}</span>}
               </div>
 
+              <BabyWarnings baby={babyCheck.baby} warnings={babyCheck.warnings} compact />
+              {clearanceBatch ? (
+                <div className="expiry-note clearance">
+                  <strong>Hàng cận date – giảm {clearanceBatch.discount_percent}%: {money(clearanceBatch.unit_price)}</strong>
+                  <span className="block">
+                    HSD {formatDate(clearanceBatch.expiry_date)}, còn {clearanceBatch.remaining} sản phẩm giá giảm.
+                    Mua vượt số này, phần còn lại tính giá thường{batchesOnSale[1] ? ` (HSD ${formatDate(batchesOnSale[1].expiry_date)})` : ''}.
+                  </span>
+                </div>
+              ) : firstBatch && (
+                <div className="expiry-note">HSD lô đang bán: <strong>{formatDate(firstBatch.expiry_date)}</strong></div>
+              )}
+
               <div className="spec-grid">
                 {specs.map(([label, value]) => (
                   <div key={label}><span>{label}</span><strong>{value}</strong></div>
@@ -120,9 +141,9 @@ export default function ProductDetailPage() {
             <div className="detail-action-panel">
               <div className="buy-row">
                 {outOfStock ? (
-                  <div className="sold-out-banner">
-                    <strong>Hiện sản phẩm đang hết hàng</strong>
-                    <span>Liên hệ cửa hàng để được tư vấn sản phẩm thay thế phù hợp.</span>
+                  <div className={`sold-out-banner${product.offline_reason ? ' is-offline' : ''}`}>
+                    <strong>{product.offline_reason ? 'Sản phẩm tạm ngừng bán online' : 'Hiện sản phẩm đang hết hàng'}</strong>
+                    <span>{offlineInfo[product.offline_reason]?.note || 'Liên hệ cửa hàng để được tư vấn sản phẩm thay thế phù hợp.'}</span>
                   </div>
                 ) : (
                   <>

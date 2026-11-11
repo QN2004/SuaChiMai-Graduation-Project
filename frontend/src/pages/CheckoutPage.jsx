@@ -14,6 +14,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api, { imageUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { usePricePreview } from '../hooks/usePricePreview';
+import { useBabyCheck } from '../hooks/useBabyCheck';
+import BabyWarnings from '../components/BabyWarnings';
 import { money, paymentText } from '../utils/format';
 import { qrPaymentUrl, storePayment } from '../utils/payment';
 
@@ -33,10 +36,8 @@ export default function CheckoutPage() {
     return [{ ...product, quantity }];
   }, [directPurchase, isBuyNow, items]);
 
-  const checkoutTotal = useMemo(() => checkoutItems.reduce(
-    (sum, item) => sum + Number(item.sale_price || item.price || 0) * item.quantity,
-    0
-  ), [checkoutItems]);
+  const { linesFor, total: checkoutTotal } = usePricePreview(checkoutItems);
+  const babyCheck = useBabyCheck(checkoutItems.map((item) => item.id));
 
   const totalQuantity = checkoutItems.reduce((sum, item) => sum + item.quantity, 0);
   const returnPath = isBuyNow ? `/products/${directPurchase.product.slug}` : '/cart';
@@ -190,17 +191,21 @@ export default function CheckoutPage() {
               <Link to={returnPath}>Chỉnh sửa</Link>
             </div>
 
+            <BabyWarnings baby={babyCheck.baby} warnings={babyCheck.warnings} />
             <div className="checkout-order-items">
-              {checkoutItems.map((item) => (
-                <article className="checkout-order-item" key={item.id}>
+              {checkoutItems.flatMap((item) => linesFor(item).map((line) => (
+                <article className="checkout-order-item" key={`${item.id}-${line.product_name}`}>
                   <div className="checkout-order-image">
                     <img src={imageUrl(item.image)} alt={item.name} />
-                    <span>{item.quantity}</span>
+                    <span>{line.quantity}</span>
                   </div>
-                  <div><strong>{item.name}</strong><span>{money(item.sale_price || item.price)} × {item.quantity}</span></div>
-                  <b>{money(Number(item.sale_price || item.price) * item.quantity)}</b>
+                  <div>
+                    <strong>{line.product_name}</strong>
+                    <span>{money(line.unit_price)} × {line.quantity}{line.discount_percent ? ` (giảm ${line.discount_percent}% hàng cận date)` : ''}</span>
+                  </div>
+                  <b>{money(line.total_price)}</b>
                 </article>
-              ))}
+              )))}
             </div>
 
             <div className="checkout-totals">

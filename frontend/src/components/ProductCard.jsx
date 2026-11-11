@@ -3,6 +3,7 @@ import { FaBan, FaCartPlus, FaStar } from 'react-icons/fa';
 import { imageUrl } from '../api/client';
 import { useCart } from '../context/CartContext';
 import { money } from '../utils/format';
+import { formatDate, stockLabel } from '../utils/expiry';
 
 const fallbackImage = 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=900&q=80';
 
@@ -15,6 +16,7 @@ export default function ProductCard({ product }) {
   const rating = Number(product.average_rating || 0);
   const reviews = Number(product.review_count || 0);
   const outOfStock = Number(product.stock) <= 0;
+  const clearance = !outOfStock && product.near_expiry_discount ? Number(product.near_expiry_discount) : 0;
 
   return (
     <article className={`product-card${outOfStock ? ' is-sold-out' : ''}`}>
@@ -34,7 +36,8 @@ export default function ProductCard({ product }) {
             {discount > 0 ? `-${discount}%` : 'Khuyến mãi'}
           </span>
         )}
-        {outOfStock && <span className="sold-out-badge">Hết hàng</span>}
+        {outOfStock && <span className={`sold-out-badge${product.offline_reason ? ' is-offline' : ''}`}>{stockLabel(product)}</span>}
+        {clearance > 0 && <span className="near-expiry-badge">Cận date −{clearance}%</span>}
       </Link>
 
       <div className="product-body">
@@ -57,11 +60,16 @@ export default function ProductCard({ product }) {
           <strong>{money(price)}</strong>
           {hasSale && <del>{money(original)}</del>}
         </div>
+        {clearance > 0 && (
+          <span className="cart-line-split">
+            Lô cận date (HSD {formatDate(product.next_expiry_date)}): {money(Math.round((price * (100 - clearance)) / 100))}
+          </span>
+        )}
 
         {outOfStock ? (
           <button type="button" className="btn sold-out-btn full product-cart-btn" disabled>
             <FaBan />
-            Hết hàng
+            {stockLabel(product)}
           </button>
         ) : (
           <button

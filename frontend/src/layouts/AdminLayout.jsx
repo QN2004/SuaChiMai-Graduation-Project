@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaBox,
+  FaCalendarAlt,
   FaChartLine,
   FaComments,
   FaEnvelopeOpenText,
@@ -21,7 +22,8 @@ const navGroups = [
     items: [
       ['Tổng quan', '/admin', <FaChartLine />],
       ['Đơn hàng', '/admin/orders', <FaShoppingCart />],
-      ['Sản phẩm', '/admin/products', <FaBox />]
+      ['Sản phẩm', '/admin/products', <FaBox />],
+      ['Lô hàng – HSD', '/admin/batches', <FaCalendarAlt />]
     ]
   },
   {
@@ -46,6 +48,7 @@ const pageTitles = {
   '/admin/categories': 'Quản lý danh mục',
   '/admin/brands': 'Quản lý thương hiệu',
   '/admin/products': 'Quản lý sản phẩm',
+  '/admin/batches': 'Lô hàng – hạn sử dụng',
   '/admin/orders': 'Quản lý đơn hàng',
   '/admin/users': 'Quản lý khách hàng',
   '/admin/reviews': 'Quản lý đánh giá',

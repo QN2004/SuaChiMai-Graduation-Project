@@ -8,9 +8,14 @@ import {
 import { imageUrl } from '../api/client';
 import { useCart } from '../context/CartContext';
 import { money } from '../utils/format';
+import { usePricePreview } from '../hooks/usePricePreview';
+import { useBabyCheck } from '../hooks/useBabyCheck';
+import BabyWarnings from '../components/BabyWarnings';
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, total, count } = useCart();
+  const { items, updateQuantity, removeItem, count } = useCart();
+  const { linesFor, total } = usePricePreview(items);
+  const babyCheck = useBabyCheck(items.map((item) => item.id));
 
   if (!items.length) {
     return (
@@ -44,6 +49,7 @@ export default function CartPage() {
 
         <div className="cart-layout cart-layout-v2">
           <div className="cart-products-card">
+            <BabyWarnings baby={babyCheck.baby} warnings={babyCheck.warnings} />
             <div className="cart-list-heading">
               <strong>Sản phẩm</strong>
               <span>{items.length} mặt hàng</span>
@@ -53,6 +59,8 @@ export default function CartPage() {
               {items.map((item) => {
                 const unitPrice = Number(item.sale_price || item.price || 0);
                 const stock = Math.max(1, Number(item.stock) || 1);
+                const lines = linesFor(item);
+                const clearanceLines = lines.filter((line) => line.discount_percent);
 
                 return (
                   <article className="cart-item cart-item-v2" key={item.id}>
@@ -64,6 +72,11 @@ export default function CartPage() {
                       <span className="cart-item-brand">{item.brand_name || 'Sữa Chi Mai'}</span>
                       <Link to={`/products/${item.slug}`} className="cart-item-name">{item.name}</Link>
                       <span className="cart-item-unit-price">{money(unitPrice)} / sản phẩm</span>
+                      {clearanceLines.map((line) => (
+                        <span className="cart-line-split" key={line.product_name}>
+                          {line.quantity} sản phẩm {line.product_name.replace(item.name, '').trim()} giảm {line.discount_percent}%: {money(line.unit_price)}
+                        </span>
+                      ))}
                     </div>
 
                     <div className="cart-quantity" aria-label={`Số lượng ${item.name}`}>
@@ -94,7 +107,7 @@ export default function CartPage() {
                       </button>
                     </div>
 
-                    <strong className="cart-item-total">{money(unitPrice * item.quantity)}</strong>
+                    <strong className="cart-item-total">{money(lines.reduce((sum, line) => sum + line.total_price, 0))}</strong>
                     <button
                       type="button"
                       className="cart-remove-btn"

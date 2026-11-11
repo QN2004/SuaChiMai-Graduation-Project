@@ -13,7 +13,8 @@ import {
   FaSignOutAlt,
   FaTiktok,
   FaUserCircle,
-  FaYoutube
+  FaYoutube,
+  FaBaby
 } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -140,6 +141,10 @@ export default function MainLayout() {
                 >
                   <FaBoxOpen />
                   Đơn hàng của tôi
+                </Link>
+                <Link role="menuitem" to="/babies" onClick={() => setAccountOpen(false)}>
+                  <FaBaby />
+                  Hồ sơ của bé
                 </Link>
                 <button type="button" role="menuitem" className="account-logout" onClick={handleLogout}>
                   <FaSignOutAlt />

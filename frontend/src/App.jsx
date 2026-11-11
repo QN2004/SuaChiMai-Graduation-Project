@@ -22,6 +22,8 @@ import AdminOrderPage from './pages/admin/AdminOrderPage';
 import AdminUserPage from './pages/admin/AdminUserPage';
 import AdminReviewPage from './pages/admin/AdminReviewPage';
 import AdminContactPage from './pages/admin/AdminContactPage';
+import AdminBatchPage from './pages/admin/AdminBatchPage';
+import BabyProfilePage from './pages/BabyProfilePage';
 
 export default function App() {
   return (
@@ -40,6 +42,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/babies" element={<BabyProfilePage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/my-orders/:id" element={<OrderDetailPage />} />
         </Route>
@@ -51,6 +54,7 @@ export default function App() {
           <Route path="categories" element={<AdminResourcePage type="categories" />} />
           <Route path="brands" element={<AdminResourcePage type="brands" />} />
           <Route path="products" element={<AdminProductPage />} />
+          <Route path="batches" element={<AdminBatchPage />} />
           <Route path="orders" element={<AdminOrderPage />} />
           <Route path="users" element={<AdminUserPage />} />
           <Route path="reviews" element={<AdminReviewPage />} />

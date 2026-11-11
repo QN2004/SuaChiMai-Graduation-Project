@@ -3,12 +3,16 @@ import { FaArrowRight, FaAward, FaCheckCircle, FaHeadset, FaShieldAlt, FaShippin
 import api from '../api/client';
 import ProductCard from '../components/ProductCard';
 import Loading from '../components/Loading';
+import ReplenishmentList from '../components/ReplenishmentList';
+import { useAuth } from '../context/AuthContext';
 import { useFetch } from '../hooks/useFetch';
 import heroFamilyNutrition from '../assets/hero-family-nutrition-v7.png';
 import heroFamilyNutritionTablet from '../assets/hero-family-nutrition-tablet-v1.png';
 import heroFamilyNutritionMobile from '../assets/hero-family-nutrition-mobile-v1.png';
 
 export default function HomePage() {
+  const { user } = useAuth();
+  const replenish = useFetch(() => (user && user.role !== 'admin' ? api.get('/babies/replenishment') : Promise.resolve({ data: [] })), [user?.id]);
   const { data, loading } = useFetch(async () => {
     const [featured, latest, best] = await Promise.all([
       api.get('/products/featured'),
@@ -77,6 +81,22 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {replenish.data?.length > 0 && (
+        <section className="section replenish-section">
+          <div className="replenish-panel">
+            <div className="block-head">
+              <div>
+                <span className="section-kicker">Nhắc mua lại</span>
+                <h2>Sắp hết – đặt lại nhé</h2>
+                <p>Dựa trên các đơn đã hoàn thành của bạn.</p>
+              </div>
+              <Link className="link-btn" to="/babies">Hồ sơ của bé →</Link>
+            </div>
+            <ReplenishmentList items={replenish.data} />
+          </div>
+        </section>
+      )}
 
       <section className="section home-product-section featured-product-section">
         <div className="section-title">

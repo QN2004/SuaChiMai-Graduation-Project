@@ -16,6 +16,8 @@ import Loading from '../components/Loading';
 import { useUiFeedback } from '../context/UiFeedbackContext';
 import { useFetch } from '../hooks/useFetch';
 import { money, orderCode, paymentStatusText, paymentText, statusText, statusTone } from '../utils/format';
+import { orderStatusLabel } from '../utils/baby';
+import { formatDate } from '../utils/expiry';
 import { qrPaymentUrl, storePayment } from '../utils/payment';
 
 const parseOrderItems = (raw) => {
@@ -57,7 +59,7 @@ export default function OrderDetailPage() {
     if (!ok) return;
     try {
       await api.put(`/orders/${id}/cancel`);
-      setData({ ...data, order_status: 'CANCELLED' });
+      setData({ ...data, order_status: 'CANCELLED', cancel_reason: 'CUSTOMER' });
       toast('Đã hủy đơn hàng');
     } catch (err) {
       toast(err.message || 'Không thể hủy đơn hàng', 'error');
@@ -100,7 +102,7 @@ export default function OrderDetailPage() {
             <p>{orderDate === 'Chưa cập nhật' ? orderDate : `Đặt ${orderDate}`}</p>
           </div>
           <div className="order-detail-header-actions">
-            <span className={`status-chip ${statusTone(data.order_status)}`}>{statusText[data.order_status] || data.order_status}</span>
+            <span className={`status-chip ${statusTone(data.order_status)}`}>{orderStatusLabel(data, statusText)}</span>
             {data.order_status === 'PENDING' && <button className="btn order-cancel-btn" type="button" onClick={cancel}>Hủy đơn</button>}
           </div>
         </header>
@@ -136,7 +138,12 @@ export default function OrderDetailPage() {
                   <article className="order-product-row" key={`${item.product_id}-${index}`}>
                     <div className="order-product-info">
                       <img src={imageUrl(item.image)} alt={item.product_name} />
-                      <strong>{item.product_name}</strong>
+                      <div>
+                        <strong>{item.product_name}</strong>
+                        {item.batches?.length > 0 && (
+                          <small className="order-line-expiry">HSD {[...new Set(item.batches.map((b) => formatDate(b.expiry_date)))].join(', ')}</small>
+                        )}
+                      </div>
                     </div>
                     <span data-label="Đơn giá">{money(item.price)}</span>
                     <span data-label="Số lượng">× {item.quantity}</span>

@@ -15,6 +15,7 @@ import {
 import api, { imageUrl } from '../../api/client';
 import { useCart } from '../../context/CartContext';
 import { useUiFeedback } from '../../context/UiFeedbackContext';
+import { formatDate, stockLabel } from '../../utils/expiry';
 import { money, orderCode, paymentStatusText, statusText, statusTone } from '../../utils/format';
 import mascot from '../../assets/suachimai-chatbot.png';
 
@@ -72,12 +73,21 @@ function ProductResultCard({ product }) {
         <small>{product.brand_name || 'Sữa Chi Mai'}</small>
         <Link to={`/products/${product.slug}`}>{product.name}</Link>
         <strong>{money(price)}</strong>
+        {product.next_expiry_date && (
+          <small className={product.near_expiry_discount ? 'chat-expiry is-clearance' : 'chat-expiry'}>
+            HSD {formatDate(product.next_expiry_date)}
+            {product.near_expiry_discount ? ` · cận date −${product.near_expiry_discount}%: ${money(Math.round((price * (100 - product.near_expiry_discount)) / 100))}` : ''}
+          </small>
+        )}
+        {product.baby_warnings?.map((warning) => (
+          <small key={warning.type} className={`chat-baby-warning is-${warning.level}`}>⚠️ {warning.message}</small>
+        ))}
         <div className="chat-product-actions">
           <Link to={`/products/${product.slug}`} className="chat-mini-action">
             Chi tiết <FaExternalLinkAlt />
           </Link>
           <button type="button" className="chat-mini-action primary" disabled={soldOut} onClick={add}>
-            <FaShoppingCart /> {soldOut ? 'Hết hàng' : 'Thêm giỏ'}
+            <FaShoppingCart /> {soldOut ? stockLabel(product) : 'Thêm giỏ'}
           </button>
         </div>
       </div>
@@ -98,7 +108,14 @@ function ProductComparison({ products }) {
     { key: 'age', label: 'Độ tuổi', value: (item) => item.age_range || '—' },
     { key: 'origin', label: 'Xuất xứ', value: (item) => item.origin || '—' },
     { key: 'weight', label: 'Khối lượng', value: (item) => item.weight || '—' },
-    { key: 'stock', label: 'Tồn kho', value: (item) => Number(item.stock) > 0 ? `Còn ${item.stock}` : 'Hết hàng' }
+    { key: 'stock', label: 'Tồn kho', value: (item) => Number(item.stock) > 0 ? `Còn ${item.stock}` : 'Hết hàng' },
+    {
+      key: 'expiry',
+      label: 'HSD lô đang bán',
+      value: (item) => item.next_expiry_date
+        ? `${formatDate(item.next_expiry_date)}${item.near_expiry_discount ? ` (cận date −${item.near_expiry_discount}%)` : ''}`
+        : '—'
+    }
   ];
   return (
     <div className="chat-compare-wrap">

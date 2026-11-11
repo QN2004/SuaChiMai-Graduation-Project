@@ -20,7 +20,13 @@ const empty = {
   image: '',
   price: '',
   sale_price: '',
-  stock: 0,
+  usage_days: 30,
+  audience: 'CHILD',
+  stage_min_months: '',
+  stage_max_months: '',
+  net_weight_g: '',
+  cmpa_safe: 0,
+  lactose_free: 0,
   age_range: '',
   origin: '',
   weight: '',
@@ -91,7 +97,13 @@ export default function AdminProductPage() {
         image: form.image,
         price: form.price,
         sale_price: form.sale_price,
-        stock: form.stock,
+        usage_days: Number(form.usage_days) || 30,
+        audience: form.audience || 'CHILD',
+        stage_min_months: form.stage_min_months ?? '',
+        stage_max_months: form.stage_max_months ?? '',
+        net_weight_g: form.net_weight_g ?? '',
+        cmpa_safe: Number(form.cmpa_safe) ? 1 : 0,
+        lactose_free: Number(form.lactose_free) ? 1 : 0,
         age_range: form.age_range,
         origin: form.origin,
         weight: form.weight,
@@ -219,8 +231,38 @@ export default function AdminProductPage() {
         </div>
 
         <div>
-          <label>Tồn kho</label>
-          <input type="number" placeholder="0" value={form.stock} onChange={(event) => setForm({ ...form, stock: event.target.value })} />
+          <label>Thời gian sử dụng (ngày)</label>
+          <input
+            type="number"
+            min="1"
+            required
+            title="Số ngày khách dùng hết một sản phẩm. Lô còn hạn ít hơn (thời gian này + thời gian giao) sẽ ngừng bán online."
+            value={form.usage_days ?? 30}
+            onChange={(event) => setForm({ ...form, usage_days: event.target.value })}
+          />
+          <span className="muted block">Tồn kho tính từ các lô ở trang Lô hàng{editing ? ` (hiện còn bán: ${form.stock ?? 0})` : ''}.</span>
+        </div>
+
+        <div>
+          <label>Đối tượng</label>
+          <select value={form.audience || 'CHILD'} onChange={(event) => setForm({ ...form, audience: event.target.value })}>
+            <option value="CHILD">Trẻ em</option>
+            <option value="MOTHER">Mẹ bầu / cho con bú</option>
+            <option value="ADULT">Người lớn</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Tuổi dùng (tháng): từ – đến</label>
+          <div className="two-column-fields">
+            <input type="number" min="0" placeholder="Từ" value={form.stage_min_months ?? ''} onChange={(event) => setForm({ ...form, stage_min_months: event.target.value })} />
+            <input type="number" min="0" placeholder="Đến (trống = không giới hạn)" value={form.stage_max_months ?? ''} onChange={(event) => setForm({ ...form, stage_max_months: event.target.value })} />
+          </div>
+        </div>
+
+        <div>
+          <label>Khối lượng tịnh (g)</label>
+          <input type="number" min="0" placeholder="VD: 800" value={form.net_weight_g ?? ''} onChange={(event) => setForm({ ...form, net_weight_g: event.target.value })} />
         </div>
 
         <div className="span-2">
@@ -315,6 +357,14 @@ export default function AdminProductPage() {
             />
             Đang bán
           </label>
+          <label className="admin-check">
+            <input type="checkbox" checked={Number(form.cmpa_safe) === 1} onChange={(event) => setForm({ ...form, cmpa_safe: event.target.checked ? 1 : 0 })} />
+            An toàn cho trẻ dị ứng đạm bò
+          </label>
+          <label className="admin-check">
+            <input type="checkbox" checked={Number(form.lactose_free) === 1} onChange={(event) => setForm({ ...form, lactose_free: event.target.checked ? 1 : 0 })} />
+            Không lactose
+          </label>
         </div>
 
         <div className="span-3 form-actions">
@@ -373,7 +423,11 @@ export default function AdminProductPage() {
                     <strong>{money(product.price)}</strong>
                   )}
                 </td>
-                <td>{product.stock}</td>
+                <td>
+                  {product.stock}
+                  {product.offline_reason && <span className="tone-chip bad block-chip" title="Kho còn lô nhưng bị khóa vì HSD">Ngừng bán online</span>}
+                  {!product.offline_reason && product.near_expiry_discount && <span className="tone-chip warn block-chip">Cận date −{product.near_expiry_discount}%</span>}
+                </td>
                 <td>
                   <Space size={6} wrap>
                     <Tag color={product.status ? 'success' : 'default'}>

@@ -22,6 +22,7 @@ import {
   statusText,
   statusTone
 } from '../utils/format';
+import { orderStatusLabel } from '../utils/baby';
 
 const statusFilters = [
   { value: '', label: 'Tất cả' },
@@ -69,7 +70,7 @@ export default function MyOrdersPage() {
     try {
       await api.put(`/orders/${order.id}/cancel`);
       setData(orders.map((item) => (
-        item.id === order.id ? { ...item, order_status: 'CANCELLED' } : item
+        item.id === order.id ? { ...item, order_status: 'CANCELLED', cancel_reason: 'CUSTOMER' } : item
       )));
       toast('Đã hủy đơn hàng');
     } catch (err) {
@@ -146,7 +147,7 @@ export default function MyOrdersPage() {
                       </div>
                     </div>
                     <span className={`status-chip ${statusTone(order.order_status)}`}>
-                      {statusText[order.order_status] || order.order_status}
+                      {orderStatusLabel(order, statusText)}
                     </span>
                   </div>
 
