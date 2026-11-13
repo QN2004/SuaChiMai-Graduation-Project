@@ -1,0 +1,162 @@
+[
+  {
+    "media": "word/media/image1.png",
+    "source": "docs/data/report-diagrams/01-usecase.png",
+    "dimensions": [
+      2688,
+      1864
+    ]
+  },
+  {
+    "media": "word/media/image2.png",
+    "source": "docs/data/report-diagrams/02-dat-hang.png",
+    "dimensions": [
+      2688,
+      2748
+    ]
+  },
+  {
+    "media": "word/media/image3.png",
+    "source": "docs/data/report-diagrams/03-tuan-tu-ai.png",
+    "dimensions": [
+      2688,
+      2288
+    ]
+  },
+  {
+    "media": "word/media/image4.png",
+    "source": "docs/data/report-diagrams/04-kien-truc.png",
+    "dimensions": [
+      2688,
+      2092
+    ]
+  },
+  {
+    "media": "word/media/image5.png",
+    "source": "docs/data/report-diagrams/05-erd.png",
+    "dimensions": [
+      2688,
+      2148
+    ]
+  },
+  {
+    "media": "word/media/image6.png",
+    "source": "docs/data/report-diagrams/06-trang-thai-don.png",
+    "dimensions": [
+      2688,
+      1228
+    ]
+  },
+  {
+    "media": "word/media/image8.png",
+    "source": "docs/data/report-diagrams/08-kiem-soat-ai.png",
+    "dimensions": [
+      2688,
+      1512
+    ]
+  },
+  {
+    "media": "word/media/image9.png",
+    "source": "docs/data/ui/current/trang-chu.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image10.png",
+    "source": "docs/data/ui/current/san-pham.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image13.png",
+    "source": "docs/data/ui/current/dang-nhap.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image14.png",
+    "source": "docs/data/ui/current/dat-hang.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image15.png",
+    "source": "docs/data/ui/current/lien-he.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image18.png",
+    "source": "docs/data/ui/current/api.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image19.png",
+    "source": "docs/data/ui/current/admin-lo-hsd.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image20.png",
+    "source": "docs/data/ui/current/admin-tong-quan.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image21.png",
+    "source": "docs/data/ui/current/chi-tiet-hsd.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image24.png",
+    "source": "docs/data/ui/current/gio-hang-canh-bao.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image26.png",
+    "source": "docs/data/ui/current/admin-don-hang.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  },
+  {
+    "media": "word/media/image29.png",
+    "source": "docs/data/report-diagrams/07-luong-tro-ly.png",
+    "dimensions": [
+      2400,
+      1760
+    ]
+  },
+  {
+    "media": "word/media/image25.png",
+    "source": "docs/data/ui/current/nhac-mua-lai.png",
+    "dimensions": [
+      2880,
+      1800
+    ]
+  }
+]

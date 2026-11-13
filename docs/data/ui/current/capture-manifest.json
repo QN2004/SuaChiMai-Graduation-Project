@@ -1,0 +1,66 @@
+[
+  {
+    "name": "trang-chu",
+    "url": "http://localhost:3081/",
+    "capturedAt": "2026-11-13T09:07:08.991Z"
+  },
+  {
+    "name": "san-pham",
+    "url": "http://localhost:3081/products?sort=latest&page=1",
+    "capturedAt": "2026-11-13T09:07:10.083Z"
+  },
+  {
+    "name": "dang-nhap",
+    "url": "http://localhost:3081/login",
+    "capturedAt": "2026-11-13T09:07:10.962Z"
+  },
+  {
+    "name": "chi-tiet-hsd",
+    "url": "http://localhost:3081/products/frisolac-gold-2-6-12-thang-tuoi-800g-giao-bao-bi-ngau-nhien-51140",
+    "capturedAt": "2026-11-13T09:07:11.954Z"
+  },
+  {
+    "name": "gio-hang-canh-bao",
+    "url": "http://localhost:3081/cart",
+    "capturedAt": "2026-11-13T09:07:13.165Z"
+  },
+  {
+    "name": "dat-hang",
+    "url": "http://localhost:3081/checkout",
+    "capturedAt": "2026-11-13T09:07:14.258Z"
+  },
+  {
+    "name": "lien-he",
+    "url": "http://localhost:3081/contact",
+    "capturedAt": "2026-11-13T09:07:15.100Z"
+  },
+  {
+    "name": "api",
+    "url": "http://localhost:5000/api/docs/",
+    "capturedAt": "2026-11-13T09:07:19.238Z"
+  },
+  {
+    "name": "admin-lo-hsd",
+    "url": "http://localhost:3081/admin/batches",
+    "captureDate": "2026-11-13",
+    "tool": "Playwright"
+  },
+  {
+    "name": "admin-tong-quan",
+    "url": "http://localhost:3081/admin",
+    "captureDate": "2026-11-13",
+    "tool": "Playwright"
+  },
+  {
+    "name": "admin-don-hang",
+    "url": "http://localhost:3081/admin/orders",
+    "captureDate": "2026-11-13",
+    "tool": "Playwright"
+  },
+  {
+    "name": "nhac-mua-lai",
+    "url": "http://localhost:3081/",
+    "capturedAt": "2026-11-13T09:21:22.979293+00:00",
+    "tool": "Playwright"
+  }
+]
